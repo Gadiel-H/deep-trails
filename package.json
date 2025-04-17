@@ -1,0 +1,39 @@
+{
+  "name": "deep-trails",
+  "version": "1.0.0",
+  "description": "Deeply traverse data structures with full control. Safe, modular and customizable.",
+  "main": "index.js",
+  "test": "./tests/node.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    }
+  },
+  "scripts": {
+    "test": "node ./tests/node.js"
+  },
+  "keywords": [
+    "deep",
+    "trails",
+    "utils",
+    "walker",
+    "traverse",
+    "iterator",
+    "object",
+    "map",
+    "set",
+    "data",
+    "recursion"
+  ],
+  "author": "Gadiel Hernández <gadielhdez.dev@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gadiel-h/deep-trails.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gadiel-h/deep-trails/issues"
+  },
+  "homepage": "https://github.com/gadiel-h/deep-trails#readme"
+}
