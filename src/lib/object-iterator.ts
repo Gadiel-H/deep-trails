@@ -6,46 +6,29 @@ import { fTypeOf, sTypeOf } from "./utils/typeOf.js";
 import { getValueAt } from "./utils/paths.js";
 
 
-const iterableObjects = new Set([
-    "Object", "Array", "Map", "Set", "Module"
-]);
+const iterableObjects = new Set(["Object", "Array", "Map", "Set", "Module"]);
+
+type iterableStructure = (Object | Array<any> | Set<any> | Map<any, any>);
+
+type deepIterateSettings = {
+    iterateKeys: boolean,
+    addIndexInSet: boolean,
+    doNotIterate: {
+        keyTypes: Set<string | Function> | (string | Function)[],
+        objectTypes: Set<string | Function> | (string | Function)[]
+    }
+};
 
 
 /**
- * @typedef { (Object | Array<any> | Set<any> | Map<any, any>) } iterableObject
- */
-
-
-/**
- * @typedef { (key: any, value: any, path: any[]) => any } deepIterateCallback
- */
-
-
-/**
- * @typedef {Object} deepIterateSettings
- * @property {boolean} iterateKeys
- * @property {boolean} addIndexInSet
- * @property {{
- *     keyTypes: Set<string | Function> | (string | Function)[],
- *     objectTypes: Set<string | Function> | (string | Function)[]
- * }} doNotIterate
- */
-
-
-/**
- * Ajustes predeterminados para deepIterate.
+ * Default settings for deepIterate.
  * @type {deepIterateSettings}
  */
 const defaultSettings = {
-    // Confirma si se van a iterar las claves (no aplica para instancias de Set)
     iterateKeys: false,
-    // Confirma si en Sets se agregará un índice como clave en vez de el valor del elemento.
     addIndexInSet: true,
-    // Omitir iteración para ciertos tipos de objetos
     doNotIterate: {
-        // Tipos de objetos para no iterarlos.
         objectTypes: new Set([]),
-        // Tipos de claves para no iterarlas.
         keyTypes: new Set([])
     }
 };
@@ -53,22 +36,20 @@ const defaultSettings = {
 
 
 /**
- * Itera recursivamente sobre cualquier estructura de datos (Object, Array, Map y Set)
- * ejecutando un callback en cada elemento. Se previenen ciclos mediante un WeakSet.
- *
- * @param {iterableObject} obj  - El objeto o estructura a iterar.
- * @param {(key: any, value: any, path: any[]) => any} callback - Función a ejecutar en cada elemento. Se invoca con (key, value, path).
- * @param {deepIterateSettings} settings - Opciones de ajustes para mayor precisión.
- * @param {WeakSet<object>} visited - Conjunto para llevar registro de objetos ya visitados y evitar referencias circulares.
- * @param {any[]} path - Array que representa la ruta actual (camino) en la estructura.
- * @param {number} iterations - Cantidad total de iteraciones.
- * @returns {void}
+ * Recursively iterates over various data structures (Object, Array, Map and Set)
+ * executing a callback on each element. Cycles are prevented by a WeakSet.
+ * @param {iterableStructure} obj  - The object or structure to iterate.
+ * @param {(key: any, value: any, path: any[]) => any} callback - Function to execute on each element. Skips iteration with return.
+ * @param {deepIterateSettings} settings - Adjustment options for greater precision.
+ * @param {WeakSet<iterableStructure>} visited - Set to keep track of objects already visited and avoid circular references.
+ * @param {any[]} path - Array representing the current path in the structure.
+ * @param {number} iterations - Total number of iterations.
  * 
- * Casos manejados:
- * - Objetos regulares: Se recorren todas sus propiedades, incluyendo aquellas con claves de tipo symbol.
- * - Arrays: Se recorren sus elementos, añadiendo el índice a la ruta.
- * - Map: Se recorren sus entradas, agregando la clave a la ruta. También se itera opcionalmente sobre claves que sean objetos.
- * - Set: Se recorren sus valores, agregando la clave o un índice a la ruta.
+ * Cases handled:
+ * - Regular objects: All their properties are traversed, including those with symbol type keys.
+ * - Arrays: Their elements are traversed, adding the index to the path.
+ * - Map: Iterates through its entries, adding the key to the path. Optionally, iterates over keys that are objects.
+ * - Set: Its values are traversed, adding the key or an index to the path.
  */
 function deepIterate(
     obj,
@@ -78,7 +59,6 @@ function deepIterate(
     path = [],
     iterations = 0
 ) {
-    // ========== Prevención de errores y ciclos ========== //
 
     (function checkParams() {
         if (!is.any_object(obj)) throw new TypeError(
@@ -123,9 +103,6 @@ function deepIterate(
     visited.add(obj);
 
 
-
-    // ========== Autocompletado de los ajustes ========== //
-
     const invalidSettings = new Set();
 
     (function completeSettings() {
@@ -158,26 +135,29 @@ function deepIterate(
 
     })();
 
-    let str = "";
-    [...invalidSettings].forEach(val => str += `${strPath(val[0])} = ${strSimple(val[1])}\n`);
+    (function checkSettings() {
+        let str = "";
+        invalidSettings.forEach(val => str += `${strPath(val[0])} = ${strSimple(val[1])}\n`);
 
-    if (invalidSettings.size !== 0) throw new Error(
-        `${invalidSettings.size} options in the settings are not valid. 
-${str}`
-    );
+        if (invalidSettings.size !== 0) throw new TypeError(
+            `${invalidSettings.size} options in the settings are not valid. 
+            \n${str}`
+        );
+    })();
 
     settings.doNotIterate.objectTypes = new Set(settings.doNotIterate.objectTypes);
     settings.doNotIterate.keyTypes = new Set(settings.doNotIterate.keyTypes);
 
 
-    // ========== Datos y funciones importantes ========== //
+    // ========== Important data and functions ========== //
 
     const params = { obj, callback, settings, visited, path, iterations };
     const { iterateKeys, addIndexInSet, doNotIterate } = settings;
 
     /**
-     * Comprueba si un objeto es iterable mediante deepIterate.
-     * @param {object} obj 
+     * Checks if an object is iterable using deepIterate.
+     * @param {object} obj
+     * @returns {boolean}
      */
     function isValidIterable(obj) {
         return (typeof obj === "object") && (obj !== null)
@@ -185,35 +165,22 @@ ${str}`
     }
 
     /**
-     * Llama a deepIterate con los parámetros actuales para iterar una clave o un valor.
-     * @param {typeof params} args
-     * @returns {void}
-     */
-    function iterateSubObject(args = params) {
-        const { obj, callback, settings, visited, path, iterations } = args;
-
-        if (isValidIterable(obj)) {
-            deepIterate(obj, callback, settings, visited, path, (iterations + 1));
-        }
-    }
-
-    /**
-     * Comprueba si se pidió no iterar un objeto, respecto a la propiedad *settings.doNotIterate*.  
+     * Checks whether an object should be iterated, relative to the *settings.doNotIterate* property.  
      * @param {object} obj
      * @param {"key" | "value" | "key-value"} role
      * @returns {boolean}
-     * - **"key"**: Se revisa si *iterateKeys* no es true, o si *keyTypes* tiene el constructor (función o nombre).
-     * - **"value"**: Se revisa si *valueTypes* tiene el constructor (función o nombre).
-     * - **"key-value"**: Se revisa si el constructor (función o nombre) está en *keyTypes* o en *valueTypes*.
+     * - **"key"**: Checks if *iterateKeys* is true, or if *keyTypes* does not have the constructor (function or name).
+     * - **"value"**: Check if *valueTypes* does not have the constructor (function or name).
+     * - **"key-value"**: Checks if the constructor (function or name) is not in *keyTypes* or *valueTypes*.
      */
-    function shouldNotIterate(obj, role) {
+    function shouldIterate(obj, role) {
 
         role = String(role).trim().toLowerCase();
 
         if (role !== "key" && role !== "value" && role !== "key-value") throw new Error(
             `The specified role for the obj paramater is not valid.
-            
-            It must be: "key", "value" or "key-value"`
+                
+                It must be: "key", "value" or "key-value"`
         );
 
         const { keyTypes, objectTypes } = settings.doNotIterate;
@@ -229,34 +196,54 @@ ${str}`
         );
 
         if (role === "key") {
-            return (iterateKeys !== true || ignoredKey(obj));
+            return (iterateKeys === true && !ignoredKey(obj));
         } else if (role === "value") {
-            return ignoredValue(obj);
+            return !ignoredValue(obj);
         } else {
-            return (ignoredKey(obj) || ignoredValue(obj));
+            return (!ignoredKey(obj) || !ignoredValue(obj));
+        }
+    }
+
+    /**  
+     * Call deepIterate with the current parameters to iterate a key or value.  
+     * It will only be iterated if the object is valid and no request was made not to iterate.
+     * @param {typeof params} args - The parameters to pass to deepIterate.
+     * @param {"key" | "value" | "key-value"} role - The role of the object to iterate.
+     * @returns {void}
+     */
+    function iterateSubObject(args = params, role) {
+        role = String(role).trim().toLowerCase();
+        if (role !== "key" && role !== "value" && role !== "key-value") throw new TypeError(
+            `The role is invalid: ${strSimple(role)}`
+        );
+
+        const { obj, callback, settings, visited, path, iterations } = args;
+
+        if (isValidIterable(obj) && shouldIterate(obj, role)) {
+            deepIterate(obj, callback, settings, visited, path, (iterations + 1));
         }
     }
 
 
 
-    // ========== Formas de iterar sobre las estructuras ========== //
+    // ========== Ways to iterate structures ========== //
 
-    // Caso especial: Map --- Opcionalmente se iteran las claves que sean objetos válidos
+    // Special case: Map -- Optionally iterates over keys that are valid objects.
     if (obj instanceof Map) {
         obj.forEach((value, key) => {
             params.path = path.concat(is.Array(key) ? [key] : key);
             callback(key, value, params.path);
 
             params.obj = key;
-            if (!shouldNotIterate(key, "key")) iterateSubObject(params);
+            iterateSubObject(params, "key");
 
             params.obj = value;
-            if (!shouldNotIterate(value, "value")) iterateSubObject(params);
+            iterateSubObject(params, "value");
         });
         return;
     }
 
-    // Caso especial: Set --- Opcionalmente se usa un índice como clave
+    // Special case: Set -- Optionally use an index as a key.
     if (obj instanceof Set) {
         let index = 0;
         obj.forEach((value, key) => {
@@ -266,29 +253,30 @@ ${str}`
             callback(_key, value, params.path);
 
             params.obj = value;
-            if (!shouldNotIterate(value, "value")) iterateSubObject(params);
+            iterateSubObject(params, "value");
             index++;
         });
         return;
     }
 
-    // Caso: Array ---------- Se iteran los objetos válidos
+    // Case: Array ---------- Iterates valid objects.
     if (Array.isArray(obj)) {
         obj.forEach((item, index) => {
             params.path = path.concat(index);
             callback(index, item, params.path);
 
             params.obj = item;
-            if (!shouldNotIterate(item, "value")) iterateSubObject(params);
+            iterateSubObject(params, "value");
         });
         return;
     }
 
-    // Caso: objeto simple -- Incluye propiedades con claves de tipo string y symbol
+    // Case: simple object - Includes properties with keys of type string and symbol.
     if (is.plain_object(obj)) {
-        const stringKeys = Object.getOwnPropertyNames(obj),
-            symbolKeys = Object.getOwnPropertySymbols(obj),
-            keys = stringKeys.concat(symbolKeys);
+
+        const stringKeys: (string | symbol)[] = Object.getOwnPropertyNames(obj);
+        const symbolKeys: (symbol)[] = Object.getOwnPropertySymbols(obj);
+        const keys: (string | symbol)[] = stringKeys.concat(symbolKeys);
 
         keys.forEach(key => {
             params.path = path.concat(key);
@@ -297,22 +285,50 @@ ${str}`
             callback(key, value, params.path);
 
             params.obj = value;
-            if (!shouldNotIterate(value, "value")) iterateSubObject(params);
+            iterateSubObject(params, "value");
         });
     }
 }
 
 
+type contextInfo = {
+    depth: number,
+    strPath: string,
 
+    keyType: string,
+    strKey: string,
+    keyConstructor: Function,
+
+    valueType: string,
+    strValue: string,
+    valueConstructor: Function,
+
+    parent: {
+        depth: number,
+        path: undefined | any[],
+        strPath: undefined | string,
+
+        key: any | object | undefined,
+        strKey: undefined | string,
+        keyType: undefined | string,
+        
+        value?: object,
+        valueType?: string,
+        strValue?: string,
+        
+        constructor: undefined | Function,
+        numOfEntries?: number | undefined
+    }
+}
 
 /**
- * Obtén más información sobre cada iteración en deepIterate ingresando los parámetros que obtuviste con el callback.  
- * @public
- * @param {any} key - Clave actual.
- * @param {any} value - Valor actual.
- * @param {any[]} path - Array actual de claves.
- * @param {object} obj - Objeto principal (opcional pero habrá menos datos).
- * @returns {Record<string, (string | number | Object)>}
+ * Get more information about each iteration in deepIterate by entering the parameters you got with the callback;
+ * and optionally, the main object (*obj* parameter of deepIterate).
+ * @param {any} key - Current key.
+ * @param {any} value - Current value.
+ * @param {any[]} path - Current array of keys.
+ * @param {iterableStructure} obj - Main object (optional).
+ * @returns {contextInfo} {Record<string, (string | number | Object)>}
  */
 deepIterate.help = function (key, value, path, obj) {
 
@@ -344,35 +360,37 @@ deepIterate.help = function (key, value, path, obj) {
     );
 
 
-    /**
-     * @param {object} obj 
-     * @returns {Function | undefined}
-     */
-    const constructorOf = (obj) => (
+    const constructorOf = (obj: object): (Function | undefined) => (
         !is.any_object(obj) ? undefined
             : !Object.getOwnPropertyNames(obj).includes("constructor")
                 ? obj.constructor : undefined
     );
 
+    const parentInfo: contextInfo["parent"] = {
+        depth: parentPath.length,
+        path: parentPath.length > 0 ? parentPath : undefined,
+        strPath: parentPath.length > 0 ? strPath(parentPath) : undefined,
+
+        key: parentKey,
+        keyType: parentPath.length > 0 ? sTypeOf(parentKey) : undefined,
+        strKey: parentPath.length > 0 ? strSimple(parentKey) : undefined,
+
+        constructor: undefined
+    };
+
     const data = {
         depth: path.length,
-        keyType: sTypeOf(key),
-        valueType: sTypeOf(value),
-        valueConstructor: constructorOf(value),
-        keyConstructor: constructorOf(key),
-        strValue: strSimple(value),
-        strKey: strSimple(key),
         strPath: strPath(path),
 
-        parent: {
-            constructor: undefined,
-            key: parentKey,
-            strKey: parentPath.length > 0 ? strSimple(parentKey) : undefined,
-            keyType: parentPath.length > 0 ? sTypeOf(parentKey) : undefined,
-            path: parentPath.length > 0 ? parentPath : undefined,
-            strPath: parentPath.length > 0 ? strPath(parentPath) : undefined,
-            depth: parentPath.length
-        }
+        keyType: sTypeOf(key),
+        strKey: strSimple(key),
+        keyConstructor: constructorOf(key),
+        
+        valueType: sTypeOf(value),
+        strValue: strSimple(value),
+        valueConstructor: constructorOf(value),
+
+        parent: parentInfo
     };
 
     if (!is.object(obj)) return data;
@@ -381,14 +399,15 @@ deepIterate.help = function (key, value, path, obj) {
 
     Object.assign(data.parent, {
         value: parent,
+        valueType: sTypeOf(parent),
+        strValue: strSimple(parent),
+
         constructor: constructorOf(parent),
         numOfEntries: is.object(parent) ? (
             is.Map(parent) || is.Set(parent)
                 ? parent.size
                 : Object.keys(parent).length
-        ) : undefined,
-        valueType: sTypeOf(parent),
-        strValue: strSimple(parent)
+        ) : undefined
     });
 
     return data;

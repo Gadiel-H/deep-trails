@@ -6,18 +6,9 @@ import { stringifySimple as strSimple, stringifyPath as strPath } from "./string
 
 
 /**
- * @typedef { Object | any[] | Set<any> | Map<any, any> } iterableObject
- */
-
-/**
- * @typedef { iterableObject | WeakMap<object, any> | WeakSet<object> } knownStructure
- */
-
-
-/**
- * Obtiene el valor de cierta ruta en un objeto según un array de claves.  
- * @param {knownStructure} obj - El objeto del cual se extrae el valor.
- * @param {any[]} path - Un array de claves que representa la ruta hasta la propiedad.
+ * Gets the value of a given path in an object based on an array of keys.  
+ * @param {object} obj - The object from which the value is obtained.
+ * @param {any[]} path - Array of keys representing the path to the property.
  * @returns {any | Error}
  */
 function getValueAt(obj, path) {
@@ -95,12 +86,11 @@ function getValueAt(obj, path) {
 }
 
 
-
 /**
- * Comprueba si una ruta existe en un objeto.  
+ * Checks if a path exists on an object.  
  * @requires getValueAt
- * @param {iterableObject} obj - Objeto para buscar la ruta.
- * @param {any[]} path - Ruta a buscar dentro del objeto.
+ * @param {object} obj - Object.
+ * @param {any[]} path - Array of keys.
  * @returns {boolean}
  */
 function pathExistsAt(obj, path) {
@@ -113,11 +103,11 @@ function pathExistsAt(obj, path) {
 
 
 /**
- * Añade o modifica un valor en cierta ruta dentro de un objeto.
+ * Adds or modifies a value at a certain path within an object.
  * @requires getValueAt
- * @param {iterableObject} target - Objeto cuya ruta cambiará de valor.
- * @param {any[]} path - Ruta en la que se guardará el valor.
- * @param {any} value - Valor a establecer.
+ * @param {object} target - Object whose path will change value.
+ * @param {any[]} path - Path of the property where the value will be saved.
+ * @param {any} value - Value to be set.
  * @returns {void | Error}
  */
 function setValueAt(target, path, value) {

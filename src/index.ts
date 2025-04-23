@@ -1,3 +1,5 @@
+export { default as is } from "./lib/utils/types-check.js";
+
 export {
   deepIterate,
   defaultSettings

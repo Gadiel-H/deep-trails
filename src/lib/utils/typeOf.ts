@@ -4,19 +4,19 @@ import { stringifySimple as strSimple } from "./stringify.js";
 
 
 /**
- * Detecta el tipo de un valor, o el nombre de su constructor si es un objeto.  
- * @param   {any} value - Valor cuyo tipo se va a obtener.
- * @param   {"short" | "full"} strLength - Longitud de la string (solo funciona con objetos).
+ * Detects the type of a value, or the name of its constructor if it is an object.  
+ * @param   {any} value - Any value.
+ * @param   {"short" | "full"} strLength - String length (only works with objects).
  * @returns {string | Error} `undefined | "<type>" | "<Class>" | "[object <Class>]"`
  */
-function typeOf(value, length = "full") {
-    if (length === undefined || length === null) strLength = "full";
+function typeOf(value, strLength = "full") {
+    if (strLength === undefined || strLength === null) strLength = "full";
 
-    const strLength = String(length).trim().toLowerCase();
+    const length = String(strLength).trim().toLowerCase();
 
-    if (strLength !== "full" && strLength !== "short") throw new Error(
+    if (length !== "full" && length !== "short") throw new Error(
         "Invalid value for the length parameter: " + strSimple(length)
-        + "\n\tExpected: " + '"short" or "full"'
+        + "\n\tExpected: " + '"short" | "full"'
     );
 
     const simpleType = typeof value;
@@ -26,7 +26,7 @@ function typeOf(value, length = "full") {
 
     const objectType = Object.prototype.toString.call(value);
     return (
-        strLength === "full" ? objectType
+        length === "full" ? objectType
             : objectType.replace("[object ", "").replace("]", "")
     );
 }

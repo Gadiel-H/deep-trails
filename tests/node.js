@@ -1,4 +1,4 @@
-import { deepIterate } from "../index.js";
+import { deepIterate } from "../dist/index.js";
 
 console.log("=== Running Deep Trails test ===" + "\n");
 

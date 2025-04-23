@@ -4,8 +4,8 @@ import is from "./types-check.js";
 
 
 /**
- * Convierte un valor a string de forma simple.  
- * @param {any} value
+ * Converts a value to a string in a simple way.  
+ * @param {any} value - Any value.
  * @returns {string} `"<value>" | ""<string>"" | "[Function: <name>]" | "[object <Class>]"`
  */
 function stringifySimple(value) {
@@ -24,9 +24,9 @@ function stringifySimple(value) {
 
 
 /**
- * Convierte una ruta (array) a string de forma simple.
+ * Converts a path (array) to a string in a simple way.
  * @requires stringifySimple
- * @param {any[]} path - Array de claves (ruta).
+ * @param {any[]} path - Any array.
  * @returns {string | Error}
  * @example stringifyPath([ "a", 0, new Set() ]);  // "["a"][0][[object Set]]"
  */

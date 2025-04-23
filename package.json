@@ -1,18 +1,28 @@
 {
   "name": "deep-trails",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Deeply traverse data structures with full control. Safe, modular and customizable.",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "test": "./tests/node.js",
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./index.js"
-    }
+    "import": "./dist/index.js"
   },
   "scripts": {
-    "test": "node ./tests/node.js"
+    "test": "node ./tests/node.js",
+    "build": "npx tsc"
   },
+  "devDependencies": {
+    "typescript": "5.7.3"
+  },
+  "files": [
+    "./README.md",
+    "./README.es.md",
+    "./LICENSE",
+    "./package.json",
+    "./dist",
+    "./tests"
+  ],
   "keywords": [
     "deep",
     "trails",
