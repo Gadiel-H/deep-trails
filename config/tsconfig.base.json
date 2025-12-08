@@ -1,0 +1,41 @@
+{
+    "include": ["../src"],
+    "compilerOptions": {
+        /* Language and Environment */
+        "target": "ES6",
+
+        /* Modules */
+        "rootDir": "../src",
+
+        /* JavaScript Support */
+        "allowJs": false,
+        "checkJs": false,
+
+        /* Emit */
+        "removeComments": true,
+        "stripInternal": true,
+        "newLine": "lf",
+
+        /* Interop Constraints */
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+
+        /* Type Checking */
+        "strict": true,
+        "noImplicitAny": false,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "strictBuiltinIteratorReturn": true,
+        "noImplicitThis": true,
+        "useUnknownInCatchVariables": true,
+        "alwaysStrict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "exactOptionalPropertyTypes": true,
+        "noImplicitReturns": true,
+        "noPropertyAccessFromIndexSignature": false
+    }
+}

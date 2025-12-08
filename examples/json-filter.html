@@ -1,0 +1,242 @@
+<!doctype html>
+<!--
+    You can use this example at:
+    https://raw.githack.com/gadiel-h/deep-trails/main/examples/json-filter.html
+-->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>deep-trails example - JSON Filter</title>
+        <style>
+            body {
+                font-family: system-ui, sans-serif;
+                background: #f4f6f8;
+                margin: 0;
+                padding: 2rem;
+                display: flex;
+                justify-content: center;
+            }
+
+            .container {
+                max-width: 800px;
+                width: 100%;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                padding: 2rem;
+            }
+
+            h1 {
+                margin-top: 0;
+                text-align: center;
+                font-size: 1.5rem;
+                color: #333;
+            }
+
+            p {
+                text-align: center;
+            }
+
+            a {
+                text-decoration-line: none;
+                color: darkblue;
+            }
+
+            textarea,
+            input {
+                width: 100%;
+                padding: 0.6rem;
+                margin: 0.5rem 0;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                font-family: monospace;
+                font-size: 0.95rem;
+                box-sizing: border-box;
+            }
+
+            button {
+                margin-top: 0.5rem;
+                padding: 0.6rem 1.2rem;
+                border: none;
+                border-radius: 8px;
+                background: #0077ff;
+                color: white;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+
+            button:hover {
+                background: #005fd1;
+            }
+
+            pre {
+                margin-top: 1rem;
+                background: #1e1e1e;
+                color: #d4d4d4;
+                padding: 1rem;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                overflow-x: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Basic JSON filter</h1>
+            <p>Iterates through a JSON object and filters values to display them.</p>
+
+            <label for="json-input"><strong>Input JSON:</strong></label>
+            <textarea id="json-input" rows="10" translate="no">
+{
+    "name": "deep-trails",
+    "urls": {
+        "github": "https://github.com/gadiel-h/deep-trails",
+        "npm": "https://www.npmjs.com/package/deep-trails",
+        "docs": "https://gadiel-h.github.io/deep-trails"
+    },
+    "entryPoints": [
+        "deep-trails",
+        "deep-trails/iterate",
+        "deep-trails/utils",
+        "deep-trails/types",
+        "deep-trails/types/deep-iterate"
+    ],
+    "devDependencies": [
+        "typescript",
+        "esbuild",
+        "prettier",
+        "typedoc"
+    ]
+}</textarea
+            >
+
+            <label for="type-input"><strong>Filter by type:</strong></label>
+            <input placeholder="Examples: string, number, array" id="type-input" />
+
+            <label for="regex-input"><strong>Filter by regular expression:</strong></label>
+            <input placeholder="Example: /[A-Z]/i" id="regex-input" />
+
+            <button id="start-btn">Run filter</button>
+
+            <pre id="output">// Enable JavaScript for filter values.</pre>
+
+            <p align="center" id="name_version">
+                <a href="https://github.com/gadiel-h/deep-trails">deep-trails</a>
+            </p>
+        </div>
+
+        <script>
+            const $ = (q) => document.querySelector(q);
+            const output = $("#output");
+
+            output.textContent = "// deep-trails could not be loaded.";
+
+            window.onerror = (error) => {
+                output.textContent = `// Unknown error:\n${error}\n`;
+            };
+        </script>
+        <script src="https://unpkg.com/deep-trails@beta/dist/iife.min.js"></script>
+        <script>
+            const { deepIterate, utils, VERSION } = DeepTrails;
+            const { toSimpleString, typeOf, checkers } = utils;
+            const { isObject } = checkers;
+
+            const input = $("#json-input");
+            const typeInput = $("#type-input");
+            const regexInput = $("#regex-input");
+            const startBtn = $("#start-btn");
+
+            $("#name_version").innerHTML +=
+                `<a href="https://github.com/gadiel-h/deep-trails/tree/v${VERSION}">v${VERSION}</a>`;
+
+            output.textContent = "// The result will appear here.";
+
+            const primitiveTypes = ["string", "number", "boolean", "null"];
+            const jsonTypes = [...primitiveTypes, "object", "array"];
+
+            deepIterate.options.pathType = "string";
+
+            startBtn.addEventListener("click", () => {
+                output.textContent = "";
+
+                if (!input.value.trim()) {
+                    return (output.textContent = "// The JSON is empty.");
+                }
+
+                const inputValue = typeInput.value;
+                const findType = inputValue.trim().toLowerCase();
+
+                if (findType && !jsonTypes.includes(findType)) {
+                    return (output.textContent = `// Unknown type. Choose 1 of these: ${jsonTypes
+                        .map((str) => `${str}`)
+                        .join(", ")}`);
+                }
+
+                const regexString = regexInput.value.trim();
+                let regex = null;
+
+                if (findType && regexString) {
+                    if (!primitiveTypes.includes(findType)) {
+                        return (output.textContent = `// Cannot use RegExps with the type "${inputValue}".`);
+                    }
+                }
+
+                if (regexString) {
+                    if (!regexString.startsWith("/")) {
+                        return (output.textContent = "// Invalid RegExp. Must starts with '/'.");
+                    }
+
+                    try {
+                        regex = eval(regexString);
+                    } catch (e) {
+                        return (output.textContent = `// Error on evaluating the RegExp:\n${e.message}`);
+                    }
+                }
+
+                let data = {};
+
+                try {
+                    data = JSON.parse(input.value);
+                } catch (e) {
+                    return (output.textContent = `// Invalid JSON:\n${e.message}`);
+                }
+
+                if (!isObject(data)) {
+                    return (output.textContent = `// Only can iterate objects.`);
+                }
+
+                try {
+                    let delay = 0;
+                    let count = 0;
+
+                    deepIterate(data, ({ path, value, depth }) => {
+                        const valueType = typeOf(value).toLowerCase();
+
+                        if (findType && valueType !== findType) return;
+
+                        if (regex && (isObject(value) || !regex.test(value))) return;
+
+                        count += 1;
+                        const line = `${path} = ${toSimpleString(value)}\n`;
+
+                        setTimeout(() => (output.textContent += line), (delay += 10));
+                    });
+
+                    output.textContent =
+                        count === 0
+                            ? "// No values matched.\n"
+                            : count === 1
+                              ? "// 1 value matched.\n"
+                              : `// ${count} values matched.\n\n`;
+                } catch (error) {
+                    output.textContent = "";
+                    output.textContent =
+                        `// Internal error on deep iteration:\n\n` + `${error.stack}\n`;
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,12 @@
+{
+    "entryPoints": ["../src/index.ts"],
+    "out": "../docs",
+    "tsconfig": "./tsconfig.base.json",
+    "includeVersion": true,
+    "excludePrivate": true,
+    "excludeInternal": true,
+    "excludeProtected": true,
+    "excludeExternals": true,
+    "excludeNotDocumented": false,
+    "skipErrorChecking": false
+}

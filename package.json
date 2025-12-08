@@ -1,49 +1,89 @@
 {
-  "name": "deep-trails",
-  "version": "2.0.0",
-  "description": "Deeply traverse data structures with full control. Safe, modular and customizable.",
-  "main": "./dist/index.js",
-  "test": "./tests/node.js",
-  "type": "module",
-  "exports": {
-    "import": "./dist/index.js"
-  },
-  "scripts": {
-    "test": "node ./tests/node.js",
-    "build": "npx tsc"
-  },
-  "devDependencies": {
-    "typescript": "5.7.3"
-  },
-  "files": [
-    "./README.md",
-    "./README.es.md",
-    "./LICENSE",
-    "./package.json",
-    "./dist",
-    "./tests"
-  ],
-  "keywords": [
-    "deep",
-    "trails",
-    "utils",
-    "walker",
-    "traverse",
-    "iterator",
-    "object",
-    "map",
-    "set",
-    "data",
-    "recursion"
-  ],
-  "author": "Gadiel Hernández <gadielhdez.dev@gmail.com>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gadiel-h/deep-trails.git"
-  },
-  "bugs": {
-    "url": "https://github.com/gadiel-h/deep-trails/issues"
-  },
-  "homepage": "https://github.com/gadiel-h/deep-trails#readme"
+    "name": "deep-trails",
+    "version": "3.0.0-beta.0",
+    "description": "Deeply traverse data structures with great control. Safe, modular and customizable.",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "prettier": "./config/.prettierrc.json",
+    "exports": {
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        },
+        "./iterate": {
+            "types": "./dist/types/iterate/index.d.ts",
+            "import": "./dist/esm/iterate/index.js",
+            "require": "./dist/cjs/iterate/index.js"
+        },
+        "./utils": {
+            "types": "./dist/types/utils/public/index.d.ts",
+            "import": "./dist/esm/utils/public/index.js",
+            "require": "./dist/cjs/utils/public/index.js"
+        },
+        "./types": {
+            "types": "./dist/types/types/index.d.ts"
+        },
+        "./types/deep-iterate": {
+            "types": "./dist/types/types/deep-iterate/index.d.ts"
+        }
+    },
+    "scripts": {
+        "test": "node test.js",
+        
+        "clean": "rm -rf dist/ docs/",
+        "build": "rm -rf dist/*; npm run build:iife; npm run build:cjs; npm run build:esm; npm run build:types",
+        
+        "format": "npx prettier --write --config config/.prettierrc.json ./",
+        "format:check": "npx prettier --check --config config/.prettierrc.json ./",
+        
+        "build:docs": "npx typedoc --options config/typedoc.json",
+        "build:types": "npx tsc -p config/tsconfig.types.json",
+        "build:cjs": "npx tsc -p config/tsconfig.cjs.json; rm -rf dist/cjs/types",
+        "build:esm": "npx tsc -p config/tsconfig.esm.json; rm -rf dist/esm/types",
+        "build:iife": "npx esbuild src/index.ts --outfile=dist/iife.min.js --bundle --minify --keep-names --format=iife --global-name=DeepTrails --target=es2015 --sourcemap",
+        
+        "watch:docs": "npx typedoc --watch --options config/typedoc.json",
+        "watch:types": "npx tsc -w -p config/tsconfig.types.json",
+        "watch:cjs": "npx tsc -w -p config/tsconfig.cjs.json",
+        "watch:esm": "npx tsc -w -p config/tsconfig.esm.json",
+        "watch:iife": "npx esbuild src/index.ts --outfile=dist/iife.min.js --bundle --minify --keep-names --format=iife --global-name=DeepTrails --target=es2015 --sourcemap --watch"
+    },
+    "files": [
+        "./README.md",
+        "./LICENSE",
+        "./package.json",
+        "./dist/",
+        "./test.js"
+    ],
+    "devDependencies": {
+        "typescript": "5.9.3",
+        "esbuild": "0.25.12",
+        "prettier": "3.6.2",
+        "typedoc": "0.28.14"
+    },
+    "keywords": [
+        "deep",
+        "trails",
+        "utils",
+        "walker",
+        "traverse",
+        "recursive",
+        "iterator",
+        "object",
+        "tree",
+        "graph",
+        "structure",
+        "data"
+    ],
+    "author": "Gadiel Hernández <gadiel.dev@proton.me>",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gadiel-h/deep-trails"
+    },
+    "bugs": {
+        "url": "https://github.com/gadiel-h/deep-trails/issues"
+    },
+    "homepage": "https://github.com/gadiel-h/deep-trails#readme"
 }
