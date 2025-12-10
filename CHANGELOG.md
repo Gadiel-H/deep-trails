@@ -24,7 +24,7 @@
 
 - TypeScript integration and dev experience.
 
-### Changed
+### Modified
 
 - The entire project structure and API has changed.
 

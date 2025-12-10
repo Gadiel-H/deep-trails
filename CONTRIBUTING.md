@@ -166,9 +166,8 @@ A few points that help keep the project stable and easy to maintain:
 
 ## Documentation
 
-The documentation is generated in `docs/` in the `gh-pages` branch.
+The documentation is generated in the `gh-pages` branch.
 
-Contributors do not need to update or commit anything inside that directory.  
 Documentation updates are handled by maintainers during review, or automatically through CI if enabled.
 
-You can read the documentation at https://gadiel-h.github.io/deep-trails
+You can read it at https://gadiel-h.github.io/deep-trails
