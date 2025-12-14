@@ -1,0 +1,82 @@
+name: Publish deep-trails to NPM
+
+on:
+    push:
+        branches: [main]
+        paths:
+            - package.json
+
+concurrency:
+    group: npm-publish
+    cancel-in-progress: true
+
+jobs:
+    publish:
+        name: Build, test and publish
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: write
+            id-token: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  registry-url: https://registry.npmjs.org
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build package
+              run: npm run build
+
+            - name: Run tests
+              run: npm run test
+
+            - name: Read version and release type
+              id: meta
+              run: |
+                  VERSION=$(node -p "require('./package.json').version")
+                  NAME=$(node -p "require('./package.json').name")
+
+                  echo "version=$VERSION" >> $GITHUB_OUTPUT
+                  echo "name=$NAME" >> $GITHUB_OUTPUT
+
+                  if [[ "$VERSION" == *"-beta."* ]]; then
+                    echo "npm_tag=beta" >> $GITHUB_OUTPUT
+                    echo "prerelease=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
+                    echo "prerelease=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Check if version already exists on NPM
+              run: |
+                  if npm view ${{ steps.meta.outputs.name }}@${{ steps.meta.outputs.version }} version > /dev/null 2>&1; then
+                    echo "Version already published on NPM"
+                    exit 1
+                  fi
+
+            - name: Publish to NPM
+              run: npm publish --access public --tag ${{ steps.meta.outputs.npm_tag }} --provenance
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Create Git tag
+              run: |
+                  git tag v${{ steps.meta.outputs.version }}
+                  git push origin v${{ steps.meta.outputs.version }}
+
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: v${{ steps.meta.outputs.version }}
+                  prerelease: ${{ steps.meta.outputs.prerelease }}
+                  generate_release_notes: true

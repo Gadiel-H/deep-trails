@@ -108,9 +108,9 @@ deepIterate(
             // You can also stop iterating over the parent
             control.stopParentNow = true;
         }
-        
+
         parent.value[key] = value;
-        
+
         // Notifying changes in the parent
         control.useEntry(key, value);
 

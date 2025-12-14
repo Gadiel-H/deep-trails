@@ -53,8 +53,7 @@
         "./README.md",
         "./LICENSE",
         "./package.json",
-        "./dist/",
-        "./test.js"
+        "./dist/"
     ],
     "devDependencies": {
         "typescript": "5.9.3",

@@ -1,6 +1,7 @@
 /// @ts-check
 "use strict";
 
+const fs = require("node:fs");
 const test = require("node:test");
 const assert = require("node:assert");
 
@@ -22,6 +23,25 @@ const testValues = [
     [3, 6, 5]
 ];
 
+test(`All the entry points in "package.json" exists.`, () => {
+    const { exports } = require("./package.json");
+    const exportsFields = ["types", "import", "require"];
+
+    for (const entryPoint in exports) {
+        /// @ts-ignore
+        const paths = exports[entryPoint];
+
+        for (const field of exportsFields) {
+            if (!(field in paths)) continue;
+
+            const path = paths[field];
+            const pathExists = fs.existsSync(path);
+
+            assert.strictEqual(pathExists, true);
+        }
+    }
+});
+
 test("The library loads without errors.", () => {
     assert.doesNotThrow(() => {
         const { deepIterate, VERSION } = require("deep-trails");
@@ -41,6 +61,7 @@ test("The library loads without errors.", () => {
 });
 
 test("Certain functions do not fail with any parameter.", () => {
+    /// @ts-ignore
     const { typeOf, checkers, toSimpleString } = require("deep-trails").utils;
 
     assert.doesNotThrow(() => {
@@ -76,4 +97,13 @@ test("deepIterate throws type errors when it receives invalid parameters.", () =
             visitLogType: "none"
         });
     }, TypeError);
+});
+
+test(`"src/version.ts" has the same version specified in "package.json".`, () => {
+    const { version } = require("./package.json");
+
+    // This will fail if the file has not the expected format
+    const string = fs.readFileSync("./src/version.ts", "utf8").trim().split("\n")[1].slice(24, 36);
+
+    assert.strictEqual(string, version);
 });

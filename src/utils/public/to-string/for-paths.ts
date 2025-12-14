@@ -69,7 +69,9 @@ export function toPathString<T = unknown>(
     }
 
     if (!Array.isArray(path)) {
-        throw new TypeError(`Expected an array or a string as first argument. Received: ${toSimpleString(path)}.\n`);
+        throw new TypeError(
+            `Expected an array or a string as first argument. Received: ${toSimpleString(path)}.\n`
+        );
     }
 
     if (path.length === 0 && extraKey === notKnown) return "";

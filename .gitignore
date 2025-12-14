@@ -1,4 +1,5 @@
 # Operative system
+*:Zone.Identifier
 .DS_Store
 Thumbs.db
 
@@ -7,6 +8,11 @@ node_modules/
 pnpm-lock.yaml
 yarn.lock
 npm-debug.log*
+
+# JS files in source code
+src/**/*.js
+src/**/*.mjs
+src/**/*.cjs
 
 # Compiled output / builds
 dist/
