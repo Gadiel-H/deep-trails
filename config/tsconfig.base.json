@@ -12,7 +12,6 @@
         "checkJs": false,
 
         /* Emit */
-        "removeComments": true,
         "stripInternal": true,
         "newLine": "lf",
 

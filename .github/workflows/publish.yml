@@ -61,7 +61,7 @@ jobs:
               run: |
                   if npm view ${{ steps.meta.outputs.name }}@${{ steps.meta.outputs.version }} version > /dev/null 2>&1; then
                     echo "Version already published on NPM"
-                    exit 1
+                    exit 0
                   fi
 
             - name: Publish to NPM

@@ -1,5 +1,11 @@
 # Change log
 
+## v3.0.0-beta.1 (2025-12-15)
+
+### Modified
+
+- The functions in `utils.checkers` are now available directly from `utils` and "deep-trails/utils". `utils.checkers` is still available, but will be removed in stable version 3.0.0.
+
 ## v3.0.0-beta.0 (2025-12-08)
 
 ### Features

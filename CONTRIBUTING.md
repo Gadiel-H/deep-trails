@@ -33,7 +33,7 @@ This document provides a short and practical guide to contributing, from setup t
 3. **Install development dependencies**
 
     ```bash
-    npm install
+    npm ci
     ```
 
 4. **Make your changes**
@@ -128,7 +128,7 @@ Development scripts available in **package.json**.
 
 #### Building
 
-- `build`: Full build (ESM, CJS, IIFE, types, docs).
+- `build`: Full package build (ESM, CJS, IIFE, types).
 
 - `build:esm`: ECMAScript modules.
 
@@ -144,11 +144,11 @@ Development scripts available in **package.json**.
 
 - `format`: Formats code using Prettier.
 
-- `format:check`: Verifies code style without modi files.
+- `format:check`: Verifies code style without modify files.
 
 #### Other scripts
 
-- `clean`: Deletes files at `dist/` and `docs/`.
+- `clean`: Removes `dist/` and `docs/`.
 
 - `test`: Run existing tests.
 

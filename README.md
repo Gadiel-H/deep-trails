@@ -46,7 +46,7 @@ But you can also get just IIFE, or types and ES or CJS modules, like here:
 ```bash
 git clone https://github.com/gadiel-h/deep-trails
 cd deep-trails/
-npm install
+npm ci
 npm run build:types
 npm run build:esm
 rm -rf node_modules/

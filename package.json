@@ -1,6 +1,6 @@
 {
     "name": "deep-trails",
-    "version": "3.0.0-beta.0",
+    "version": "3.0.0-beta.1",
     "description": "Deeply traverse data structures with great control. Safe, modular and customizable.",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
