@@ -30,6 +30,7 @@
     },
     "scripts": {
         "test": "node test.js",
+        "dev": "bash scripts/dev-session.bash",
         
         "clean": "rm -rf dist/ docs/",
         "build": "rm -rf dist/*; npm run build:iife; npm run build:cjs; npm run build:esm; npm run build:types",
@@ -41,13 +42,13 @@
         "build:types": "npx tsc -p config/tsconfig.types.json",
         "build:cjs": "npx tsc -p config/tsconfig.cjs.json; rm -rf dist/cjs/types",
         "build:esm": "npx tsc -p config/tsconfig.esm.json; rm -rf dist/esm/types",
-        "build:iife": "npx esbuild src/index.ts --outfile=dist/iife.min.js --bundle --minify --keep-names --format=iife --global-name=DeepTrails --target=es2015 --sourcemap",
+        "build:iife": "bash scripts/build-iife.bash",
         
         "watch:docs": "npx typedoc --watch --options config/typedoc.json",
         "watch:types": "npx tsc -w -p config/tsconfig.types.json",
         "watch:cjs": "npx tsc -w -p config/tsconfig.cjs.json",
         "watch:esm": "npx tsc -w -p config/tsconfig.esm.json",
-        "watch:iife": "npx esbuild src/index.ts --outfile=dist/iife.min.js --bundle --minify --keep-names --format=iife --global-name=DeepTrails --target=es2015 --sourcemap --watch"
+        "watch:iife": "bash scripts/build-iife.bash --watch"
     },
     "files": [
         "./README.md",

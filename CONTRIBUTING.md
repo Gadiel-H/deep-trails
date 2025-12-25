@@ -89,6 +89,8 @@ deep-trails/
 |
 +—— config/                # Development configuration
 |
++—— scripts/               # Development scripts
+|
 +—— examples/              # Usage examples
 |
 +—— src/                   # Source code
@@ -153,6 +155,8 @@ Development scripts available in **package.json**.
 - `test`: Run existing tests.
 
 - `watch:{esm|cjs|iife|types|docs}`: Build in watch mode.
+
+- `dev`: Starts a dev session with watchers and a server.
 
 ## Details
 
