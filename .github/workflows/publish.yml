@@ -61,13 +61,17 @@ jobs:
                   fi
 
             - name: Check if version already exists on NPM
+              id: check
               run: |
                   if npm view ${{ steps.meta.outputs.name }}@${{ steps.meta.outputs.version }} version > /dev/null 2>&1; then
                     echo "Version already published on NPM"
-                    exit 0
+                    echo "exists=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "exists=false" >> $GITHUB_OUTPUT
                   fi
 
             - name: Publish to NPM
+              if: steps.check.outputs.exists != 'true'
               run: npm publish --access public --tag ${{ steps.meta.outputs.npm_tag }} --provenance
 
             - name: Create Git tag

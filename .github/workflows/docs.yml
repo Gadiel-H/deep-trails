@@ -4,6 +4,8 @@ on:
     push:
         branches:
             - main
+        paths:
+            - src
 
 jobs:
     build-and-deploy:
@@ -21,7 +23,7 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            - name: Build TypeDoc
+            - name: Build docs with TypeDoc
               run: npm run build:docs
 
             - name: Deploy to GitHub Pages
