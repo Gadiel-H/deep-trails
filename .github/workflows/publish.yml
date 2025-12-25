@@ -75,11 +75,13 @@ jobs:
               run: npm publish --access public --tag ${{ steps.meta.outputs.npm_tag }} --provenance
 
             - name: Create Git tag
+              if: steps.check.outputs.exists != 'true'
               run: |
                   git tag v${{ steps.meta.outputs.version }}
                   git push origin v${{ steps.meta.outputs.version }}
 
             - name: Create GitHub Release
+              if: steps.check.outputs.exists != 'true'
               uses: softprops/action-gh-release@v2
               with:
                   tag_name: v${{ steps.meta.outputs.version }}
