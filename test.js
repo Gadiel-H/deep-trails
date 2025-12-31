@@ -103,7 +103,14 @@ test(`"src/version.ts" has the same version specified in "package.json".`, () =>
     const { version } = require("./package.json");
 
     // This will fail if the file has not the expected format
-    const string = fs.readFileSync("./src/version.ts", "utf8").trim().split("\n")[1].slice(24, 36);
+    const string = fs.readFileSync("./src/version.ts", "utf8").trim().split("\n")[4].slice(24);
 
-    assert.strictEqual(string, version);
+    let versionStr = "";
+
+    for (const char of string) {
+        if (char === '"') break;
+        versionStr += char;
+    }
+
+    assert.strictEqual(versionStr, version);
 });
