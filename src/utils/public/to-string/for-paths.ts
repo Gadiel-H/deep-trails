@@ -18,12 +18,14 @@ const defaults = (toPathString.options = {
 /**
  * Converts a path to a string.
  *
- * Uses `toSimpleString` for stringify keys.
- * Uses dot or bracket notation according to `options.useBrackets`.
+ * - Uses `toSimpleString` for stringify keys.
+ * - Uses dot or bracket notation according to `options.useBrackets`.
  *
  * @param path - Path as array or string.
  * @param options - Options for more precision.
+ *
  * @returns String representation of the path.
+ *
  * @throws TypeError if some argument is invalid.
  *
  * @example
@@ -31,6 +33,8 @@ const defaults = (toPathString.options = {
  * toPathString(path, { useBrackets: false })  // "a.b.c[0]"
  * toPathString(path, { useBrackets: true })   // '["a"]["b"]["c"][0]'
  * toPathString(path, { extraKey: "d" })       // "a.b.c[0].d"
+ *
+ * @since 3.0.0-beta.0
  */
 export function toPathString<T = unknown>(
     path: Readonly<T[]> | string,

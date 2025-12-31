@@ -9,12 +9,15 @@ const dotNotation = /^[a-zA-Z_$][\w$]*$/;
 const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap();
 
 /**
- * Returns a simple string describing a function.
+ * Creates a simple string describing a function.
+ *
  * - Distinguishes function types and class syntax.
  * - Includes the name if available.
  *
  * @param func - Function or class to stringify.
+ *
  * @returns Simple string representation.
+ *
  * @throws TypeError if `func` is not a function.
  *
  * @example
@@ -26,6 +29,8 @@ const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap()
  * fnString(async function() {})  // "[AsyncFunction (anonymous)]"
  * fnString(Proxy)                // "[NativeFunction: Proxy]"
  * fnString(class SomeClass {})   // "[class SomeClass]"
+ *
+ * @since 3.0.0-beta.0
  */
 export function toFunctionString(func: Function): string {
     const saved = cache.get(func);
@@ -72,7 +77,8 @@ export function toFunctionString(func: Function): string {
     } else if (funcString[0] === "(") {
         isArrow = true;
     } else {
-        // Checks whether `func` is like this: `oneParam => { ... }`
+        // Checks whether `func` doesn't have parentheses around its param
+        // Example: `param => {}`
         isArrow = dotNotation.test(funcString.split("=>")[0].trim());
     }
 

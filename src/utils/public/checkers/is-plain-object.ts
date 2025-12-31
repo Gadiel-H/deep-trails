@@ -9,10 +9,12 @@ const { getPrototypeOf, prototype: objPrototype } = Object;
  * isPlainObject(JSON.parse("{}"))     // true
  * isPlainObject(Object.create(null))  // true
  * isPlainObject(new Object())         // true
+ *
+ * @since 3.0.0-beta.1
  */
-export const isPlainObject = <T>(obj: T): obj is Record<PropertyKey, any> => {
-    if (obj == null || typeof obj !== "object") return false;
+export const isPlainObject = <T>(value: T): value is Record<PropertyKey, any> => {
+    if (value == null || typeof value !== "object") return false;
 
-    const proto = getPrototypeOf(obj);
+    const proto = getPrototypeOf(value);
     return proto === null || proto === objPrototype;
 };

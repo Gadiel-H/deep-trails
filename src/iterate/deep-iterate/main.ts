@@ -15,38 +15,49 @@ import { makeIterator } from "./helpers/iterator-selector.js";
 import { deepIterateCore } from "./core.js";
 
 /**
- * Default options for deepIterate.
+ * Default options argument for deepIterate.
+ *
  * They are necessary when an option is not entered.
  *
  * @throws TypeError if some option is of invalid type.
+ *
+ * @since 3.0.0-beta.0
  */
 deepIterate.options = defaultOptions;
 
 /**
- * Iterates deeply through the entries of a data structure or the own properties of a plain object.
- *
- * @param object - The object to iterate.
- * @param callback - Function to execute on each node.
- * @param options - Options to better control the traverse.
- *
- * @returns The arguments and visit log in a plain object.
- * @throws TypeError if the arguments are invalid.
- *
- * Type arguments:
+ * Iterates deeply through the entries of almost any data structure or object.
+ * 
+ * @remarks
+ * - Some types of objects are excluded: Date, Promise, RegExp, Error, WeakMap, WeakSet, and functions.
+ * - Circular references are avoided by default, but you can change this behavior.
+ * - You can get a visit log by changing the "visitLogType" option.
+ * - This function performs a depth-first search (DFS).
+ * 
+ * **Type parameters**:
  * - **R**: Root node.
  * - **K**: Keys.
  * - **V**: Child values.
  * - **P**: Parent values.
+ * 
+ * @param object - The root node to start the iteration.
+ * @param callback - Function to execute by each node before iterating it.
+ * @param options - Options to customize traversal behavior. Defaults to `deepIterate.options`.
+ *
+ * @returns The arguments and visit log in a plain object.
+ *
+ * @throws TypeError if the arguments are invalid.
  *
  * @example
  * deepIterate(
  *     { a: { b: { c: [ "d", "f", "g" ] } } },
- *     function ({ path, depth }) {
- *         if (depth !== 4) return;
- *
- *         console.log(`Path - ${path} | Depth - ${depth}`);
- *     }
+ *     (child) => {
+ *         console.log(`${child.path} = ${child.value}`)
+ *     },
+ *     { pathType: "string" }
  * );
+ *
+ * @since 3.0.0-beta.0
  */
 export function deepIterate<R extends P, K = unknown, V = unknown, P extends object = object>(
     object: R,

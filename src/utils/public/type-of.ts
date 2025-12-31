@@ -3,17 +3,18 @@
 const toString = Object.prototype.toString;
 const objCache: WeakMap<object, string> = new WeakMap();
 
-/** Default value for the second argument of `typeOf`. */
+/** Default value for the second parameter of `typeOf`. */
 typeOf.useCache = true;
 
 /**
  * Detects the exact type of a value very quickly.
+ *
  * If it is an object, `Object.prototype.toString` is used.
  *
  * @param value - Some value.
  * @param useCache - If it's truthy and `value` is an object, returns the previous cache result.
  *
- * @returns The string tag if `value` it's an object; otherwise, `"null"` or `typeof value`.
+ * @returns The string tag if `value` is an object; otherwise, `"null"` or `typeof value`.
  *
  * @example
  * typeOf(null)          // "null"
@@ -22,8 +23,10 @@ typeOf.useCache = true;
  * typeOf([])            // "Array"
  * typeOf(Number())      // "number"
  * typeOf(new Number())  // "Number"
+ *
+ * @since 3.0.0-beta.0
  */
-export function typeOf(value: any, useCache = typeOf.useCache): string {
+export function typeOf(value: unknown, useCache = typeOf.useCache): string {
     if (value === null) return "null";
 
     const type = typeof value;
@@ -32,7 +35,7 @@ export function typeOf(value: any, useCache = typeOf.useCache): string {
 
     // Get the cached type for objects
     if (useCache) {
-        const saved = objCache.get(value);
+        const saved = objCache.get(value as object);
 
         if (saved != null) return saved;
     }
@@ -46,7 +49,7 @@ export function typeOf(value: any, useCache = typeOf.useCache): string {
 
     while (++i < last) chars += objString[i];
 
-    objCache.set(value, chars);
+    objCache.set(value as object, chars);
 
     return chars;
 }

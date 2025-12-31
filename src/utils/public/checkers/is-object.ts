@@ -6,10 +6,12 @@
  * isObject(() => {})  // true
  * isObject(/^abc$/i)  // true
  * isObject(null)      // false
+ *
+ * @since 3.0.0-beta.1
  */
-export const isObject = (obj: unknown): obj is object => {
-    if (obj == null) return false;
+export const isObject = (value: unknown): value is object => {
+    if (value == null) return false;
 
-    const type = typeof obj;
+    const type = typeof value;
     return type === "object" || type === "function";
 };

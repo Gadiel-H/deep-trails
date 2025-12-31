@@ -1,17 +1,28 @@
 import type { Callback } from "./index";
+import { utils } from "../../index.js";
 
 /**
  * Options parameter for `deepIterate`.
- * This object is cloned before start the deep iteration.
+ * 
+ * The default options are in `deepIterate.options`.
+ *
+ * Notes:
+ * - This object is cloned before start the deep iteration.
+ *
+ * @since 3.0.0-beta.0
  */
 export type Options<P extends object, K = unknown, V = unknown> = {
     /**
      * Indicates whether should iterating node keys.
+     * 
+     * The root node has no key.
      */
     iterateKeys: boolean;
 
     /**
      * Indicates whether should iterating node values.
+     *
+     * This does not apply to the root node.
      */
     iterateValues: boolean;
 
@@ -20,6 +31,8 @@ export type Options<P extends object, K = unknown, V = unknown> = {
      *
      * If "string", `utils.toPathString` will be used.
      * Otherwise, the path will be an array of the found keys.
+     * 
+     * @see {@linkcode utils.toPathString} for more details.
      */
     pathType: "array" | "string";
 

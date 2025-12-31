@@ -7,9 +7,11 @@ import { destroyIterator } from "./helpers/destroy-iterator.js";
  * Creates an iterator for the properties of an object using a function to get its keys.
  *
  * @param object - The target object.
- * @param keysGetter - Function to retrieve the object's keys. Defaults to `Reflect.ownKeys`.
+ * @param keysGetter - Function to get the object's keys. By default is `Reflect.ownKeys`.
+ *
  * @returns The created iterator.
  *
+ * @since 3.0.0-beta.0
  */
 export function PropertiesIterator<T extends object, K extends keyof T = keyof T, V = T[K]>(
     object: T,

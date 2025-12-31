@@ -1,7 +1,6 @@
 "use strict";
 
-import { typeOf } from "../type-of.js";
-import { toFunctionString } from "./for-functions.js";
+import { typeOf, toFunctionString } from "../index.js";
 import { objectCases } from "./helpers/object-cases.js";
 
 /** Cache for primitive data. */
@@ -15,13 +14,12 @@ const toString = Object.prototype.toString;
  * @returns String representation of the value.
  *
  * @example
- * const toString = toSimpleString;
- * toString("abc")           // '"abc"'
- * toString([ 2, 4 ], true)  // "Array(2) [ ... ]"
- * toString(String, true)    // "[NativeFunction: String]"
- * toString(String, false)   // "[object Function]"
- * toString(/abc/i, true)    // "/abc/i"
- * toString(/abc/i, false)   // "[object RegExp]"
+ * toSimpleString(Set)       // "[NativeFunction: Set]"
+ * toSimpleString([ 2, 4 ])  // "Array(2) [ ... ]"
+ * toSimpleString(/abc/i)    // "/abc/i"
+ * toSimpleString("abc")     // '"abc"'
+ *
+ * @since 3.0.0-beta.0
  */
 export function toSimpleString(value: unknown): string {
     if (!(0 in arguments)) return "";

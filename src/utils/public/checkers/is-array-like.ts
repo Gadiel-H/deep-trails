@@ -1,9 +1,9 @@
 const { isInteger, MAX_SAFE_INTEGER } = Number;
 
 /**
- * Checks whether a value is ArrayLike.
+ * Checks whether a value is array-like.
  *
- * A value is considered ArrayLike if:
+ * A value is considered array-like if:
  * - It is a string or a non-function object.
  * - It has a "length" property that is a non-negative integer.
  * - Its length does not exceed `Number.MAX_SAFE_INTEGER`.
@@ -14,6 +14,8 @@ const { isInteger, MAX_SAFE_INTEGER } = Number;
  * isArrayLike({ 0: "a", length: 1.5 })  // false (length not integer)
  * isArrayLike({ 0: "a", length: 2 })    // false (missing last index)
  * isArrayLike({ 0: 346, length: 1n })   // false (length of type "bigint")
+ *
+ * @since 3.0.0-beta.1
  */
 export const isArrayLike = <V = any>(value: any): value is ArrayLike<V> => {
     const type = typeof value;

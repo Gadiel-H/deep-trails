@@ -7,9 +7,11 @@ import { toFunctionString } from "../index.js";
  * isNativeFunction(Array)             // true
  * isNativeFunction(Map)               // true
  * isNativeFunction((() => 0).bind())  // true
+ *
+ * @since 3.0.0-beta.1
  */
-export const isNativeFunction = (fn: unknown): fn is Function => {
-    if (typeof fn !== "function") return false;
+export const isNativeFunction = (value: unknown): value is Function => {
+    if (typeof value !== "function") return false;
 
-    return toFunctionString(fn).startsWith("[Native");
+    return toFunctionString(value).startsWith("[Native");
 };

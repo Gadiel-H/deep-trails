@@ -6,7 +6,9 @@ import { isNativeFunction } from "../index.js";
  * @example
  * isBoundFunction((() => 0).bind())     // true
  * isBoundFunction(String.bind())        // true
- * isBoundFunction(function bound() {})  // false
+ * isBoundFunction(function bound() {})  // false (it's not native)
+ *
+ * @since 3.0.0-beta.1
  */
-export const isBoundFunction = (fn: unknown): fn is Function =>
-    isNativeFunction(fn) && fn.name.startsWith("bound ");
+export const isBoundFunction = (value: unknown): value is Function =>
+    isNativeFunction(value) && value.name.startsWith("bound ");

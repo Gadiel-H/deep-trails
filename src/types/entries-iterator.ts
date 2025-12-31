@@ -1,7 +1,10 @@
 /**
  * Entries iterable iterator.
  *
- * The deep-trails factory functions create closures to store the iteration state. Therefore, they do not depend on `this`.
+ * The deep-trails factory functions create closures to store the iteration state.
+ * Therefore, they do not depend on `this`.
+ *
+ * @since 3.0.0-beta.0
  */
 export type EntriesIterator<
     F extends <O extends T>(object: O, ...args: any[]) => EntriesIterator<F, T, K, V>,
@@ -14,6 +17,7 @@ export type EntriesIterator<
 
     /**
      * Number of items detected in the object.
+     * 
      * It is undefined if there was no known way to obtain it.
      */
     readonly size: number | undefined;
@@ -23,7 +27,9 @@ export type EntriesIterator<
 
     /**
      * Method that makes this iterator iterable.
+     * 
      * Calling it resets the iteration state.
+     * 
      * @returns An object with the "next" method.
      */
     [Symbol.iterator]: () => {
@@ -32,6 +38,7 @@ export type EntriesIterator<
 
     /**
      * Advances in the iteration, changing its state.
+     * 
      * @returns The next state of the iteration.
      */
     next: () =>
@@ -43,6 +50,9 @@ export type EntriesIterator<
 
     /**
      * Resets the iteration state.
+     * 
+     * If reseted, only the iternal data (closure) will change.
+     * 
      * @returns True if reseted, otherwise false.
      */
     reset: () => boolean;
@@ -51,11 +61,11 @@ export type EntriesIterator<
      * Peeks an iteration state.
      *
      * The entry will be:
-     * - `null` if the index is out of the valid and known range.
+     * - `null` if the zero-based index is out of the valid and known range.
      * - `undefined` if the iterator cannot provide peeking functionality.
      * - An array as entry otherwise.
      *
-     * @param difference - Integer indicating where to look in. By default is +1.
+     * @param difference - Integer indicating the target from the current index. By default is +1.
      * - =0: Current.
      * - \>0: Future.
      * - \<0: Past.
@@ -68,11 +78,10 @@ export type EntriesIterator<
 
     /**
      * Destroys the iterator, and makes it unusable.
+     * This helps to eliminate the closure.
      *
-     * This helps to eliminate the closure if it exists.
-     *
-     * @returns True if it was destroyed in this call, false if it had
-     * already been destroyed or does not have this functionality.
+     * @returns
+     * True if it was destroyed in this call, false if it had already been destroyed.
      */
     destroy: () => boolean;
 };

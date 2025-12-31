@@ -5,11 +5,15 @@ import { destroyIterator } from "./helpers/destroy-iterator.js";
 import { typeOf } from "../../utils/public/index.js";
 
 /**
- * Creates an iterator that uses a method of an object for iterates over its entries.
- * The method must return an iterable iterator with entries in [key, value] format.
+ * Creates an iterator that uses a method of an object for iterate over its entries.
+ * 
+ * The method must return an iterable iterator with entries in `[key, value]` format.
  *
  * @param object - The target object.
- * @returns The created iterator.
+ *
+ * @returns An wrapped entries iterator.
+ *
+ * @since 3.0.0-beta.0
  */
 export function MethodIterator<T extends object, K = unknown, V = unknown>(
     object: T & { size?: number },

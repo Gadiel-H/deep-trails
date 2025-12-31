@@ -1,8 +1,12 @@
 /**
  * Specifies control flags to alter the behavior of deep iteration traversal.
  *
- * Order in which the control object is evaluated:
- * - useEntry
+ * Notes:
+ * - The effects of using this object are applied after the callback is called.
+ * - This object should be used only in callbacks for `deepIterate`.
+ *
+ * Evaluation order:
+ * - useEntry()
  * - finishNow
  * - finishAfterNode
  * - stopParentNow
@@ -11,13 +15,11 @@
  * - skipKey
  * - skipValue
  *
- * Notes:
- * - The effects of using this object are applied after the callback is called.
- * - This object should be used only in callbacks for `deepIterate`.
+ * @since 3.0.0-beta.0
  */
 export type Control<K = unknown, V = unknown> = {
     /**
-     * **Finish the entire traversal** when the call to the callback ends.
+     * **Finish the entire traversal** when the current call to the callback ends.
      *
      * @example
      * control.finishNow = child.key === "finish"
@@ -25,7 +27,7 @@ export type Control<K = unknown, V = unknown> = {
     finishNow: boolean;
 
     /**
-     * **Finish the entire traversal** after deeply iterating over the current child.
+     * **Finish the entire traversal** after iterating over the current child.
      *
      * Once requested, it cannot be cancelled.
      *
@@ -43,7 +45,7 @@ export type Control<K = unknown, V = unknown> = {
     stopParentNow: boolean;
 
     /**
-     * **Stops iterating over the current parent** after deeply iterating over the current child.
+     * **Stops iterating over the current parent** after deeply iterating over the **current child**.
      *
      * Once requested, it cannot be cancelled.
      *
@@ -77,8 +79,9 @@ export type Control<K = unknown, V = unknown> = {
     skipValue: boolean;
 
     /**
-     * Assigns the provided key and value to the context of the current child node.
-     * If the path is an array, the last element will be replaced.
+     * Assigns the provided key and value to the context of the current child.
+     *
+     * If the path is an array and a new key is received, the last element will be replaced.
      *
      * @returns A number that indicates how many things will change.
      * - `0` - Nothing.

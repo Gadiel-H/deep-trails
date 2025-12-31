@@ -4,10 +4,13 @@ import type { EntriesIterator } from "../../types/index";
 import { destroyIterator } from "./helpers/destroy-iterator.js";
 
 /**
- * Creates an iterator for the elements of an ArrayLike, from the first index to the last one.
+ * Creates an entries iterator for any array-like, traversing from the first index to the last one.
  *
- * @param object - The Array-Like value.
+ * @param object - The array-like value.
+ *
  * @returns The created iterator.
+ *
+ * @since 3.0.0-beta.0
  */
 export function ArrayIterator<V = unknown>(
     object: ArrayLike<V>
