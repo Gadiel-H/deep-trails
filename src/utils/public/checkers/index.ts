@@ -6,6 +6,7 @@ export { isArrayLike } from "./is-array-like.js";
 export { isInteger } from "./is-integer.js";
 
 export { isFunction } from "./is-function.js";
+export { isArrowFunction } from "./is-arrow-function.js";
 export { isNativeFunction } from "./is-native-function.js";
 export { isBoundFunction } from "./is-bound-function.js";
 export { isAsyncFunction } from "./is-async-function.js";
