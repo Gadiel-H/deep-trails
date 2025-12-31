@@ -8,21 +8,21 @@
 export type ParentContext<P extends object, K = unknown> = {
     /**
      * The key identifying this parent within its own parent.
-     * 
+     *
      * It is null if this node is the root.
      */
     key: K | null;
 
     /**
      * The value of this parent node.
-     * 
+     *
      * It is the same as the key if its role is "key".
      */
     value: P;
 
     /**
      * Path from the root to this parent node.
-     * 
+     *
      * Its type varies depending on the value of
      * "{@link https://gadiel-h.github.io/deep-trails/types/DeepIterate.Options.html#pathtype pathType}"
      * in the options.
@@ -32,7 +32,7 @@ export type ParentContext<P extends object, K = unknown> = {
     /**
      * The zero-based index of this parent within its own parent.
      * It is **-1** for the **root** node.
-     * 
+     *
      * Indicates the discovery order, even for disordered structures.
      */
     index: number;
@@ -44,7 +44,7 @@ export type ParentContext<P extends object, K = unknown> = {
 
     /**
      * Total number of children that have been counted for this parent.
-     * 
+     *
      * It is undefined if the number of children is not known.
      */
     size: number | undefined;

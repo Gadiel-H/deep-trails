@@ -6,7 +6,7 @@ import { typeOf } from "../../utils/public/index.js";
 
 /**
  * Creates an iterator that uses a method of an object for iterate over its entries.
- * 
+ *
  * The method must return an iterable iterator with entries in `[key, value]` format.
  *
  * @param object - The target object.

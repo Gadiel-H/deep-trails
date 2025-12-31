@@ -17,7 +17,7 @@ export type EntriesIterator<
 
     /**
      * Number of items detected in the object.
-     * 
+     *
      * It is undefined if there was no known way to obtain it.
      */
     readonly size: number | undefined;
@@ -27,9 +27,9 @@ export type EntriesIterator<
 
     /**
      * Method that makes this iterator iterable.
-     * 
+     *
      * Calling it resets the iteration state.
-     * 
+     *
      * @returns An object with the "next" method.
      */
     [Symbol.iterator]: () => {
@@ -38,7 +38,7 @@ export type EntriesIterator<
 
     /**
      * Advances in the iteration, changing its state.
-     * 
+     *
      * @returns The next state of the iteration.
      */
     next: () =>
@@ -50,9 +50,9 @@ export type EntriesIterator<
 
     /**
      * Resets the iteration state.
-     * 
+     *
      * If reseted, only the iternal data (closure) will change.
-     * 
+     *
      * @returns True if reseted, otherwise false.
      */
     reset: () => boolean;

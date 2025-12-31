@@ -2,7 +2,7 @@ import type { ChildContext, ParentContext, Control, Options, VisitLog } from "./
 
 /**
  * Callback for `deepIterate`.
- * 
+ *
  * This is executed on each node before iterating over it.
  *
  * Notes:
@@ -27,7 +27,7 @@ export type Callback<P extends object, K = unknown, V = unknown, R extends P = a
 
 /**
  * `this` object bound to callbacks in `deepIterate`.
- * 
+ *
  * - Includes the received arguments and the visit log (if enabled).
  * - This same object is returned at the end of the traverse.
  *

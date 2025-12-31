@@ -27,19 +27,19 @@ deepIterate.options = defaultOptions;
 
 /**
  * Iterates deeply through the entries of almost any data structure or object.
- * 
+ *
  * @remarks
  * - Some types of objects are excluded: Date, Promise, RegExp, Error, WeakMap, WeakSet, and functions.
  * - Circular references are avoided by default, but you can change this behavior.
  * - You can get a visit log by changing the "visitLogType" option.
  * - This function performs a depth-first search (DFS).
- * 
+ *
  * **Type parameters**:
  * - **R**: Root node.
  * - **K**: Keys.
  * - **V**: Child values.
  * - **P**: Parent values.
- * 
+ *
  * @param object - The root node to start the iteration.
  * @param callback - Function to execute by each node before iterating it.
  * @param options - Options to customize traversal behavior. Defaults to `deepIterate.options`.

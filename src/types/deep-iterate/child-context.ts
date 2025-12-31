@@ -14,7 +14,7 @@ export type ChildContext<P extends object, K = unknown, V = unknown> = {
 
     /**
      * The path from the root node to this child.
-     * 
+     *
      * Its type varies depending on the value of
      * "{@link https://gadiel-h.github.io/deep-trails/types/DeepIterate.Options.html#pathtype pathType}"
      * in the options.
@@ -23,7 +23,7 @@ export type ChildContext<P extends object, K = unknown, V = unknown> = {
 
     /**
      * The zero-based index of this child within its parent.
-     * 
+     *
      * Indicates the discovery order, even for disordered structures.
      */
     index: number;

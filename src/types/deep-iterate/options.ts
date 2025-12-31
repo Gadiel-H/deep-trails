@@ -3,7 +3,7 @@ import { utils } from "../../index.js";
 
 /**
  * Options parameter for `deepIterate`.
- * 
+ *
  * The default options are in `deepIterate.options`.
  *
  * Notes:
@@ -14,7 +14,7 @@ import { utils } from "../../index.js";
 export type Options<P extends object, K = unknown, V = unknown> = {
     /**
      * Indicates whether should iterating node keys.
-     * 
+     *
      * The root node has no key.
      */
     iterateKeys: boolean;
@@ -31,7 +31,7 @@ export type Options<P extends object, K = unknown, V = unknown> = {
      *
      * If "string", `utils.toPathString` will be used.
      * Otherwise, the path will be an array of the found keys.
-     * 
+     *
      * @see {@linkcode utils.toPathString} for more details.
      */
     pathType: "array" | "string";
