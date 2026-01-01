@@ -1,9 +1,8 @@
 "use strict";
 
-import { checkers, toPathString, toSimpleString } from "../utils/public/index.js";
+import { isNoFnObject, toPathString, toSimpleString } from "../utils/public/index.js";
 import { isSchema } from "./record-schema.js";
 import type { Schema, Dictionary } from "./types/index";
-const { isNoFnObject } = checkers;
 
 /** @internal */
 type InvalidsList = [path: string, type: string, value: unknown][];

@@ -1,11 +1,10 @@
 "use strict";
 
 import type { EntriesIterator } from "../../../types/index";
-import { checkers, typeOf } from "../../../utils/public/index.js";
+import { isArrayLike, typeOf } from "../../../utils/public/index.js";
 import { PropertiesIterator, ArrayIterator, MethodIterator } from "../../index.js";
 
 const { hasOwnProperty } = Object.prototype,
-    { isArrayLike } = checkers,
     hasEntries = (obj: any): boolean =>
         typeof obj.entries === "function" && !hasOwnProperty.call(obj, "entries");
 

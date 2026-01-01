@@ -1,7 +1,6 @@
 import type { Validator } from "../types/index";
-import { checkers } from "../../utils/public/index.js";
+import { isInteger } from "../../utils/public/index.js";
 
-const { isInteger } = checkers;
 const isValidLimit = (num: number) =>
     num === Infinity || num === -Infinity || Number.isInteger(num);
 

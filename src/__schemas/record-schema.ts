@@ -1,9 +1,8 @@
 "use strict";
 
-import { checkers, typeOf } from "../utils/public/index.js";
+import { isPlainObject, typeOf } from "../utils/public/index.js";
 import type { Schema, InputSchema, Dictionary } from "./types/index";
 
-const { isPlainObject } = checkers;
 const knownSchemas = new WeakSet();
 
 /** Checks whether an object is a known schema. @internal */

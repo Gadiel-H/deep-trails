@@ -1,7 +1,5 @@
-import { checkers } from "../../utils/public/index.js";
+import { isNoFnObject } from "../../utils/public/index.js";
 import type { Dictionary, Schema, Validator } from "../types/index";
-
-const { isNoFnObject } = checkers;
 
 /** @internal */
 export const object = <T extends Dictionary>(

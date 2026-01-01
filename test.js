@@ -46,7 +46,6 @@ test("The library loads without errors.", () => {
     assert.doesNotThrow(() => {
         const { deepIterate, VERSION } = require("deep-trails");
         const {
-            checkers,
             typeOf,
             toSimpleString,
             toPathString,
@@ -61,8 +60,8 @@ test("The library loads without errors.", () => {
 });
 
 test("Certain functions do not fail with any parameter.", () => {
-    /// @ts-ignore
-    const { typeOf, checkers, toSimpleString } = require("deep-trails").utils;
+    const { utils } = require("deep-trails");
+    const { typeOf, toSimpleString } = utils;
 
     assert.doesNotThrow(() => {
         for (const value of testValues) {
@@ -71,7 +70,11 @@ test("Certain functions do not fail with any parameter.", () => {
             /// @ts-ignore
             toSimpleString(value, value);
             /// @ts-ignore
-            for (const key in checkers) checkers[key](value);
+            for (const key in utils) {
+                // Detect a type checker
+                /// @ts-ignore
+                if (key.startsWith("is")) utils[key](value);
+            }
         }
     }, Error);
 });
