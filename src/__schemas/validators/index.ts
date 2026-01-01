@@ -1,5 +1,3 @@
-"use strict";
-
 export { boolean } from "./boolean.js";
 
 export { string } from "./string.js";

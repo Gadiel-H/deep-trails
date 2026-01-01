@@ -5,7 +5,8 @@ on:
         branches:
             - main
         paths:
-            - src
+            - src/**
+            - config/typedoc.json
 
 jobs:
     build-and-deploy:
