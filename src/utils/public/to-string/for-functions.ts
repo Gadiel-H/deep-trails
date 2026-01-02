@@ -1,6 +1,6 @@
 "use strict";
 
-import { toSimpleString } from "./for-anything.js";
+import { typeOf } from "../index.js";
 
 /** RegExp for check identifiers compatible with dot notation. */
 const dotNotation = /^[a-zA-Z_$][\w$]*$/;
@@ -9,8 +9,9 @@ const dotNotation = /^[a-zA-Z_$][\w$]*$/;
 const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap();
 
 /**
- * Creates a simple string describing a function.
+ * Creates a simple string describing a function, similar to `console.log`.
  *
+ * @remarks
  * - Distinguishes function types and class syntax.
  * - Includes the name if available.
  *
@@ -37,24 +38,24 @@ export function toFunctionString(func: Function): string {
     if (saved && saved.name === func.name) return saved.string;
 
     if (typeof func !== "function")
-        throw new TypeError(`${toSimpleString(func)} is not a function.\n`);
+        throw new TypeError(`Expected a function. Received ${typeOf(func)}\n`);
 
     let funcString = String(func).trim();
+    let nameString = ` ${func.name || "(anonymous)"}`;
 
     if (funcString.startsWith("class ")) {
-        const name = func.name || "(anonymous)";
-        const string = `[class ${name}]`;
+        const string = `[class${nameString}]`;
         cache.set(func, { string, name: func.name });
         return string;
     }
 
-    const stringEnd = func.name !== "" ? `: ${func.name}]` : " (anonymous)]";
+    if (nameString !== " (anonymous)") nameString = `:${nameString}`;
 
-    if (
-        funcString.endsWith("{ [native code] }") ||
-        funcString.endsWith("{\n    [native code]\n}")
-    ) {
-        funcString = "[NativeFunction" + stringEnd;
+    const hasNativeCode =
+        funcString.endsWith("{ [native code] }") || funcString.endsWith("{\n    [native code]\n}");
+
+    if (hasNativeCode) {
+        funcString = `[NativeFunction${nameString}]`;
         cache.set(func, { string: funcString, name: func.name });
         return funcString;
     }
@@ -68,31 +69,33 @@ export function toFunctionString(func: Function): string {
         isAsync = true;
     }
 
-    if (funcString[0] === "*") {
+    isGenerator = funcString[0] === "*";
+
+    if (isGenerator) {
         funcString = funcString.substring(1).trim();
-        isGenerator = true;
     } else if (funcString.startsWith("function")) {
-        // Checks wheter `func` has "*" after "function" keyword.
-        isGenerator = funcString.split(" ").join("")[8] === "*";
-    } else if (funcString[0] === "(") {
-        isArrow = true;
-    } else {
-        // Checks whether `func` doesn't have parentheses around its param
-        // Example: `param => {}`
-        isArrow = dotNotation.test(funcString.split("=>")[0].trim());
+        const withoutSpaces = funcString.split(" ").join("");
+        isGenerator = withoutSpaces[8] === "*";
     }
 
-    if (isAsync && isGenerator) {
-        funcString = "[AsyncGeneratorFunction" + stringEnd;
-    } else if (isAsync && !isArrow) {
-        funcString = "[AsyncFunction" + stringEnd;
-    } else if (isGenerator) {
-        funcString = "[GeneratorFunction" + stringEnd;
-    } else if (isArrow && isAsync) {
-        funcString = "[AsyncArrowFunction" + stringEnd;
-    } else if (isArrow) {
-        funcString = "[ArrowFunction" + stringEnd;
-    } else funcString = "[Function" + stringEnd;
+    if (!isGenerator) {
+        isArrow = funcString[0] === "(";
+
+        if (!isArrow) {
+            const paramString = funcString.split("=>")[0];
+            isArrow = dotNotation.test(paramString.trim());
+        }
+    }
+
+    let type = "Function";
+
+    if (isAsync && isGenerator) type = "AsyncGeneratorFunction";
+    else if (isGenerator) type = "GeneratorFunction";
+    else if (isAsync && isArrow) type = "AsyncArrowFunction";
+    else if (isAsync) type = "AsyncFunction";
+    else if (isArrow) type = "ArrowFunction";
+
+    funcString = `[${type}${nameString}]`;
 
     cache.set(func, { string: funcString, name: func.name });
     return funcString;
