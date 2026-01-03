@@ -9,7 +9,7 @@ const strKeyWithDots = (key: unknown, index: number) => {
     if (typeof key === "string" && dotNotation.test(key)) {
         return index > 0 ? `.${key}` : key;
     }
-    
+
     return `[${toSimpleString(key)}]`;
 };
 
@@ -101,7 +101,7 @@ export function toPathString<T = unknown>(
         if (extraKey !== notProvided) {
             pathString.push(`[${toSimpleString(extraKey)}]`);
         }
-        
+
         return pathString.join("");
     } else {
         const pathString = path.map(strKeyWithDots);
@@ -114,10 +114,10 @@ export function toPathString<T = unknown>(
             } else {
                 extra = pathString.length > 0 ? `.${extraKey}` : extraKey;
             }
-            
+
             pathString.push(extra);
         }
-        
+
         return pathString.join("");
     }
 }
