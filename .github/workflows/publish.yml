@@ -5,6 +5,7 @@ on:
         branches: [main]
         paths:
             - package.json
+            - CHANGELOG.md
 
 permissions:
     contents: write
@@ -70,20 +71,27 @@ jobs:
                     echo "exists=false" >> $GITHUB_OUTPUT
                   fi
 
+            - name: Check if git tag exists
+              id: tag
+              run: |
+                  if git rev-parse "v${{ steps.meta.outputs.version }}" >/dev/null 2>&1; then
+                      echo "exists=true" >> $GITHUB_OUTPUT
+                  else
+                      echo "exists=false" >> $GITHUB_OUTPUT
+                  fi
+
             - name: Publish to NPM
-              if: steps.check.outputs.exists != 'true'
+              if: steps.check.outputs.exists != 'true' && steps.tag.outputs.exists != 'true'
               run: npm publish --access public --tag ${{ steps.meta.outputs.npm_tag }} --provenance
 
-            - name: Create Git tag
-              if: steps.check.outputs.exists != 'true'
-              run: |
-                  git tag v${{ steps.meta.outputs.version }}
-                  git push origin v${{ steps.meta.outputs.version }}
+            # Removed the manual "Create Git tag" step to avoid "git config user.email" errors.
+            # The action below will create the tag automatically.
 
             - name: Create GitHub Release
-              if: steps.check.outputs.exists != 'true'
+              if: steps.check.outputs.exists != 'true' && steps.tag.outputs.exists != 'true'
               uses: softprops/action-gh-release@v2
               with:
                   tag_name: v${{ steps.meta.outputs.version }}
+                  target_commitish: ${{ github.sha }} # Ensure that the tag points to the current commit
                   prerelease: ${{ steps.meta.outputs.prerelease }}
                   generate_release_notes: true
