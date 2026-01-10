@@ -1,7 +1,7 @@
 "use strict";
 
 import type { EntriesIterator } from "../../types/index";
-import { destroyIterator } from "./helpers/destroy-iterator.js";
+import { destroyIterator, getSymbolIterator } from "./helpers/index.js";
 
 /**
  * Creates an entries iterator for any array-like, traversing from the first index to the last one.
@@ -10,6 +10,13 @@ import { destroyIterator } from "./helpers/destroy-iterator.js";
  *
  * @returns The created iterator.
  *
+ * @example
+ * const array = ["a", "b", "c"];
+ * const iterator = ArrayIterator(array);
+ * const state = iterator.next();
+ *
+ * console.log(state); // { done: false, value: [0, "a", 0] }
+ *
  * @since 3.0.0-beta.0
  */
 export function ArrayIterator<V = unknown>(
@@ -17,68 +24,81 @@ export function ArrayIterator<V = unknown>(
 ): EntriesIterator<typeof ArrayIterator, typeof object, number, V> {
     object.length;
     let index = -1;
-    type entry = [number, V, number];
 
-    let iter: EntriesIterator<typeof ArrayIterator, typeof object, number, V> = {
+    type Entry = [number, V, number];
+
+    let iter: EntriesIterator<typeof ArrayIterator, typeof object, number, V> | null = {
         factory: ArrayIterator,
+        object,
         get size() {
-            return object ? object.length : undefined;
-        },
-        get object() {
-            return object;
+            return object.length;
         },
         next: () => {
-            if (!iter) return { done: true, value: null };
-
-            const done = ++index >= object.length;
-
-            if (done) return { done, value: null };
-
-            return { done, value: [index, object[index], index] as entry };
-        },
-        peek: (diff = +1) => {
-            const target = index + diff;
-            let done = true;
-
-            if (!iter || (done = target >= object.length)) {
-                return { done, value: null };
+            if (iter == null) {
+                return { done: true, value: null };
             }
 
-            if (target < 0) return { done: false, value: null };
+            const done = index + 1 >= object.length;
 
-            return {
-                done,
-                value: [target, object[target], target] as entry
-            };
+            if (done) {
+                return { done: true, value: null };
+            }
+
+            index++;
+            const value = object[index];
+            const entry = [index, value, index] as Entry;
+
+            return { done: false, value: entry };
+        },
+        peek: (diff = +1) => {
+            if (iter == null) {
+                return { done: true, value: null };
+            }
+
+            const target = index + diff;
+
+            if (target < 0) {
+                return { done: false, value: null };
+            }
+
+            const done = target >= object.length;
+
+            if (done) {
+                return { done: true, value: null };
+            }
+
+            const value = object[target];
+            const entry = [target, value, target] as Entry;
+
+            return { done: false, value: entry };
         },
         reset: () => {
-            if (!iter) return false;
+            if (iter == null) return false;
 
             index = -1;
             return true;
         },
         destroy: () => {
-            if (!iter) return false;
+            if (iter == null) return false;
 
-            delete (symbolIterator as any).next;
             destroyIterator(iter);
-            object = reset = iter = symbolIterator = null as any;
+
+            object = iter = null as any;
+            reset = next = null as any;
 
             return true;
         },
         [Symbol.iterator]: () => {
-            if (!iter)
-                return {
-                    next: () => ({ done: true, value: null })
-                };
+            if (iter == null) {
+                return getSymbolIterator();
+            }
 
             reset();
-            return symbolIterator;
+            return { next };
         }
     };
 
-    let { reset } = iter;
-    let symbolIterator = { next: iter.next };
+    let { reset, next } = iter;
 
     return iter;
 }

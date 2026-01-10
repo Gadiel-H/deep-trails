@@ -1,7 +1,7 @@
 "use strict";
 
 import type { EntriesIterator } from "../../types/index";
-import { destroyIterator } from "./helpers/destroy-iterator.js";
+import { destroyIterator, getSymbolIterator } from "./helpers/index.js";
 
 /**
  * Creates an iterator for the properties of an object using a function to get its keys.
@@ -11,50 +11,74 @@ import { destroyIterator } from "./helpers/destroy-iterator.js";
  *
  * @returns The created iterator.
  *
+ * @example
+ * const object = { a: 1, b: 2, c: 3 };
+ * const iterator = PropertiesIterator(object);
+ *
+ * for (const [ key, value ] of iterator) {
+ *     console.log({ key, value });
+ * }
+ *
  * @since 3.0.0-beta.0
  */
 export function PropertiesIterator<T extends object, K extends keyof T = keyof T, V = T[K]>(
     object: T,
     keysGetter: (object: T) => K[] = Reflect.ownKeys as any
 ): EntriesIterator<typeof PropertiesIterator, T, K, V> {
-    let keys = keysGetter(object);
-    let index = -1;
+    let keys = keysGetter(object),
+        index = -1;
 
-    type entry = [K, V, number];
+    type Entry = [K, V, number];
 
-    let it: EntriesIterator<typeof PropertiesIterator, T, K, V> = {
+    let iter: EntriesIterator<typeof PropertiesIterator, T, K, V> | null = {
         factory: PropertiesIterator,
         object,
         get size() {
-            if (!keys) return undefined;
-            else return keys.length;
+            if (keys == null) return undefined;
+            return keys.length;
         },
         next: () => {
-            let done = false;
-
-            if (!it || (done = ++index >= keys.length)) {
+            if (iter == null) {
                 return { done: true, value: null };
             }
 
-            const key = keys[index];
+            const done = index + 1 >= keys.length;
 
-            return { done, value: [key, object[key], index] as entry };
+            if (done) {
+                return { done: true, value: null };
+            }
+
+            index++;
+            const key = keys[index];
+            const value = object[key];
+            const entry = [key, value, index] as Entry;
+
+            return { done: false, value: entry };
         },
         peek: (diff = +1) => {
-            const target = index + diff;
-            let done = false;
-
-            if (!it || (done = target >= keys.length)) {
+            if (iter == null) {
                 return { done: true, value: null };
             }
 
-            if (target < 0) return { done, value: null };
+            const target = index + diff;
+            const done = target >= keys.length;
+
+            if (done) {
+                return { done: true, value: null };
+            }
+
+            if (target < 0) {
+                return { done: false, value: null };
+            }
 
             const key = keys[target];
-            return { done, value: [key, object[key], target] as entry };
+            const value = object[key];
+            const entry = [key, value, target] as Entry;
+
+            return { done: false, value: entry };
         },
         reset: () => {
-            if (!it) return false;
+            if (iter == null) return false;
 
             keys = keysGetter(object);
             index = -1;
@@ -62,23 +86,27 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
             return true;
         },
         destroy: () => {
-            if (!it) return false;
+            if (iter == null) return false;
 
-            object = keys = null as any;
-            delete (symbolIterator as any).next;
-            destroyIterator(it);
-            reset = it = symbolIterator = null as any;
+            destroyIterator(iter);
+
+            keys = keysGetter = null as any;
+            object = iter = null as any;
+            reset = next = null as any;
 
             return true;
         },
         [Symbol.iterator]: () => {
-            if (reset) reset();
-            return symbolIterator;
+            if (iter == null) {
+                return getSymbolIterator();
+            }
+
+            reset();
+            return { next };
         }
     };
 
-    let { reset } = it;
-    let symbolIterator = { next: it.next };
+    let { reset, next } = iter;
 
-    return it as any;
+    return iter;
 }

@@ -1,8 +1,9 @@
 "use strict";
 
 import type { EntriesIterator } from "../../types/index";
-import { destroyIterator } from "./helpers/destroy-iterator.js";
-import { typeOf } from "../../utils/public/index.js";
+import { destroyIterator, getSymbolIterator } from "./helpers/index.js";
+
+type EntriesMethod = (...args: any[]) => IterableIterator<any>;
 
 /**
  * Creates an iterator that uses a method of an object for iterate over its entries.
@@ -10,8 +11,16 @@ import { typeOf } from "../../utils/public/index.js";
  * The method must return an iterable iterator with entries in `[key, value]` format.
  *
  * @param object - The target object.
+ * @param methodKey - The key where is the method.
  *
  * @returns An wrapped entries iterator.
+ *
+ * @example
+ * const object = new Map([[Date, "date"], [Set, "set"]]);
+ * const iterator = MethodIterator(object);
+ * const state = iterator.next();
+ *
+ * console.log(state); // { done: false, value: [Date, "date", 0] }
  *
  * @since 3.0.0-beta.0
  */
@@ -19,49 +28,56 @@ export function MethodIterator<T extends object, K = unknown, V = unknown>(
     object: T & { size?: number },
     methodKey: string | symbol = "entries"
 ): EntriesIterator<typeof MethodIterator, typeof object, K, V> {
-    let entriesMethod = object[methodKey] as Function,
-        entries = entriesMethod.call(object) as IterableIterator<any>,
-        type = typeOf(object),
+    let entriesMethod = object[methodKey] as EntriesMethod,
+        entries = entriesMethod.call(object),
         index = -1;
 
-    type entry = [K, V, number];
+    type Entry = [K, V, number];
 
-    let iter: EntriesIterator<typeof MethodIterator, T, K, V> = {
+    let iter: EntriesIterator<typeof MethodIterator, T, K, V> | null = {
         factory: MethodIterator,
         object,
         get size() {
-            return type == "Map" || type == "Set" ? object.size : undefined;
+            if (object instanceof Set || object instanceof Map) {
+                return object.size;
+            }
+
+            return undefined;
         },
         next: () => {
-            index++;
+            if (iter == null) {
+                return { done: true, value: null };
+            }
 
             const state = entries.next();
-
-            if (!iter || !state || state.done) {
-                return { done: true, value: null };
-            }
-
             const entry = state.value as [K, V];
-            const done = state.done;
 
-            if (done || entry == null) {
+            if (state.done || !entry) {
                 return { done: true, value: null };
             }
 
-            const current = [entry[0], entry[1], index];
+            index++;
+            const current = [entry[0], entry[1], index] as Entry;
 
-            return { done: false, value: current as entry };
+            return { done: false, value: current };
         },
         peek: (diff = +1) => {
-            if (!iter) return { done: true, value: null };
+            if (iter == null) {
+                return { done: true, value: null };
+            }
 
             const size = iter.size;
-            const done = size != null && index + diff >= size;
+            const target = index + diff;
+            const done = size != null && target >= size;
+
+            if (done) {
+                return { done: true, value: null };
+            }
 
             return { done, value: undefined };
         },
         reset: () => {
-            if (!iter) return false;
+            if (iter == null) return false;
 
             entries = entriesMethod.call(object);
             index = -1;
@@ -69,24 +85,27 @@ export function MethodIterator<T extends object, K = unknown, V = unknown>(
             return true;
         },
         destroy: () => {
-            if (!iter) return false;
+            if (iter == null) return false;
 
-            entries = null as any;
-            delete (symbolIterator as any).next;
             destroyIterator(iter);
-            entriesMethod = null as any;
-            object = reset = iter = symbolIterator = null as any;
+
+            entries = entriesMethod = null as any;
+            object = iter = null as any;
+            reset = next = null as any;
 
             return true;
         },
         [Symbol.iterator]: () => {
-            if (reset) reset();
-            return symbolIterator;
+            if (iter == null) {
+                return getSymbolIterator();
+            }
+
+            reset();
+            return { next };
         }
     };
 
-    let { reset } = iter;
-    let symbolIterator = { next: iter.next };
+    let { reset, next } = iter;
 
     return iter;
 }
