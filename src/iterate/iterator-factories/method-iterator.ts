@@ -30,6 +30,7 @@ export function MethodIterator<T extends object, K = unknown, V = unknown>(
 ): EntriesIterator<typeof MethodIterator, typeof object, K, V> {
     let entriesMethod = object[methodKey] as EntriesMethod,
         entries = entriesMethod.call(object),
+        alreadyDone = false,
         index = -1;
 
     type Entry = [K, V, number];
@@ -53,6 +54,11 @@ export function MethodIterator<T extends object, K = unknown, V = unknown>(
             const entry = state.value as [K, V];
 
             if (state.done || !entry) {
+                if (!alreadyDone) {
+                    alreadyDone = true;
+                    index++;
+                }
+
                 return { done: true, value: null };
             }
 

@@ -42,7 +42,11 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
                 return { done: true, value: null };
             }
 
-            const done = index + 1 >= keys.length;
+            const nextIndex = index + 1;
+            const size = keys.length;
+            const done = nextIndex >= size;
+
+            if (nextIndex === size) index++;
 
             if (done) {
                 return { done: true, value: null };

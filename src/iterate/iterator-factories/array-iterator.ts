@@ -38,7 +38,11 @@ export function ArrayIterator<V = unknown>(
                 return { done: true, value: null };
             }
 
-            const done = index + 1 >= object.length;
+            const nextIndex = index + 1;
+            const size = object.length;
+            const done = nextIndex >= size;
+
+            if (nextIndex === size) index++;
 
             if (done) {
                 return { done: true, value: null };
