@@ -1,4 +1,28 @@
-# Change log
+# Changelog
+
+## v3.0.0-beta.2 (2026-01-12)
+
+### Changed
+
+- The `size` getter in iterators created by `MethodIterator` now detects
+  `Map` and `Set` instances directly instead of relying on `typeOf(object)`.
+
+### Added
+
+- Added missing TSDoc comments for the iterator factories.
+
+### Fixed
+
+- In factory-created iterators, calling `next()` no longer advances the internal index once iteration has finished.
+
+- Calling `[Symbol.iterator]()` in factory-created iterators always returns a simple iterator.
+  Previously, it returned `null` after `destroy()` was called.
+
+- Added the missing export for the `isArrowFunction()` type checker.
+
+### Performance
+
+- Reduced allocations in the iterator factories.
 
 ## v3.0.0-beta.1 (2025-12-15)
 
