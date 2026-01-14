@@ -29,7 +29,7 @@
         }
     },
     "scripts": {
-        "test": "node test.js",
+        "test": "node tests/cjs/main.test.js",
         "dev": "bash scripts/dev-session.bash",
         
         "clean": "rm -rf dist/ docs/",
