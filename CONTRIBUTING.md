@@ -5,77 +5,76 @@ This document provides a short and practical guide to contributing, from setup t
 
 ---
 
-### Sections:
+## Requirements
 
-- [Steps](#steps)
-- [Project structure](#project-structure)
-- [NPM scripts](#npm-scripts)
-- [Details](#details)
-- [Documentation](#documentation)
-
----
+- Node.js 18 or newer
+- npm (comes with Node.js)
 
 ## Steps
 
-1. **Clone the repository**
+1. **Fork the repository**
+
+    Go to the repository and fork it to your GitHub account.
+
+2. **Clone the repository**
 
     ```bash
     git clone https://github.com/gadiel-h/deep-trails
     cd deep-trails
     ```
 
-2. **Create a branch for your changes**
+3. **Create a branch for your changes**
 
     ```bash
     git checkout -b my-branch
     ```
 
-3. **Install development dependencies**
+4. **Install development dependencies**
 
     ```bash
     npm ci
+    # if it fails:
+    npm install
     ```
 
-4. **Make your changes**
+5. **Make your changes**
     - For example, fix bugs or add new features.
     - Follow the existing code style and configurations.
 
-5. **Run tests**
+6. **Run tests**
 
     ```bash
     npm run test
     ```
 
-    The test suite relies on Node’s built-in "node:test" and "node:assert" modules.
-
-6. **Format the code**
+7. **Format the code**
 
     ```bash
     npm run format
     ```
 
-7. **Check TypeScript errors**
+8. **Check TypeScript errors**
 
     ```bash
     npx tsc
     ```
 
-    If there are minor errors, you can send it and they will be corrected later.
+    If you're unsure about a TypeScript error, open the PR and explain it.
 
-8. **Commit with your changes**
+9. **Commit with your changes**
 
     ```bash
-    git add ./
+    git add .
     git commit -m "Short description of the change"
     ```
 
-9. **Push your branch**
+10. **Push your branch**
 
     ```bash
     git push origin my-branch
     ```
 
-10. **Open a Pull Request**
+11. **Open a Pull Request**
     - Go to your fork on GitHub.
     - Choose "Compare & pull request".
     - Briefly describe your changes.
@@ -86,34 +85,38 @@ This document provides a short and practical guide to contributing, from setup t
 
 ```
 deep-trails/
-|
-+—— config/                # Development configuration
-|
-+—— scripts/               # Development scripts
-|
-+—— examples/              # Usage examples
-|
-+—— src/                   # Source code
-    |
-    +—— iterate/               # Module "deep-trails/iterate"
-    |   |
-    |   +—— iterator-factories/    # Iterator creation utilities
-    |   |
-    |   +—— deep-iterate/          # Main deepIterate implementation
-    |       |
-    |       +—— main.ts                # Public entry function
-    |       |
-    |       +—— core.ts                # Internal recursive logic
-    |       |
-    |       +—— schemas/               # Parameter validation schemas
-    |
-    +—— utils/                 # General utilities
-    |   |
-    |   +—— public/                # User-facing utilities
-    |
-    +—— __schemas/             # Object validation and schema creation
-    |
-    +—— types/                 # Public and internal type declarations
+│
+├── config/                # Development configuration
+│
+├── scripts/               # Development scripts
+│
+├── examples/              # Usage examples
+│
+├── tests/                 # Library tests
+│
+└── src/                   # Source code
+    │
+    ├── iterate/               # Module "deep-trails/iterate"
+    │   │
+    │   ├── iterator-factories/    # Functions for creating iterators
+    │   │
+    │   └── deep-iterate/          # Main deepIterate implementation
+    │       │
+    │       ├── main.ts                # Public entry function
+    │       │
+    │       ├── core.ts                # Internal recursive logic
+    │       │
+    │       └── schemas/               # Parameter validation schemas
+    │
+    ├── utils/                 # General utilities
+    │   │
+    │   └── public/                # User-facing utilities
+    │
+    ├── __schemas/             # Object validation and schema creation
+    │   │
+    │   └── validators/            # Required data validators
+    │
+    └── types/                 # Public and internal type declarations
 ```
 
 Within each directory, you might also find:
@@ -136,13 +139,13 @@ Development scripts available in **package.json**.
 
 - `build:cjs`: CommonJS modules.
 
-- `build:iife`: IIFE bundle, for browsers.
+- `build:iife`: IIFE bundle with sourcemap, for browsers.
 
 - `build:types`: Type declarations.
 
 - `build:docs`: Generates documentation via TypeDoc.
 
-#### Formating
+#### Formatting
 
 - `format`: Formats code using Prettier.
 
@@ -152,7 +155,7 @@ Development scripts available in **package.json**.
 
 - `clean`: Removes `dist/` and `docs/`.
 
-- `test`: Run existing tests.
+- `test`: Runs the test suite using Node's built-in test runner.
 
 - `watch:{esm|cjs|iife|types|docs}`: Build in watch mode.
 
@@ -173,5 +176,7 @@ A few points that help keep the project stable and easy to maintain:
 The documentation is generated in the `gh-pages` branch.
 
 Documentation updates are handled by maintainers during review, or automatically through CI if enabled.
+
+You can help improve it in the source code with TSDoc comments, and also in the MarkDown files.
 
 You can read it at https://gadiel-h.github.io/deep-trails
