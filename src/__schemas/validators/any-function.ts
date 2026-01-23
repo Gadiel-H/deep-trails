@@ -1,7 +1,10 @@
 import type { Validator } from "../types/index";
 import { isFunction } from "../../utils/public/index.js";
 
-/** @internal */
+/**
+ * Returns a validator for any function, including classes.
+ * @internal
+ */
 export const anyFunction = (): Validator<(...args: any[]) => any> => ({
     __test: isFunction,
     __convert: (fn) => fn,

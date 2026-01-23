@@ -1,33 +1,39 @@
 import type { Validator } from "../types/index";
 
-/** @internal */
+/**
+ * Returns a validator for string matches, or simply for any string.
+ *
+ * @param matches - The optional matches.
+ * @param exactMatch - If there are matches:
+ * if truthy, the comparison is exact; otherwise, is case-insensitive and trims whitespace.
+ *
+ * @internal
+ */
 export const string = <T extends string = string>(
     matches: T[] = [],
     exactMatch: boolean = false
 ): Validator<T> => {
-    const stringsList: Set<string> = new Set(
-        !exactMatch ? matches.map((str) => str.trim().toLowerCase()) : matches
-    );
+    let __type: string = "string";
+    let __description: string = `be of type "string"`;
+    let __test: Validator<T>["__test"];
+    let __convert: Validator<T>["__convert"] = (str) => str;
 
-    const __type: string =
-        stringsList.size > 0 ? matches.map((str) => `"${str}"`).join(" | ") : "string";
+    if (matches.length > 0) {
+        const string = matches.map((str) => `"${str}"`).join(", ");
+        const normalized = !exactMatch ? matches.map((str) => str.trim().toLowerCase()) : matches;
+        const uniqueCases = new Set(normalized.values());
 
-    const __convert: Validator<T>["__convert"] = (
-        stringsList.size <= 0 || exactMatch
-            ? (str) => str
-            : (str) => (typeof str === "string" ? str.trim().toLowerCase() : str)
-    ) as <V>(val: V) => T | V;
+        __test = ((str) => uniqueCases.has(str)) as any;
+        __type = matches.map((str) => `"${str}"`).join(" | ");
+        __description = `match some of these ${uniqueCases.size} strings: ${string}`;
 
-    const __test: Validator<T>["__test"] = (
-        stringsList.size > 0 ? (str) => stringsList.has(str) : (str) => typeof str === "string"
-    ) as (val: any) => val is T;
-
-    const __description: string =
-        stringsList.size === 0
-            ? `be of type "string"`
-            : `match some of these ${matches.length} strings: ${matches
-                  .map((str) => `"${str}"`)
-                  .join(", ")}`;
+        if (!exactMatch) {
+            __convert = ((str) =>
+                typeof str === "string" ? str.trim().toLowerCase() : str) as any;
+        }
+    } else {
+        __test = ((str) => typeof str === "string") as any;
+    }
 
     return { __test, __description, __type, __convert };
 };

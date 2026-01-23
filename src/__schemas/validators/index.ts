@@ -9,3 +9,5 @@ export { nullValue } from "./null-value.js";
 export { anyFunction } from "./any-function.js";
 
 export { typeUnion } from "./type-union.js";
+
+export { plainObject } from "./plain-object.js";

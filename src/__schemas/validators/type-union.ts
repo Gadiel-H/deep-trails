@@ -1,25 +1,30 @@
 import type { Validator, PartialValidator } from "../types/index";
 
-/** @internal */
-export const typeUnion = <T = unknown>(typesList: PartialValidator<T>[]): Validator<T> => {
+/**
+ * Returns a validator that joins a list of validators.
+ *
+ * @remarks
+ * - If any of the validators matches, the value is considered valid.
+ * - The conversion method attempts to convert the value until it is valid or there are no more converters.
+ *
+ * @internal
+ */
+export const typeUnion = <T = unknown>(validators: PartialValidator<T>[]): Validator<T> => {
     const __convert = <V>(value: V) => {
-        for (const prop of typesList) {
-            const converted = prop.__convert ? prop.__convert(value) : value;
+        for (const validator of validators) {
+            const converted = validator.__convert ? validator.__convert(value) : value;
 
-            if (prop.__test(converted)) return converted;
+            if (validator.__test(converted)) return converted;
         }
 
         return value;
     };
 
-    const __type: string = typesList.map((prop) => prop.__type).join(" | ");
-
-    const __test = (value: unknown): value is T => typesList.some((prop) => prop.__test(value));
-
-    return {
-        __test,
-        __type,
-        __convert,
-        __description: `be of type "${__type}"`
+    const __type: string = validators.map((prop) => prop.__type).join(" | ");
+    const __description: string = `be of type "${__type}"`;
+    const __test = (value: unknown): value is T => {
+        return validators.some((prop) => prop.__test(value));
     };
+
+    return { __test, __type, __convert, __description };
 };

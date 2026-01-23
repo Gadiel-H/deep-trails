@@ -1,6 +1,9 @@
 import type { Validator } from "../types/index";
 
-/** @internal */
+/**
+ * Returns a validator for booleans.
+ * @internal
+ */
 export const boolean = (): Validator<boolean> => ({
     __type: "boolean",
     __convert: (val) => val,
