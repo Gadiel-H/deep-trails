@@ -12,21 +12,30 @@ This document provides a short and practical guide to contributing, from setup t
 
 ## Steps
 
+> If something fails and you're not sure why, it's okay to still open the PR and explain the issue.
+
 1. **Fork the repository**
 
-    Go to the repository and fork it to your GitHub account.
+    Go to the repository and fork it to your GitHub account.  
+    Forking creates your own copy of the repository.
 
 2. **Clone the repository**
 
     ```bash
-    git clone https://github.com/gadiel-h/deep-trails
+    git clone https://github.com/<your-username>/deep-trails
     cd deep-trails
+    ```
+
+    Optional but recommended:
+
+    ```bash
+    git remote add upstream https://github.com/gadiel-h/deep-trails
     ```
 
 3. **Create a branch for your changes**
 
     ```bash
-    git checkout -b my-branch
+    git checkout -b fix-doc-typo
     ```
 
 4. **Install development dependencies**
@@ -41,40 +50,46 @@ This document provides a short and practical guide to contributing, from setup t
     - For example, fix bugs or add new features.
     - Follow the existing code style and configurations.
 
-6. **Run tests**
+6. **Build the package**
+
+    ```bash
+    npm run build
+    ```
+
+    This is necessary to run the tests.
+
+7. **Run tests**
 
     ```bash
     npm run test
     ```
 
-7. **Format the code**
+8. **Format the code**
 
     ```bash
     npm run format
     ```
 
-8. **Check TypeScript errors**
+9. **Check TypeScript errors**
 
     ```bash
     npx tsc
     ```
 
-    If you're unsure about a TypeScript error, open the PR and explain it.
-
-9. **Commit with your changes**
+10. **Commit with your changes**
 
     ```bash
     git add .
     git commit -m "Short description of the change"
     ```
 
-10. **Push your branch**
+11. **Push your branch**
 
     ```bash
-    git push origin my-branch
+    git push -u origin my-branch
     ```
 
-11. **Open a Pull Request**
+12. **Open a Pull Request**
     - Go to your fork on GitHub.
     - Choose "Compare & pull request".
     - Briefly describe your changes.
