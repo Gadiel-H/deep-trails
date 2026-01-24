@@ -7,6 +7,10 @@ For more details about a release, click on the corresponding version.
 
 ## [Unreleased]
 
+### Documentation
+
+- Corrected and improved the changelog, home page, and contribution guide.
+
 ## [v3.0.0-beta.2] - 2026-01-12
 
 ### Changed
