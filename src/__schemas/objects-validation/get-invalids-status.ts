@@ -59,11 +59,8 @@ export function getInvalidsStatus<T extends object>(
         if (subSchema && isNoFnObject(value) && isSchema(subSchema)) {
             let nextDefaults = defaults?.[key] || null;
 
-            getInvalidsStatus(value, subSchema, nextDefaults, {
-                currentPath: [...status.currentPath, key],
-                totalProps: status.totalProps,
-                invalidsList: status.invalidsList
-            });
+            status.currentPath = [...status.currentPath, key];
+            getInvalidsStatus(value, subSchema, nextDefaults, status);
         }
     }
 
