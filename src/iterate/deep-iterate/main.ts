@@ -102,10 +102,12 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
 
     const finishedSymbol = Symbol("FINISH"),
         iterator = makeIterator(object),
+        size = iterator?.size,
         rootPath = (pathType === "string" ? "" : []) as string | K[];
 
     try {
-        if (!iterator || (iterator.size as number) <= 0) {
+        const hasEmptySize = Number.isInteger(size) ? (size as any) <= 0 : false;
+        if (!iterator || hasEmptySize) {
             throw finishedSymbol;
         }
 

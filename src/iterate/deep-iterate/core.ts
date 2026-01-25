@@ -15,6 +15,8 @@ import type {
     CoreParams
 } from "../../types/deep-iterate/index";
 
+const { isInteger } = Number;
+
 /**
  * Recursively iterates over the nodes of a nested object, calling a callback at each one.
  * @internal
@@ -196,8 +198,10 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         if (iterateKeys && !skipKey && key && (keyType === "object" || keyType === "function")) {
             const k = key as T;
             const iterator = makeIterator(k);
+            const size = iterator?.size;
+            const hasEmptySize = isInteger(size) ? (size as number) <= 0 : false;
 
-            if (iterator && (iterator.size as number) > 0) {
+            if (iterator && !hasEmptySize) {
                 params.iterator = iterator;
                 params.object = k;
                 params.context = {
@@ -227,8 +231,10 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         ) {
             const v = value as T;
             const iterator = makeIterator(v);
+            const size = iterator?.size;
+            const hasEmptySize = isInteger(size) ? (size as number) <= 0 : false;
 
-            if (iterator && (iterator.size as number) > 0) {
+            if (iterator && !hasEmptySize) {
                 params.iterator = iterator;
                 params.object = v;
                 params.context = {
