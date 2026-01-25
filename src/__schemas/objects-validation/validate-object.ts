@@ -45,7 +45,7 @@ export function validateObject<T extends Dictionary>(
 
     const { invalidsList, totalProps } = getInvalidsStatus(object, schema, defaultObject, {
         totalProps: 0,
-        currentPath: [],
+        currentPath: "",
         invalidsList: []
     });
 

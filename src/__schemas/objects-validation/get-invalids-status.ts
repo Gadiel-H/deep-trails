@@ -21,7 +21,7 @@ export function getInvalidsStatus<T extends object>(
     defaults: T | Partial<T> | null,
     status: {
         totalProps: number;
-        currentPath: PropertyKey[];
+        currentPath: string;
         invalidsList: InvalidsList;
     }
 ): typeof status {
@@ -35,6 +35,7 @@ export function getInvalidsStatus<T extends object>(
         const subSchema = validator.__subSchema;
 
         let value = object[key];
+        let path = "";
 
         if (!(key in object)) {
             if (defaults && key in defaults) {
@@ -48,7 +49,7 @@ export function getInvalidsStatus<T extends object>(
 
         if (!validator.__test(value)) {
             const type = validator.__type;
-            const path = toPathString(status.currentPath, {
+            path = toPathString(status.currentPath, {
                 extraKey: key,
                 useBrackets: false
             });
@@ -59,7 +60,14 @@ export function getInvalidsStatus<T extends object>(
         if (subSchema && isNoFnObject(value) && isSchema(subSchema)) {
             let nextDefaults = defaults?.[key] || null;
 
-            status.currentPath = [...status.currentPath, key];
+            status.currentPath =
+                path.length > 0
+                    ? path
+                    : toPathString(status.currentPath, {
+                          extraKey: key,
+                          useBrackets: false
+                      });
+
             getInvalidsStatus(value, subSchema, nextDefaults, status);
         }
     }
