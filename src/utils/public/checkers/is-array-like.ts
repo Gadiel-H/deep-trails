@@ -1,4 +1,4 @@
-const { isInteger, MAX_SAFE_INTEGER } = Number;
+const { MAX_SAFE_INTEGER } = Number;
 
 /**
  * Checks whether a value is array-like.
@@ -18,16 +18,22 @@ const { isInteger, MAX_SAFE_INTEGER } = Number;
  * @since 3.0.0-beta.1
  */
 export const isArrayLike = <V = any>(value: any): value is ArrayLike<V> => {
+    if (value == null) return false;
+
     const type = typeof value;
 
     if (type === "string") return true;
-    if (!value || type !== "object") return false;
+    if (type !== "object") return false;
 
     const len = value.length;
 
-    if (!isInteger(len) || len < 0) return false;
+    if (typeof len !== "number") return false;
+
+    if (len < 0 || len % 1 !== 0) return false;
 
     if (len > MAX_SAFE_INTEGER) return false;
 
-    return len === 0 || len - 1 in value;
+    if (len === 0) return false;
+
+    return len - 1 in value;
 };
