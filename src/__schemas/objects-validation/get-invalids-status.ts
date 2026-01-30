@@ -2,7 +2,9 @@
 
 import type { Schema, InvalidsList } from "../types/index.js";
 import { isSchema } from "../record-schema.js";
-import { isNoFnObject, toPathString } from "../../utils/public/index.js";
+import { isNoFnObject, toPathString, toSimpleString } from "../../utils/public/index.js";
+
+const notProvided = Symbol("NOT-PROVIDED");
 
 /**
  * Recursively checks an object based on a schema and collects invalid properties.
@@ -34,27 +36,29 @@ export function getInvalidsStatus<T extends object>(
         const validator = schema[key];
         const subSchema = validator.__subSchema;
 
-        let value = object[key];
+        let value: unknown = notProvided;
+        let valueString: string = "<not provided>";
         let path = "";
 
-        if (!(key in object)) {
-            if (defaults && key in defaults) {
-                value = validator.__convert(defaults[key]);
-            }
-
-            object[key] = value;
-        } else {
-            value = validator.__convert(value);
+        if (key in object) {
+            value = object[key];
+        } else if (defaults && key in defaults) {
+            value = object[key] = defaults[key];
         }
 
-        if (!validator.__test(value)) {
+        if (value !== notProvided) {
+            value = validator.__convert(value);
+            valueString = toSimpleString(value);
+        }
+
+        if (value === notProvided || !validator.__test(value)) {
             const type = validator.__type;
             path = toPathString(status.currentPath, {
                 extraKey: key,
                 useBrackets: false
             });
 
-            status.invalidsList.push([path, type, value]);
+            status.invalidsList.push([path, type, valueString]);
         }
 
         if (subSchema && isNoFnObject(value) && isSchema(subSchema)) {

@@ -1,6 +1,5 @@
 "use strict";
 
-import { toSimpleString } from "../../utils/public/index.js";
 import type { InvalidsList } from "../types/index";
 
 /** Displays invalid properties by throwing a `TypeError`. @internal */
@@ -14,8 +13,8 @@ export function throwInvalids(
 
     let i = -1;
     while (++i < len) {
-        const [name, type, value] = invalidProperties[i];
-        const string = `${name}: ${type} = ${toSimpleString(value)}\n`;
+        const [path, type, value] = invalidProperties[i];
+        const string = `${path}: ${type} = ${value}\n`;
         invalidsStrings[i] = string;
     }
 
