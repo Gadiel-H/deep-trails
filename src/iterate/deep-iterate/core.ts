@@ -28,7 +28,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
     const { object, visitLog, options, utils } = params;
     const { iterator, visitsCounter, context } = params;
     const { finishedSymbol, toPathStringOptions } = utils;
-    const { useBrackets: verbosePath } = toPathStringOptions;
+    const useBrackets = toPathStringOptions.useBrackets as boolean;
 
     const { maxParentVisits, visitLogType } = options;
 
@@ -120,9 +120,9 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         if (pathType === "array") path = [...objPath, key];
         else {
             path = toPathString(objPath, {
-                verbose: verbosePath,
+                useBrackets,
                 extraKey: key
-            } as any);
+            });
         }
 
         // ----- Callback execution -----
@@ -165,9 +165,9 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                     (path as any[])[path.length - 1] = key;
                 } else {
                     path = toPathString(objPath, {
-                        verbose: verbosePath,
+                        useBrackets,
                         extraKey: key
-                    } as any);
+                    });
                 }
             }
         }
