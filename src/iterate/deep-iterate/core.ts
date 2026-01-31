@@ -25,11 +25,8 @@ const { is } = Object;
 export const deepIterateCore = <T extends object>(params: CoreParams<T>): void => {
     // ========== Check if should continue ========== //
 
-    const { object, visitLog, options, utils } = params;
+    const { object, visitLog, options } = params;
     const { iterator, visitsCounter, context } = params;
-    const { finishedSymbol, toPathStringOptions } = utils;
-    const useBrackets = toPathStringOptions.useBrackets as boolean;
-
     const { maxParentVisits, visitLogType } = options;
 
     let visits = visitsCounter.get(object) || 0;
@@ -103,6 +100,9 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
     /** Index of each node. */ let index: number;
     /** Path of each node.  */ let path: unknown[] | string;
 
+    const { utils } = params;
+    const pathStrOptions = { ...utils.toPathStringOptions };
+
     // ========== Iterate the object ========== //
 
     while (!loopDone) {
@@ -111,18 +111,14 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         loopDone = done;
         if (loopDone || !entry) break;
 
-        control.skipNode = control.skipKey = control.skipValue = false;
-
         key = entry[0];
         value = entry[1];
         index = entry[2];
 
-        if (pathType === "array") path = [...objPath, key];
+        if (pathType === "array") path = objPath.concat(key as any);
         else {
-            path = toPathString(objPath, {
-                useBrackets,
-                extraKey: key
-            });
+            pathStrOptions.extraKey = key;
+            path = toPathString(objPath, pathStrOptions);
         }
 
         // ----- Callback execution -----
@@ -164,10 +160,8 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                 if (pathType === "array") {
                     (path as any[])[path.length - 1] = key;
                 } else {
-                    path = toPathString(objPath, {
-                        useBrackets,
-                        extraKey: key
-                    });
+                    pathStrOptions.extraKey = key;
+                    path = toPathString(objPath, pathStrOptions);
                 }
             }
         }
@@ -183,17 +177,21 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         }
         if (stopParentNow) break;
 
-        const { stopParentAfterNode, skipNode, skipKey, skipValue } = control;
+        const { stopParentAfterNode, skipNode } = control;
 
         if (stopParentAfterNode) loopDone = true;
 
-        if (skipNode) continue;
+        if (skipNode) {
+            control.skipNode = false;
+            continue;
+        }
 
         // ----- Check if should iterate -----
 
         // --- Key ---
 
-        if (iterateKeys && !skipKey && isObject(key)) {
+        if (iterateKeys && !control.skipKey && isObject(key)) {
+            control.skipKey = false;
             const k = key as T;
             const iterator = makeIterator(k);
             const size = iterator?.size;
@@ -220,7 +218,8 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
 
         // --- Value ---
 
-        if (iterateValues && !skipValue && isObject(value)) {
+        if (iterateValues && !control.skipValue && isObject(value)) {
+            control.skipValue = false;
             const v = value as T;
             const iterator = makeIterator(v);
             const size = iterator?.size;
@@ -246,5 +245,5 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         }
     }
 
-    if (finishAfterLoop) throw finishedSymbol;
+    if (finishAfterLoop) throw utils.finishedSymbol;
 };
