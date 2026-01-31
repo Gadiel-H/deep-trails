@@ -1,7 +1,7 @@
 "use strict";
 
 // ----- Utils -----
-import { typeOf, toPathString, toSimpleString } from "../../utils/public/index.js";
+import { isObject, typeOf, toPathString, toSimpleString } from "../../utils/public/index.js";
 
 // ----- Iterator -----
 import { makeIterator } from "./helpers/iterator-selector.js";
@@ -16,6 +16,7 @@ import type {
 } from "../../types/deep-iterate/index";
 
 const { isInteger } = Number;
+const { is } = Object;
 
 /**
  * Recursively iterates over the nodes of a nested object, calling a callback at each one.
@@ -71,24 +72,19 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         finishAfterNode: false,
         finishNow: false,
 
-        useEntry(k, v) {
+        useEntry(newKey, newValue) {
             let code = 0;
 
-            if (1 in arguments) {
-                // Checking that the values are different
-                if (v !== value && !(v !== v && value !== value)) code += 1;
-            }
+            if (1 in arguments && !is(newValue, value)) code += 1;
 
-            if (0 in arguments) {
-                // Checking that the keys are different
-                if (k !== key && !(k !== k && key !== key)) code += 2;
-            }
+            if (0 in arguments && !is(newKey, key)) code += 2;
 
             if (code === 0) return 0;
 
-            useEntry = [k, v];
+            newEntry = [newKey, newValue];
+            newEntryCode = code as any;
 
-            return (useEntryCode = code as 0 | 1 | 2 | 3);
+            return newEntryCode;
         }
     };
 
@@ -97,10 +93,10 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
     let finishAfterLoop: boolean = false;
 
     /** Obtained code on calling `control.useEntry`. */
-    let useEntryCode: 0 | 1 | 2 | 3 = 0;
+    let newEntryCode: 0 | 1 | 2 | 3 = 0;
 
     /** Entry to use after calling `control.useEntry`. */
-    let useEntry: [unknown, unknown] | null = null;
+    let newEntry: [unknown, unknown] | null = null;
 
     /** Value of each node. */ let value: unknown;
     /** Key of each node.   */ let key: unknown;
@@ -122,11 +118,12 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         index = entry[2];
 
         if (pathType === "array") path = [...objPath, key];
-        else
+        else {
             path = toPathString(objPath, {
                 verbose: verbosePath,
                 extraKey: key
             } as any);
+        }
 
         // ----- Callback execution -----
 
@@ -153,23 +150,25 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
 
         // ---- Check control state -----
 
-        if (useEntry) {
-            const _key = useEntry[0],
-                _value = useEntry[1],
-                code = useEntryCode;
+        if (newEntry) {
+            const newKey = newEntry[0],
+                newValue = newEntry[1],
+                code = newEntryCode;
 
-            useEntry = null;
-            useEntryCode = 0;
+            newEntry = null;
+            newEntryCode = 0;
 
-            if (code >= 1) value = _value;
+            if (code >= 1) value = newValue;
             if (code >= 2) {
-                key = _key;
-                if (pathType === "array") (path as any[])[path.length - 1] = key;
-                else
+                key = newKey;
+                if (pathType === "array") {
+                    (path as any[])[path.length - 1] = key;
+                } else {
                     path = toPathString(objPath, {
                         verbose: verbosePath,
                         extraKey: key
                     } as any);
+                }
             }
         }
 
@@ -194,8 +193,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
 
         // --- Key ---
 
-        const keyType = typeof key;
-        if (iterateKeys && !skipKey && key && (keyType === "object" || keyType === "function")) {
+        if (iterateKeys && !skipKey && isObject(key)) {
             const k = key as T;
             const iterator = makeIterator(k);
             const size = iterator?.size;
@@ -222,13 +220,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
 
         // --- Value ---
 
-        const valueType = typeof value;
-        if (
-            iterateValues &&
-            !skipValue &&
-            value &&
-            (valueType === "object" || valueType === "function")
-        ) {
+        if (iterateValues && !skipValue && isObject(value)) {
             const v = value as T;
             const iterator = makeIterator(v);
             const size = iterator?.size;
