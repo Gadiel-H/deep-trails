@@ -27,10 +27,12 @@ export function getInvalidsStatus<T extends object>(
         invalidsList: InvalidsList;
     }
 ): typeof status {
-    type Key = keyof typeof schema;
-    const keys = Reflect.ownKeys(schema) as Key[];
+    const parentPath = status.currentPath;
 
-    for (const key of keys) {
+    type Key = keyof typeof schema;
+    const schemaKeys = new Set(Reflect.ownKeys(schema)) as Set<Key>;
+
+    for (const key of schemaKeys) {
         status.totalProps++;
 
         const validator = schema[key];
@@ -73,6 +75,20 @@ export function getInvalidsStatus<T extends object>(
                       });
 
             getInvalidsStatus(value, subSchema, nextDefaults, status);
+        }
+    }
+
+    const objKeys = Reflect.ownKeys(object);
+
+    for (const key of objKeys) {
+        if (!schemaKeys.has(key as any)) {
+            const valueString = toSimpleString(object[key]);
+            const path = toPathString(parentPath, {
+                extraKey: key,
+                useBrackets: false
+            });
+
+            status.invalidsList.push([path, "unexpected", valueString]);
         }
     }
 
