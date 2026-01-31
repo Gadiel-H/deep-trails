@@ -67,40 +67,36 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
     validateObject(
         { object, callback, options },
         paramsSchema,
-        /// @ts-ignore
-        options !== deepIterate.options ? { options: deepIterate.options } : {},
+        { options: deepIterate.options },
         "inputs in deepIterate"
     );
 
-    /// @ts-ignore
-    let __options: Options<P, K, V> = { ...options };
-
-    const { pathType, callbackWrapper } = __options;
-    const { exposeVisitLog, visitLogType } = __options;
-    const visitLog = createLog[visitLogType]();
+    const optionsCopy = { ...options } as Options<P, K, V>,
+        { exposeVisitLog, visitLogType, callbackWrapper } = optionsCopy,
+        visitLog = createLog[visitLogType as any](),
+        params: CallbackThis<R, K, V, P> = {
+            root: object,
+            callback,
+            options
+        };
 
     let callbackOrigin: CoreParams<P, K, V>["cbAlias"];
-    let __callback = callback;
+    let finalCallback = callback;
 
     if (callbackWrapper) {
-        __callback = callbackWrapper;
+        finalCallback = callbackWrapper;
         callbackOrigin = "options.callbackWrapper";
     } else {
-        __callback = callback;
+        finalCallback = callback;
         callbackOrigin = "The callback";
     }
 
-    const params: CallbackThis<R, K, V, P> = {
-        root: object,
-        callback,
-        options
-    };
-
-    __callback = __callback.bind(params);
+    finalCallback = finalCallback.bind(params);
 
     if (exposeVisitLog) params.visitLog = visitLog;
 
-    const finishedSymbol = Symbol("FINISH"),
+    const { pathType } = optionsCopy,
+        finishedSymbol = Symbol("FINISH"),
         iterator = makeIterator(object),
         size = iterator?.size,
         rootPath = (pathType === "string" ? "" : []) as string | K[];
@@ -113,8 +109,8 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
 
         deepIterateCore<P>({
             object: object,
-            callback: __callback,
-            options: __options,
+            callback: finalCallback,
+            options: optionsCopy,
             visitLog: visitLog,
 
             visitsCounter: new Map([[object, 0]]),
