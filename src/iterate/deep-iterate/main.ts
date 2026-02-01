@@ -7,7 +7,7 @@ import type { Callback, Options, CoreParams, CallbackThis } from "../../types/de
 import { validateObject } from "../../__schemas/index.js";
 import { defaultOptions } from "./helpers/default-options.js";
 import { paramsSchema } from "./schemas/params-schema.js";
-import { toPathString } from "../../utils/public/index.js";
+import { toPathString, isPlainObject } from "../../utils/public/index.js";
 import { createLog } from "./helpers/log-creators.js";
 
 // ----- Core -----
@@ -64,21 +64,25 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
     callback: Callback<P, K, V, R> = () => {},
     options: Partial<Options<P, K, V>> = deepIterate.options
 ): CallbackThis<R, K, V, P> {
+    let optionsCopied = false;
+    let optionsCopy: Readonly<Options<P, K, V>> = options as any;
+
+    if (isPlainObject(options)) {
+        optionsCopy = { ...options } as any;
+        optionsCopied = true;
+    }
+
     validateObject(
-        { object, callback, options },
+        { object, callback, options: optionsCopy },
         paramsSchema,
         { options: deepIterate.options },
         "inputs in deepIterate"
     );
 
-    const optionsCopy = { ...options } as Options<P, K, V>,
-        { exposeVisitLog, visitLogType, callbackWrapper } = optionsCopy,
-        visitLog = createLog[visitLogType as any](),
-        params: CallbackThis<R, K, V, P> = {
-            root: object,
-            callback,
-            options
-        };
+    optionsCopy = Object.freeze((optionsCopied ? options : { ...options }) as Options<P, K, V>);
+
+    const { exposeVisitLog, visitLogType, callbackWrapper } = optionsCopy,
+        visitLog = createLog[visitLogType as any]();
 
     let callbackOrigin: CoreParams<P, K, V>["cbAlias"];
     let finalCallback = callback;
@@ -91,9 +95,22 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
         callbackOrigin = "The callback";
     }
 
-    finalCallback = finalCallback.bind(params);
+    const cbThis: CallbackThis<R, K, V, P> = Object.freeze({
+        root: object,
+        options: optionsCopy,
+        callback,
+        visitLog
+    });
+    const cbThisCopy = { ...cbThis };
 
-    if (exposeVisitLog) params.visitLog = visitLog;
+    if (exposeVisitLog) {
+        (cbThisCopy as any).visitLog = visitLog;
+    } else {
+        delete (cbThisCopy as any).visitLog;
+    }
+
+    Object.freeze(cbThisCopy);
+    finalCallback = finalCallback.bind(cbThisCopy);
 
     const { pathType } = optionsCopy,
         finishedSymbol = Symbol("FINISH"),
@@ -138,9 +155,7 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
         if (value !== finishedSymbol) throw value;
     }
 
-    params.visitLog = visitLog;
-
-    return params;
+    return cbThis;
 }
 
 Object.defineProperty(deepIterate, "options", {
