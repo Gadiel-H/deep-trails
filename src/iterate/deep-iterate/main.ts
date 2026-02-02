@@ -79,7 +79,11 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
         "inputs in deepIterate"
     );
 
-    optionsCopy = Object.freeze((optionsCopied ? options : { ...options }) as Options<P, K, V>);
+    if (!optionsCopied) {
+        optionsCopy = { ...options } as Options<P, K, V>;
+    }
+
+    Object.freeze(optionsCopy);
 
     const { exposeVisitLog, visitLogType, callbackWrapper } = optionsCopy,
         visitLog = createLog[visitLogType as any]();
