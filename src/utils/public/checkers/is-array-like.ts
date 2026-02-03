@@ -33,7 +33,7 @@ export const isArrayLike = <V = any>(value: any): value is ArrayLike<V> => {
 
     if (len > MAX_SAFE_INTEGER) return false;
 
-    if (len === 0) return false;
+    if (len === 0) return true;
 
     return len - 1 in value;
 };
