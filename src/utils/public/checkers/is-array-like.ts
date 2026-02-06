@@ -14,7 +14,7 @@ const { MAX_SAFE_INTEGER } = Number;
  * isArrayLike({ 0: "a", length: 2 })    // true
  * isArrayLike({ 0: 346, length: 1n })   // false (length of type "bigint")
  *
- * @since 3.0.0-beta.1
+ * @since 3.0.0-beta.3
  */
 export const isArrayLike = <V = any>(value: any): value is ArrayLike<V> => {
     if (value == null) return false;
