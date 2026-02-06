@@ -97,7 +97,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
 
     /** Value of each node. */ let value: unknown;
     /** Key of each node.   */ let key: unknown;
-    /** Index of each node. */ let index: number;
+    /** Index of each node. */ let index: number = -1;
     /** Path of each node.  */ let path: unknown[] | string;
 
     const { utils } = params;
@@ -108,12 +108,12 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
     while (!loopDone) {
         const { done, value: entry } = iterator.next();
 
-        loopDone = done;
+        loopDone = done as boolean;
         if (loopDone || !entry) break;
 
         key = entry[0];
         value = entry[1];
-        index = entry[2];
+        index += 1;
 
         if (pathType === "array") path = objPath.concat(key as any);
         else {

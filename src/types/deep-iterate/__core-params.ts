@@ -2,12 +2,6 @@
 
 import { toPathString } from "../../utils/public/index.js";
 import type { Callback, Options, ParentContext, VisitLog } from "./index";
-import type { EntriesIterator } from "../index";
-
-/** @internal */
-type IteratorFactory<T extends object, K = unknown, V = unknown> = (
-    object: T
-) => EntriesIterator<IteratorFactory<T, K, V>, T, K, V>;
 
 /** `deepIterateCore` params object. @internal */
 export type CoreParams<P extends object, K = any, V = any> = {
@@ -18,7 +12,7 @@ export type CoreParams<P extends object, K = any, V = any> = {
     context: ParentContext<P, K>;
 
     /** The iterator for the current parent. */
-    iterator: EntriesIterator<IteratorFactory<P, K, V>, P, K, V>;
+    iterator: Iterator<any, any, any> & { size: number | undefined };
 
     readonly callback: Callback<P, K, V>;
 
