@@ -1,11 +1,11 @@
 "use strict";
 
-import type { EntriesIterator } from "../../../types/index";
 import { isArrayLike, typeOf } from "../../../utils/public/index.js";
-import { PropertiesIterator, ArrayIterator, MethodIterator } from "../../index.js";
+import { PropertiesIterator } from "../../index.js";
 
+const arrayEntries = Array.prototype.entries;
 const { hasOwnProperty } = Object.prototype,
-    hasEntries = (obj: any): boolean =>
+    hasEntries = (obj: any): obj is { entries: Function } =>
         typeof obj.entries === "function" && !hasOwnProperty.call(obj, "entries");
 
 /**
@@ -14,7 +14,7 @@ const { hasOwnProperty } = Object.prototype,
  */
 export function makeIterator<T extends object>(
     object: T
-): EntriesIterator<any, T, any, any> | null {
+): (Iterator<any, any, any> & { size: number | undefined }) | null {
     if (typeof object === "function") return null;
 
     const type = typeOf(object);
@@ -30,13 +30,21 @@ export function makeIterator<T extends object>(
         return null;
     }
 
+    let iterator: any;
+
     if (isArrayLike(object)) {
-        return ArrayIterator(object) as any;
+        iterator = arrayEntries.call(object);
+        iterator.size = object.length;
+    } else if (hasEntries(object)) {
+        iterator = object.entries();
+        iterator.size = undefined;
+
+        if (object instanceof Map || object instanceof Set) {
+            iterator.size = (object as any).size;
+        }
+    } else {
+        return PropertiesIterator(object);
     }
 
-    if (hasEntries(object)) {
-        return MethodIterator(object, "entries");
-    }
-
-    return PropertiesIterator(object);
+    return iterator;
 }
