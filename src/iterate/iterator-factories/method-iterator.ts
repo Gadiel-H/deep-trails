@@ -23,6 +23,14 @@ type EntriesMethod = (...args: any[]) => IterableIterator<any>;
  * console.log(state); // { done: false, value: [Date, "date", 0] }
  *
  * @since 3.0.0-beta.0
+ *
+ * @deprecated
+ * It will be removed in version 3.0.0
+ *
+ * This factory was exposed during beta and will not
+ * be part of the stable API because it is redundant.
+ *
+ * Instead, use iterators directly from the object's methods, such as `object.entries()`.
  */
 export function MethodIterator<T extends object, K = unknown, V = unknown>(
     object: T & { size?: number },

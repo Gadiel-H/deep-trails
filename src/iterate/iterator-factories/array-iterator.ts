@@ -18,6 +18,15 @@ import { destroyIterator, getSymbolIterator } from "./helpers/index.js";
  * console.log(state); // { done: false, value: [0, "a", 0] }
  *
  * @since 3.0.0-beta.0
+ *
+ * @deprecated
+ * It will be removed in version 3.0.0
+ *
+ * This factory was exposed during beta and will not
+ * be part of the stable API because it is redundant.
+ *
+ * Instead, use native iterators like `Array.prototype.entries.call(object)`
+ * and indexes for the peek functionality.
  */
 export function ArrayIterator<V = unknown>(
     object: ArrayLike<V>
