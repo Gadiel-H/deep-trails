@@ -1,4 +1,5 @@
-export type { Callback, CallbackThis } from "./callback";
+export type { Snapshot } from "./snapshot";
+export type { Callback } from "./callback";
 export type { Options } from "./options";
 export type * from "./visit-logs";
 

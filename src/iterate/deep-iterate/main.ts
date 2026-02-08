@@ -1,7 +1,7 @@
 "use strict";
 
 // ----- Types -----
-import type { Callback, Options, CoreParams, CallbackThis } from "../../types/deep-iterate/index";
+import type { Callback, Options, CoreParams, Snapshot } from "../../types/deep-iterate/index";
 
 // ----- Helpers -----
 import { validateObject } from "../../__schemas/index.js";
@@ -57,13 +57,13 @@ deepIterate.options = defaultOptions;
  *     { pathType: "string" }
  * );
  *
- * @since 3.0.0-beta.0
+ * @since 3.0.0-beta.3
  */
 export function deepIterate<R extends P, K = unknown, V = unknown, P extends object = object>(
     object: R,
     callback: Callback<P, K, V, R> = () => {},
     options: Partial<Options<P, K, V>> = deepIterate.options
-): CallbackThis<R, K, V, P> {
+): Snapshot<R, K, V, P> {
     let optionsCopied = false;
     let optionsCopy: Readonly<Options<P, K, V>> = options as any;
 
@@ -99,22 +99,22 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
         callbackOrigin = "The callback";
     }
 
-    const cbThis: CallbackThis<R, K, V, P> = Object.freeze({
+    const snapshot: Snapshot<R, K, V, P> = Object.freeze({
         root: object,
         options: optionsCopy,
         callback,
         visitLog
     });
-    const cbThisCopy = { ...cbThis };
+    const cbThis = { ...snapshot };
 
     if (exposeVisitLog) {
-        (cbThisCopy as any).visitLog = visitLog;
+        (cbThis as any).visitLog = visitLog;
     } else {
-        delete (cbThisCopy as any).visitLog;
+        delete (cbThis as any).visitLog;
     }
 
-    Object.freeze(cbThisCopy);
-    finalCallback = finalCallback.bind(cbThisCopy);
+    Object.freeze(cbThis);
+    finalCallback = finalCallback.bind(cbThis);
 
     const { pathType } = optionsCopy,
         finishedSymbol = Symbol("FINISH"),
@@ -159,7 +159,7 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
         if (value !== finishedSymbol) throw value;
     }
 
-    return cbThis;
+    return snapshot;
 }
 
 Object.defineProperty(deepIterate, "options", {
