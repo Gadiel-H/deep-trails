@@ -101,7 +101,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
     /** Path of each node.  */ let path: unknown[] | string;
 
     const { utils } = params;
-    const pathStrOptions = { ...utils.toPathStringOptions };
+    const pathStrOptions = utils.toPathStringOptions;
 
     // ========== Iterate the object ========== //
 
