@@ -40,7 +40,14 @@ export type Options<P extends object, K = unknown, V = unknown> = {
      * Optional callback wrapper.
      *
      * If it is a function, it will replace the callback.
+     *
      * It can access the original callback using `this.callback`.
+     *
+     * @deprecated
+     * Deprecated since 3.0.0-beta.3 because it can abuse the original
+     * callback or simply not use it correctly and cause problems.
+     *
+     * It will be removed in version 3.0.0
      */
     callbackWrapper: null | Callback<P, K, V>;
 
