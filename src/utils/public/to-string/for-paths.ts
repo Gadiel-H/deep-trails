@@ -15,7 +15,7 @@ const strKeyWithDots = (key: unknown, index: number) => {
 
 /**
  * Default options argument for `toPathString`.
- * @since 3.0.0-beta.0
+ * @since 3.0.0-beta.3
  */
 toPathString.options = {
     useBrackets: false
@@ -31,8 +31,6 @@ toPathString.options = {
      * This option will be removed in v3.0.0
      */
     useBrackets?: boolean;
-    /** Optional extra key to append to the path string. */
-    extraKey?: unknown;
 };
 
 /** @inline */
@@ -40,10 +38,10 @@ type Notation = "mixed" | "bracket";
 
 /** @inline */
 type OptionsArgument = typeof toPathString.options & {
-    /**
-     * The notation in which the path and/or the extra key string will be created.
-     */
+    /** The notation in which the path and/or the extra key string will be created. */
     notation?: Notation;
+    /** Optional extra key to append to the path string. */
+    extraKey?: unknown;
 };
 
 /**
@@ -73,19 +71,22 @@ toPathString.notation = "mixed" as Notation;
  * toPathString(path, { extraKey: "d" })         // "a.b.c[0].d"
  * toPathString("a.b", { notation: "bracket" })  // "a.b"
  *
- * @since 3.0.0-beta.0
+ * @since 3.0.0-beta.3
  */
 export function toPathString<T = unknown>(
     path: Readonly<T[]> | string,
-    options: OptionsArgument = Object.assign(
-        { notation: toPathString.notation },
-        toPathString.options
-    )
+    options: OptionsArgument = {
+        notation: toPathString.notation,
+        useBrackets: toPathString.options.useBrackets
+    } as OptionsArgument
 ): string {
     const defaults = toPathString.options;
 
     if (options == null) {
-        options = Object.assign({ notation: toPathString.notation }, defaults);
+        options = {
+            notation: toPathString.notation,
+            useBrackets: defaults.useBrackets
+        } as OptionsArgument;
     } else if (typeof options !== "object") {
         throw new TypeError(
             "Expected an options object as second argument. " +
@@ -99,16 +100,10 @@ export function toPathString<T = unknown>(
         ("useBrackets" in options && options.useBrackets) ||
         defaults.useBrackets;
 
-    let { extraKey } = options;
     /** Symbol for detect if the extra key was not provided. */
     const notProvided = Symbol();
 
-    extraKey =
-        "extraKey" in options
-            ? options.extraKey
-            : "extraKey" in defaults
-              ? defaults.extraKey
-              : notProvided;
+    const extraKey = "extraKey" in options ? options.extraKey : notProvided;
 
     if (typeof path === "string") {
         if (extraKey === notProvided) return path;
