@@ -94,11 +94,15 @@ export function toPathString<T = unknown>(
         );
     }
 
-    const useBrackets =
-        ("notation" in options && options.notation === "bracket") ||
-        toPathString.notation === "bracket" ||
-        ("useBrackets" in options && options.useBrackets) ||
-        defaults.useBrackets;
+    const useBracketsGiven = "useBrackets" in options;
+    const notationGiven = "notation" in options;
+    let useBrackets = false;
+
+    if ((notationGiven && useBracketsGiven) || notationGiven) {
+        useBrackets = options.notation === "bracket";
+    } else {
+        useBrackets = options.useBrackets as boolean;
+    }
 
     /** Symbol for detect if the extra key was not provided. */
     const notProvided = Symbol();
