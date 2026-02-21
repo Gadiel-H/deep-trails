@@ -51,6 +51,7 @@ export function getInvalidsStatus<T extends object>(
         if (value !== notProvided) {
             value = validator.__convert(value);
             valueString = toSimpleString(value);
+            object[key] = value;
         }
 
         if (value === notProvided || !validator.__test(value)) {
