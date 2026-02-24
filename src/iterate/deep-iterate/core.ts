@@ -25,17 +25,42 @@ const { is } = Object;
 export const deepIterateCore = <T extends object>(params: CoreParams<T>): void => {
     // ========== Check if should continue ========== //
 
-    const { object, visitLog, options } = params;
+    const { object, visitLog, options, utils } = params;
     const { iterator, visitsCounter, context } = params;
     const { maxParentVisits, visitLogType } = options;
+    const pathStrOptions = utils.toPathStringOptions;
 
     let visits = visitsCounter.get(object) || 0;
+    context.visits = visits;
+    context.size = iterator.size;
+
+    if (visits > 0) {
+        const { onCircular } = options;
+
+        if (onCircular === "skip-node") return;
+        if (onCircular === "throw-error") {
+            const { path, depth, role } = context;
+            delete pathStrOptions.extraKey;
+
+            throw new ReferenceError(
+                `A circular node was found at:\n\n` +
+                    `    path   =  ${toPathString(path, pathStrOptions)}\n` +
+                    `    depth  =  ${depth}\n` +
+                    `    role   =  ${role}\n\n` +
+                    `    You can avoid this error by assigning "skip-node" to options.onCircular\n`
+            );
+        }
+
+        const shouldContinue = (options.onCircular as Function)({ ...context });
+
+        if (!shouldContinue) return;
+    }
+
     if (visits >= maxParentVisits) return;
 
     visits++;
     visitsCounter.set(object, visits);
     context.visits = visits;
-    context.size = iterator.size;
 
     if (visitLog) {
         if (visitLogType === "array") {
@@ -99,9 +124,6 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
     /** Key of each node.   */ let key: unknown;
     /** Index of each node. */ let index: number = -1;
     /** Path of each node.  */ let path: unknown[] | string;
-
-    const { utils } = params;
-    const pathStrOptions = utils.toPathStringOptions;
 
     // ========== Iterate the object ========== //
 

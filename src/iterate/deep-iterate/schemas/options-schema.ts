@@ -12,6 +12,7 @@ export const optionsSchema = recordSchema<Options<object>>({
     iterateKeys: checkBoolean,
     iterateValues: checkBoolean,
     exposeVisitLog: checkBoolean,
+    onCircular: typeUnion([string(["skip-node", "throw-error"]) as any, anyFunction()]) as any,
     maxParentVisits: typeUnion([
         integer(0, Infinity),
         {

@@ -16,7 +16,10 @@ export const defaultOptions = new Proxy<Options<any, any, any>>(
         pathType: "array",
         visitLogType: "null",
         callbackWrapper: null,
-        maxParentVisits: 1
+        maxParentVisits: 1,
+        onCircular({ visits }) {
+            return visits <= this.maxParentVisits;
+        }
     },
     {
         set: (obj, key: string | symbol, val: unknown) => {
