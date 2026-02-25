@@ -7,6 +7,63 @@ For more details about a release, click on the corresponding version.
 
 ## [Unreleased]
 
+### Added
+
+- Object validations now also report excess properties ("path: unexpected = value").
+  For now, this only affects options validation in `deepIterate` and the `deepIterate.options` object.
+
+- Added the `notation` option to `toPathString`. It will replace `useBrackets` in v3.0.0.
+
+- Added the `onCircular` option to `deepIterate`. It will replace `maxParentVisits` in v3.0.0.
+
+### Changed
+
+- The `CallbackThis` type in `DeepIterate` has been renamed to `Snapshot`, and its API is now read-only.
+  This affects both the callback and the return value of `deepIterate`.
+
+- `isArrayLike` now also considers objects missing the last index as array-like.
+  This affects validations using this checker, including those performed internally by `deepIterate`.
+
+- `isInteger` has been renamed to `isIntegerLike`.
+
+- `toPathString` now uses the `options.extraKey` argument only if it is explicitly provided (in each call).
+  You will notice this if you defined `toPathString.options.extraKey`.
+
+### Fixed
+
+- `deepIterate` can now iterate over objects whose size or length cannot be numerically compared.
+  For example, you can now iterate over `FormData` instances.
+
+- The `deepIterate` core now uses the same `useBrackets` option from `toPathString.options` consistently throughout the traversal.
+  You will notice the difference if you were mutating this option during traverse.
+
+- Value conversions are now used in object validations (where possible) instead of the original values.
+  For example, if you pass `{ maxParentVisits: "3" }` as options in `deepIterate`, it will be transformed to `{ maxParentVisits: 3 }`.
+
+### Performance
+
+- `isArrayLike` is now faster by validating the `length` property using operators instead of a function call.
+  This is more noticeable when used thousands or millions of times.
+
+- The `deepIterate` core now performs fewer unnecessary object reads and writes.
+  The improvement is more noticeable in deeper traversals.
+
+- `deepIterate` now uses lighter iterators for objects with an inherited `entries` method or that are array-like.
+
+### Deprecated
+
+These functions and options will be removed in v3.0.0
+
+- The `ArrayIterator` and `MethodIterator` factories were deprecated because they are redundant. Use native iterators instead.
+
+- The `callbackWrapper` option in `deepIterate` was deprecated because it can conflict with the callback itself.
+
+- The `maxParentVisits` option in `deepIterate` was deprecated. Use `onCircular` instead.
+
+- The `useBrackets` option in `toPathString` was deprecated. Use `notation` instead.
+
+- The `isInteger` function was deprecated. Use `isIntegerLike` instead.
+
 ### Documentation
 
 - Corrected and improved the changelog, home page, and contribution guide.
