@@ -3,6 +3,7 @@ export { isObject } from "./is-object.js";
 export { isPlainObject } from "./is-plain-object.js";
 
 export { isArrayLike } from "./is-array-like.js";
+export { isIntegerLike } from "./is-integer-like.js";
 export { isInteger } from "./is-integer.js";
 
 export { isFunction } from "./is-function.js";

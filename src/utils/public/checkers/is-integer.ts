@@ -1,5 +1,4 @@
-const safeIntRegexp = /^\s*(?:[+-]?(?:0|[1-9]\d*)|0[xX][0-9a-fA-F]+)\s*$/;
-const { isInteger: isNumInteger } = Number;
+import { isIntegerLike } from "./index.js";
 
 /**
  * Checks whether a value is an integer of type "bigint", "number" or "string"
@@ -12,14 +11,11 @@ const { isInteger: isNumInteger } = Number;
  * isInteger("0x34")    // true
  * isInteger("20e5")    // false (BigInt fails, parseInt returns 20)
  *
+ * @deprecated since v3.0.0-beta.3
+ *
+ * This function is an alias of `isIntegerLike` and will be removed in v3.0.0.
+ * Use {@linkcode isIntegerLike} instead.
+ *
  * @since 3.0.0-beta.1
  */
-export const isInteger = (int: unknown): int is bigint | number | string => {
-    const type = typeof int;
-
-    if (type === "bigint") return true;
-
-    if (type !== "string") return type === "number" && isNumInteger(int);
-
-    return safeIntRegexp.test(int as string);
-};
+export const isInteger = isIntegerLike;
