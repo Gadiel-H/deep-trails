@@ -7,7 +7,7 @@ import type { Callback, Options, CoreParams, Snapshot } from "../../types/deep-i
 import { validateObject } from "../../__schemas/index.js";
 import { defaultOptions } from "./helpers/default-options.js";
 import { paramsSchema } from "./schemas/params-schema.js";
-import { toPathString, isPlainObject } from "../../utils/public/index.js";
+import { isPlainObject } from "../../utils/public/index.js";
 import { createLog } from "./helpers/log-creators.js";
 
 // ----- Core -----
@@ -139,7 +139,7 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
 
             utils: {
                 finishedSymbol,
-                toPathStringOptions: toPathString.options
+                toPathStringOptions: { notation: "mixed" }
             },
 
             iterator: iterator,

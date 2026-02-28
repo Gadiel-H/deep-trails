@@ -28,6 +28,9 @@ export type CoreParams<P extends object, K = any, V = any> = {
     readonly utils: Readonly<{
         finishedSymbol: symbol;
 
-        toPathStringOptions: typeof toPathString.options & { extraKey?: unknown };
+        toPathStringOptions: {
+            notation: typeof toPathString.notation;
+            extraKey?: unknown;
+        };
     }>;
 };
