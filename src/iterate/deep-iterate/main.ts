@@ -64,6 +64,20 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
     callback: Callback<P, K, V, R> = () => {},
     options: Partial<Options<P, K, V>> = deepIterate.options
 ): Snapshot<R, K, V, P> {
+    if (options !== deepIterate.options && isPlainObject(options)) {
+        if ("callbackWrapper" in options) {
+            console.warn(
+                `deep-trails: The "callbackWrapper" option in deepIterate will be removed in v3.0.0. Use custom callbacks instead.`
+            );
+        }
+
+        if ("maxParentVisits" in options) {
+            console.warn(
+                `deep-trails: The "maxParentVisits" option in deepIterate will be removed in v3.0.0. Use the "onCircular" option instead.`
+            );
+        }
+    }
+
     let optionsCopied = false;
     let optionsCopy: Readonly<Options<P, K, V>> = options as any;
 

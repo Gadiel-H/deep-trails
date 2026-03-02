@@ -32,6 +32,16 @@ export const defaultOptions = new Proxy<Options<any, any, any>>(
                 );
             }
 
+            if (key === "callbackWrapper") {
+                console.warn(
+                    `deep-trails: The default "callbackWrapper" option in deepIterate will be removed in v3.0.0. Use custom callbacks instead.`
+                );
+            } else if (key === "maxParentVisits") {
+                console.warn(
+                    `deep-trails: The default "maxParentVisits" option in deepIterate will be removed in v3.0.0. Use the "onCircular" option instead.`
+                );
+            }
+
             const knownKey = key as keyof typeof optionsSchema;
             const schemaProp = optionsSchema[knownKey];
             const description = schemaProp.__description;

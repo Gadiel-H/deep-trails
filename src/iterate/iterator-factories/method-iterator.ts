@@ -36,6 +36,10 @@ export function MethodIterator<T extends object, K = unknown, V = unknown>(
     object: T & { size?: number },
     methodKey: string | symbol = "entries"
 ): EntriesIterator<typeof MethodIterator, typeof object, K, V> {
+    console.warn(
+        "deep-trails: MethodIterator will be removed in v3.0.0. Use native iterators instead."
+    );
+
     let entriesMethod = object[methodKey] as EntriesMethod,
         entries = entriesMethod.call(object),
         alreadyDone = false,

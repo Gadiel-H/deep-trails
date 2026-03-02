@@ -1,6 +1,7 @@
 "use strict";
 
 import { toSimpleString } from "./for-anything.js";
+import { isNoFnObject } from "../checkers/index.js";
 
 /** RegExp for check identifiers compatible with dot notation. */
 const dotNotation = /^[a-zA-Z_$][\w$]*$/;
@@ -77,9 +78,18 @@ export function toPathString<T = unknown>(
     path: Readonly<T[]> | string,
     options: OptionsArgument = {
         notation: toPathString.notation,
-        useBrackets: toPathString.options.useBrackets
+        useBrackets: toPathString.options.useBrackets,
+        __isDefault__: true
     } as OptionsArgument
 ): string {
+    if (isNoFnObject(options) && (options as any).__isDefault__ !== true) {
+        if ("useBrackets" in options) {
+            console.warn(
+                `deep-trails: The "useBrackets" option in toPathString will be removed in v3.0.0. Use the "notation" option instead.`
+            );
+        }
+    }
+
     const defaults = toPathString.options;
 
     if (options == null) {

@@ -1,5 +1,5 @@
 import type { Validator } from "../types/index";
-import { isInteger } from "../../utils/public/index.js";
+import { isIntegerLike } from "../../utils/public/index.js";
 import { toSimpleString as str } from "../../utils/public/index.js";
 
 const isValidLimit = (num: number) =>
@@ -62,7 +62,7 @@ export const integer = (min: number = -Infinity, max: number = Infinity): Valida
 
     return {
         __test: (num: any): num is number => Number.isInteger(num) && num >= min && num <= max,
-        __convert: (num) => (isInteger(num) ? Number(num) : num),
+        __convert: (num) => (isIntegerLike(num) ? Number(num) : num),
         __type: type,
         __description: `be an integer. Minimum: ${min}. Maximum: ${max}`
     };

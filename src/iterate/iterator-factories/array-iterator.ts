@@ -31,6 +31,10 @@ import { destroyIterator, getSymbolIterator } from "./helpers/index.js";
 export function ArrayIterator<V = unknown>(
     object: ArrayLike<V>
 ): EntriesIterator<typeof ArrayIterator, typeof object, number, V> {
+    console.warn(
+        "deep-trails: ArrayIterator will be removed in v3.0.0. Use native iterators instead."
+    );
+
     object.length;
     let index = -1;
 

@@ -14,4 +14,20 @@ export * from "./to-string/index.js";
  *
  * @since 3.0.0-beta.0
  */
-export { _checkers as checkers };
+export const checkers = new Proxy(_checkers, {
+    get(object, key) {
+        if (typeof key === "string" && key.startsWith("is")) {
+            if (key === "isInteger") {
+                console.warn(
+                    `deep-trails: isInteger will be removed in v3.0.0. Use isIntegerLike from "deep-trails/utils" instead.`
+                );
+            } else {
+                console.warn(
+                    `deep-trails: The checkers object will be removed in v3.0.0. Import ${String(key)} from "deep-trails/utils" instead.`
+                );
+            }
+        }
+
+        return object[key];
+    }
+});

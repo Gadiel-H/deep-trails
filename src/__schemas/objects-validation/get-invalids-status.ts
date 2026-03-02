@@ -58,7 +58,7 @@ export function getInvalidsStatus<T extends object>(
             const type = validator.__type;
             path = toPathString(status.currentPath, {
                 extraKey: key,
-                useBrackets: false
+                notation: "mixed"
             });
 
             status.invalidsList.push([path, type, valueString]);
@@ -72,7 +72,7 @@ export function getInvalidsStatus<T extends object>(
                     ? path
                     : toPathString(status.currentPath, {
                           extraKey: key,
-                          useBrackets: false
+                          notation: "mixed"
                       });
 
             getInvalidsStatus(value, subSchema, nextDefaults, status);
@@ -86,7 +86,7 @@ export function getInvalidsStatus<T extends object>(
             const valueString = toSimpleString(object[key]);
             const path = toPathString(parentPath, {
                 extraKey: key,
-                useBrackets: false
+                notation: "mixed"
             });
 
             status.invalidsList.push([path, "unexpected", valueString]);

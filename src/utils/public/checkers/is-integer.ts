@@ -18,4 +18,8 @@ import { isIntegerLike } from "./index.js";
  *
  * @since 3.0.0-beta.1
  */
-export const isInteger = isIntegerLike;
+export const isInteger = (value: unknown) => {
+    console.warn("deep-trails: isInteger will be removed in v3.0.0. Use isIntegerLike instead.");
+
+    return isIntegerLike(value);
+};
