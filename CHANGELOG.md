@@ -7,6 +7,8 @@ For more details about a release, click on the corresponding version.
 
 ## [Unreleased]
 
+## [v3.0.0-beta.3] - 2026-03-03
+
 ### Added
 
 - Object validations now also report excess properties ("path: unexpected = value").
@@ -15,6 +17,8 @@ For more details about a release, click on the corresponding version.
 - Added the `notation` option to `toPathString`. It will replace `useBrackets` in v3.0.0.
 
 - Added the `onCircular` option to `deepIterate`. It will replace `maxParentVisits` in v3.0.0.
+
+- Added warnings for deprecated features (`console.warn("deep-trails: ...")`).
 
 ### Changed
 
@@ -29,6 +33,8 @@ For more details about a release, click on the corresponding version.
 - `toPathString` now uses the `options.extraKey` argument only if it is explicitly provided (in each call).
   You will notice this if you defined `toPathString.options.extraKey`.
 
+- `deepIterate` now always uses mixed notation to create paths if `options.pathType === "string"`.
+
 ### Fixed
 
 - `deepIterate` can now iterate over objects whose size or length cannot be numerically compared.
@@ -38,7 +44,9 @@ For more details about a release, click on the corresponding version.
   You will notice the difference if you were mutating this option during traverse.
 
 - Value conversions are now used in object validations (where possible) instead of the original values.
-  For example, if you pass `{ maxParentVisits: "3" }` as options in `deepIterate`, it will be transformed to `{ maxParentVisits: 3 }`.
+  For example, if you pass `{ pathType: "Array" }` as options in `deepIterate`, it will be transformed to `{ pathType: "array" }`.
+
+- Now `toFunctionString` no longer depends on the function to be represented having the `toString` property.
 
 ### Performance
 
@@ -166,6 +174,7 @@ These functions and options will be removed in v3.0.0
 **First public version of deep-trails.**
 
 [Unreleased]: https://github.com/Gadiel-H/deep-trails/compare/v3.0.0-beta.2...HEAD
+[v3.0.0-beta.3]: https://github.com/Gadiel-H/deep-trails/releases/tag/v3.0.0-beta.3
 [v3.0.0-beta.2]: https://github.com/Gadiel-H/deep-trails/releases/tag/v3.0.0-beta.2
 [v3.0.0-beta.1]: https://github.com/Gadiel-H/deep-trails/releases/tag/v3.0.0-beta.1
 [v3.0.0-beta.0]: https://github.com/Gadiel-H/deep-trails/releases/tag/v3.0.0-beta.0
