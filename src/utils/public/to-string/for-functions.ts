@@ -40,7 +40,7 @@ export function toFunctionString(func: Function): string {
     if (typeof func !== "function")
         throw new TypeError(`Expected a function. Received ${typeOf(func)}\n`);
 
-    let funcString = String(func).trim();
+    let funcString = Function.prototype.toString.call(func).trim();
     let nameString = ` ${func.name || "(anonymous)"}`;
 
     if (funcString.startsWith("class ")) {
