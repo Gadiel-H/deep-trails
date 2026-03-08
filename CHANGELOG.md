@@ -40,9 +40,6 @@ For more details about a release, click on the corresponding version.
 - `deepIterate` can now iterate over objects whose size or length cannot be numerically compared.
   For example, you can now iterate over `FormData` instances.
 
-- The `deepIterate` core now uses the same `useBrackets` option from `toPathString.options` consistently throughout the traversal.
-  You will notice the difference if you were mutating this option during traverse.
-
 - Value conversions are now used in object validations (where possible) instead of the original values.
   For example, if you pass `{ pathType: "Array" }` as options in `deepIterate`, it will be transformed to `{ pathType: "array" }`.
 
