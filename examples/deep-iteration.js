@@ -89,7 +89,7 @@ deepIterate(
     {
         visitLogType: "map",
         pathType: "string",
-        maxParentVisits: 1
+        onCircular: "skip-node"
     }
 );
 
