@@ -1,7 +1,6 @@
 "use strict";
 
 import { toSimpleString } from "./for-anything.js";
-import { isNoFnObject } from "../checkers/index.js";
 
 /** RegExp for check identifiers compatible with dot notation. */
 const dotNotation = /^[a-zA-Z_$][\w$]*$/;
@@ -14,31 +13,11 @@ const strKeyWithDots = (key: unknown, index: number) => {
     return `[${toSimpleString(key)}]`;
 };
 
-/**
- * Default options argument for `toPathString`.
- * @since 3.0.0-beta.3
- */
-toPathString.options = {
-    useBrackets: false
-} as {
-    /**
-     * If truthy, indicates to use bracket notation; otherwise, mixed notation.
-     *
-     * @deprecated Since 3.0.0-beta.3
-     *
-     * Deprecated because strings are better than booleans for multiple values ​​of an option.
-     * Use {@linkcode toPathString.notation} or pass the option "notation" instead.
-     *
-     * This option will be removed in v3.0.0
-     */
-    useBrackets?: boolean;
-};
-
 /** @inline */
 type Notation = "mixed" | "bracket";
 
 /** @inline */
-type OptionsArgument = typeof toPathString.options & {
+type OptionsArgument = {
     /** The notation in which the path and/or the extra key string will be created. */
     notation?: Notation;
     /** Optional extra key to append to the path string. */
@@ -76,27 +55,10 @@ toPathString.notation = "mixed" as Notation;
  */
 export function toPathString<T = unknown>(
     path: Readonly<T[]> | string,
-    options: OptionsArgument = {
-        notation: toPathString.notation,
-        useBrackets: toPathString.options.useBrackets,
-        __isDefault__: true
-    } as OptionsArgument
+    options?: OptionsArgument
 ): string {
-    if (isNoFnObject(options) && (options as any).__isDefault__ !== true) {
-        if ("useBrackets" in options) {
-            console.warn(
-                `deep-trails: The "useBrackets" option in toPathString will be removed in v3.0.0. Use the "notation" option instead.`
-            );
-        }
-    }
-
-    const defaults = toPathString.options;
-
     if (options == null) {
-        options = {
-            notation: toPathString.notation,
-            useBrackets: defaults.useBrackets
-        } as OptionsArgument;
+        options = { notation: toPathString.notation };
     } else if (typeof options !== "object") {
         throw new TypeError(
             "Expected an options object as second argument. " +
@@ -104,15 +66,10 @@ export function toPathString<T = unknown>(
         );
     }
 
-    const useBracketsGiven = "useBrackets" in options;
-    const notationGiven = "notation" in options;
-    let useBrackets = false;
-
-    if ((notationGiven && useBracketsGiven) || notationGiven) {
-        useBrackets = options.notation === "bracket";
-    } else {
-        useBrackets = options.useBrackets as boolean;
-    }
+    const bracketsOnly =
+        "notation" in options
+            ? options.notation === "bracket"
+            : toPathString.notation === "bracket";
 
     /** Symbol for detect if the extra key was not provided. */
     const notProvided = Symbol();
@@ -122,7 +79,7 @@ export function toPathString<T = unknown>(
     if (typeof path === "string") {
         if (extraKey === notProvided) return path;
 
-        if (useBrackets || typeof extraKey !== "string" || !dotNotation.test(extraKey)) {
+        if (bracketsOnly || typeof extraKey !== "string" || !dotNotation.test(extraKey)) {
             return `${path}[${toSimpleString(extraKey)}]`;
         }
 
@@ -139,7 +96,7 @@ export function toPathString<T = unknown>(
 
     if (path.length === 0 && extraKey === notProvided) return "";
 
-    if (useBrackets) {
+    if (bracketsOnly) {
         const pathString = path.map(strKeyWithBrackets);
 
         if (extraKey !== notProvided) {
@@ -165,10 +122,3 @@ export function toPathString<T = unknown>(
         return pathString.join("");
     }
 }
-
-Object.defineProperty(toPathString, "options", {
-    writable: false,
-    configurable: false,
-    enumerable: true,
-    value: toPathString.options
-});
