@@ -11,7 +11,7 @@ import { ParentContext } from "./parent-context";
  *
  * **Map and WeakMap**:
  * - Key: Object reference.
- * - Value: Context object.
+ * - Value: Context history.
  *
  * **Array**:
  * - Value: Context object.
@@ -28,7 +28,7 @@ export type VisitLog<P extends object, K = unknown> =
 
 /**
  * Visit log of as a Map or a WeakMap.
- * Includes parent objects as keys, and context  as values.
+ * Includes parent objects as keys, and context histories as values.
  * @since 3.0.0-beta.0
  */
 export type VisitLogMap<P extends object, K = unknown> =
