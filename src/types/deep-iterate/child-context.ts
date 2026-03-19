@@ -9,7 +9,14 @@ export type ChildContext<P extends object, K = unknown, V = unknown> = {
     /** The key or identifier of this node within its parent. */
     key: K;
 
-    /** The value of this child node. */
+    /**
+     * The value of this child node.
+     *
+     * @remarks
+     * - For objects and symbols, it is a reference.
+     * - For other primitives, it is a copy.
+     * - If it is an object, mutating it will affect the source structure.
+     */
     value: V;
 
     /**
@@ -31,6 +38,10 @@ export type ChildContext<P extends object, K = unknown, V = unknown> = {
     /** The depth of this node in the structure, starting from the root at level 0. */
     depth: number;
 
-    /** The value of the current parent node. */
+    /**
+     * A reference to the parent object of this child node.
+     *
+     * Mutating it will affect the source structure.
+     */
     parentValue: P;
 };

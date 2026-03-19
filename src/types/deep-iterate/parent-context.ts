@@ -14,9 +14,11 @@ export type ParentContext<P extends object, K = unknown> = {
     key: K | null;
 
     /**
-     * The value of this parent node.
+     * A reference to the object.
      *
-     * It is the same as the key if its role is "key".
+     * It is the same as the key if the role is "key".
+     *
+     * Mutating it will affect the source structure.
      */
     value: P;
 
@@ -43,24 +45,26 @@ export type ParentContext<P extends object, K = unknown> = {
     depth: number;
 
     /**
-     * Total number of children that have been counted for this parent.
+     * Total number of children that have been counted for this parent object.
      *
      * It is undefined if the number of children is not known.
      */
     size: number | undefined;
 
     /**
-     * Indicates whether this parent's value is the key or value of the node, or the root node.
+     * Indicates whether this parent object is the key or value of its node, or the root node.
      */
     role: "key" | "value" | "root";
 
     /**
-     * Number of times this parent's value has been visited on the deep iteration.
+     * Number of times this parent object has been visited on the deep iteration.
      */
     visits: number;
 
     /**
-     * The value of the current grandparent, or null if this parent is the root node.
+     * A reference to the parent object of this parent, or null if this is the root node.
+     *
+     * Mutating it will affect the source structure.
      */
     parentValue: P | null;
 };
