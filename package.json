@@ -58,9 +58,9 @@
     ],
     "devDependencies": {
         "typescript": "5.9.3",
-        "esbuild": "0.25.12",
-        "prettier": "3.6.2",
-        "typedoc": "0.28.14"
+        "esbuild": "0.27.4",
+        "prettier": "3.8.1",
+        "typedoc": "0.28.17"
     },
     "keywords": [
         "deep",
