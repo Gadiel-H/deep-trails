@@ -18,7 +18,7 @@ test("deepIterate throws type errors when it receives invalid arguments", () => 
     );
 
     const invalidOptions = {
-        maxParentVisits: NaN,
+        onCircular: "continue",
         visitLogType: "none"
     };
 
