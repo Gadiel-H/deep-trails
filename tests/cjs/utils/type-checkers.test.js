@@ -12,11 +12,6 @@ const {
 } = require("deep-trails/utils");
 
 test("The type checkers does not throw any errors", () => {
-    /// @ts-ignore
-    delete checkers.checkers;
-    /// @ts-ignore
-    delete checkers.isInteger;
-
     for (const key in checkers) {
         /// @ts-ignore
         const checker = checkers[key];
