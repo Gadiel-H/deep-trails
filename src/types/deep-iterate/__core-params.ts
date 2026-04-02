@@ -20,7 +20,7 @@ export type CoreParams<P extends object, K = any, V = any> = {
 
     readonly visitLog: VisitLog<P, K> | null;
 
-    readonly cbAlias: "The callback" | "options.callbackWrapper";
+    readonly cbAlias: "The callback";
 
     /** Parent visit counter map. */
     readonly visitsCounter: Map<P, number>;

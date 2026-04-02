@@ -10,7 +10,7 @@ import type { Callback, Options, VisitLog } from "./index";
  * - The other one is returned at the end of the traverse, and it always includes the visit log if available.
  * - In both objects, the read-only copy of the options is the same.
  *
- * @since 3.0.0-beta.3
+ * @since 3.0.0
  */
 export type Snapshot<R extends P, K = unknown, V = unknown, P extends object = object> = Readonly<{
     /** The original root object passed to iterate it. */

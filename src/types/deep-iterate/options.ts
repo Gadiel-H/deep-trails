@@ -1,4 +1,4 @@
-import type { Callback, ParentContext } from "./index";
+import type { ParentContext } from "./index";
 import { utils } from "../../index.js";
 
 /**
@@ -9,7 +9,7 @@ import { utils } from "../../index.js";
  * Notes:
  * - This object is cloned before start the deep iteration.
  *
- * @since 3.0.0-beta.0
+ * @since 3.0.0
  */
 export type Options<P extends object, K = unknown, V = unknown> = {
     /**
@@ -37,34 +37,6 @@ export type Options<P extends object, K = unknown, V = unknown> = {
     pathType: "array" | "string";
 
     /**
-     * Optional callback wrapper.
-     *
-     * If it is a function, it will replace the callback.
-     *
-     * It can access the original callback using `this.callback`.
-     *
-     * @deprecated
-     * Deprecated since 3.0.0-beta.3 because it can abuse the original
-     * callback or simply not use it correctly and cause problems.
-     *
-     * It will be removed in version 3.0.0
-     */
-    callbackWrapper: null | Callback<P, K, V>;
-
-    /**
-     * Maximum number of visits per parent node, including the root.
-     *
-     * @deprecated since 3.0.0-beta.3
-     *
-     * **Keep in mind:**
-     * - This option will be removed in v3.0.0
-     * - From now on, the new option, "onCircular", will be interpreted before this one
-     * - Both options serve to avoid iterating circular structures, but "onCircular" is more flexible
-     * - Use the new option instead
-     */
-    maxParentVisits: number;
-
-    /**
      * Specify what to do when a circular reference to a parent object is found.
      *
      * **Cases:**
@@ -76,8 +48,6 @@ export type Options<P extends object, K = unknown, V = unknown> = {
      * If it's "skip-node", the circular node will be skipped and the iteration will continue.
      *
      * If it's "throw-error", an error will be thrown with the path of the circular node.
-     *
-     * @since 3.0.0-beta.3
      */
     onCircular:
         | "skip-node"

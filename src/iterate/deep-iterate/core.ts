@@ -27,7 +27,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
 
     const { object, visitLog, options, utils } = params;
     const { iterator, visitsCounter, context } = params;
-    const { maxParentVisits, visitLogType } = options;
+    const { visitLogType } = options;
     const pathStrOptions = utils.toPathStringOptions;
 
     let visits = visitsCounter.get(object) || 0;
@@ -55,8 +55,6 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
 
         if (!shouldContinue) return;
     }
-
-    if (visits >= maxParentVisits) return;
 
     visits++;
     visitsCounter.set(object, visits);

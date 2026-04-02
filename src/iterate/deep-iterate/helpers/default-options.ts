@@ -15,11 +15,7 @@ export const defaultOptions = new Proxy<Options<any, any, any>>(
         exposeVisitLog: true,
         pathType: "array",
         visitLogType: "null",
-        callbackWrapper: null,
-        maxParentVisits: 1,
-        onCircular({ visits }) {
-            return visits <= this.maxParentVisits;
-        }
+        onCircular: "skip-node"
     },
     {
         set: (obj, key: string | symbol, val: unknown) => {
@@ -29,16 +25,6 @@ export const defaultOptions = new Proxy<Options<any, any, any>>(
                     `Cannot define ${toSimpleString(key)} in deepIterate.options because is not defined in the schema\n` +
                         `    The known options are:\n` +
                         `      ${optionsList}\n`
-                );
-            }
-
-            if (key === "callbackWrapper") {
-                console.warn(
-                    `deep-trails: The default "callbackWrapper" option in deepIterate will be removed in v3.0.0. Use custom callbacks instead.`
-                );
-            } else if (key === "maxParentVisits") {
-                console.warn(
-                    `deep-trails: The default "maxParentVisits" option in deepIterate will be removed in v3.0.0. Use the "onCircular" option instead.`
                 );
             }
 

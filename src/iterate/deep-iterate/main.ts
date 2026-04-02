@@ -1,7 +1,7 @@
 "use strict";
 
 // ----- Types -----
-import type { Callback, Options, CoreParams, Snapshot } from "../../types/deep-iterate/index";
+import type { Callback, Options, Snapshot } from "../../types/deep-iterate/index";
 
 // ----- Helpers -----
 import { validateObject } from "../../__schemas/index.js";
@@ -21,7 +21,7 @@ import { deepIterateCore } from "./core.js";
  *
  * @throws TypeError if some option is of invalid type.
  *
- * @since 3.0.0-beta.0
+ * @since 3.0.0
  */
 deepIterate.options = defaultOptions;
 
@@ -57,27 +57,13 @@ deepIterate.options = defaultOptions;
  *     { pathType: "string" }
  * );
  *
- * @since 3.0.0-beta.3
+ * @since 3.0.0
  */
 export function deepIterate<R extends P, K = unknown, V = unknown, P extends object = object>(
     object: R,
     callback: Callback<P, K, V, R> = () => {},
     options: Partial<Options<P, K, V>> = deepIterate.options
 ): Snapshot<R, K, V, P> {
-    if (options !== deepIterate.options && isPlainObject(options)) {
-        if ("callbackWrapper" in options) {
-            console.warn(
-                `deep-trails: The "callbackWrapper" option in deepIterate will be removed in v3.0.0. Use custom callbacks instead.`
-            );
-        }
-
-        if ("maxParentVisits" in options) {
-            console.warn(
-                `deep-trails: The "maxParentVisits" option in deepIterate will be removed in v3.0.0. Use the "onCircular" option instead.`
-            );
-        }
-    }
-
     let optionsCopied = false;
     let optionsCopy: Readonly<Options<P, K, V>> = options as any;
 
@@ -99,19 +85,8 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
 
     Object.freeze(optionsCopy);
 
-    const { exposeVisitLog, visitLogType, callbackWrapper } = optionsCopy,
-        visitLog = createLog[visitLogType as any]();
-
-    let callbackOrigin: CoreParams<P, K, V>["cbAlias"];
-    let finalCallback = callback;
-
-    if (callbackWrapper) {
-        finalCallback = callbackWrapper;
-        callbackOrigin = "options.callbackWrapper";
-    } else {
-        finalCallback = callback;
-        callbackOrigin = "The callback";
-    }
+    const { exposeVisitLog, visitLogType } = optionsCopy;
+    const visitLog = createLog[visitLogType as any]();
 
     const snapshot: Snapshot<R, K, V, P> = Object.freeze({
         root: object,
@@ -128,7 +103,7 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
     }
 
     Object.freeze(cbThis);
-    finalCallback = finalCallback.bind(cbThis);
+    const boundCallback = callback.bind(cbThis);
 
     const { pathType } = optionsCopy,
         finishedSymbol = Symbol("FINISH"),
@@ -144,12 +119,12 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
 
         deepIterateCore<P>({
             object: object,
-            callback: finalCallback,
+            callback: boundCallback,
             options: optionsCopy,
             visitLog: visitLog,
 
             visitsCounter: new Map([[object, 0]]),
-            cbAlias: callbackOrigin,
+            cbAlias: "The callback",
 
             utils: {
                 finishedSymbol,
