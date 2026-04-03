@@ -5,7 +5,29 @@
 
 For more details about a release, click on the corresponding version.
 
-## [Unreleased]
+## [Unreleased] - 2026-04-02
+
+### Removed
+
+- The `useBrackets` option in `toPathString`, from the utils.
+
+- The `toPathString.options` object.
+
+- The `isInteger` function, from the utils.
+
+- The `checkers` object, from the utils.
+
+- The `ArrayIterator` and `MethodIterator` factories, from "deep-trails/iterate".
+
+- The `callbackWrapper` and `maxParentVisits` options in `deepIterate` and the `Options` type.
+
+### Documentation
+
+- Corrected the value description in the `VisitLogMap` type to say it is an array, not a `ParentContext` object.
+
+- Explained correctly the objects as references instead of values in `ChildContext` and `ParentContext`.
+
+- Explicitly documented the `useEntry` method in `Control` and added examples.
 
 ## [v3.0.0-beta.3] - 2026-03-03
 
@@ -170,7 +192,7 @@ These functions and options will be removed in v3.0.0
 
 **First public version of deep-trails.**
 
-[Unreleased]: https://github.com/Gadiel-H/deep-trails/compare/v3.0.0-beta.2...HEAD
+[Unreleased]: https://github.com/Gadiel-H/deep-trails/compare/v3.0.0-beta.3...HEAD
 [v3.0.0-beta.3]: https://github.com/Gadiel-H/deep-trails/releases/tag/v3.0.0-beta.3
 [v3.0.0-beta.2]: https://github.com/Gadiel-H/deep-trails/releases/tag/v3.0.0-beta.2
 [v3.0.0-beta.1]: https://github.com/Gadiel-H/deep-trails/releases/tag/v3.0.0-beta.1
