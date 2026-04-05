@@ -26,11 +26,10 @@ export type EntriesIterator<
     readonly object: T;
 
     /**
-     * Method that makes this iterator iterable.
+     * Returns an iterator over the current instance.
      *
-     * Calling it resets the iteration state.
-     *
-     * @returns An object with the "next" method.
+     * The returned iterator shares the same internal iteration state.
+     * Multiple iterators will interfere with each other.
      */
     [Symbol.iterator]: () => {
         next: EntriesIterator<F, T, K, V>["next"];

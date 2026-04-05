@@ -96,7 +96,7 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
 
             keys = keysGetter = null as any;
             object = iter = null as any;
-            reset = next = null as any;
+            next = null as any;
 
             return true;
         },
@@ -105,12 +105,11 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
                 return getSymbolIterator();
             }
 
-            reset();
             return { next };
         }
     };
 
-    let { reset, next } = iter;
+    let { next } = iter;
 
     return iter;
 }
