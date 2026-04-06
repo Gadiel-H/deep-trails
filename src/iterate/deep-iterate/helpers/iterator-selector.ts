@@ -1,7 +1,7 @@
 "use strict";
 
 import { isArrayLike, typeOf } from "../../../utils/public/index.js";
-import { PropertiesIterator } from "../../index.js";
+import { LightPropsIterator } from "./light-props-iterator.js";
 
 const arrayEntries = Array.prototype.entries;
 const { hasOwnProperty } = Object.prototype,
@@ -40,10 +40,10 @@ export function makeIterator<T extends object>(
         iterator.size = undefined;
 
         if (object instanceof Map || object instanceof Set) {
-            iterator.size = (object as any).size;
+            iterator.size = object.size;
         }
     } else {
-        return PropertiesIterator(object);
+        return LightPropsIterator(object);
     }
 
     return iterator;

@@ -1,0 +1,30 @@
+"use strict";
+
+/**
+ * Creates an iterator for the properties of an object using `Reflect.ownKeys` to get its keys.
+ * @internal
+ */
+export function LightPropsIterator<T extends object>(object: T) {
+    let keys = Reflect.ownKeys(object),
+        index = -1;
+
+    const size = keys.length;
+
+    const next = () => {
+        if (index + 1 >= size) {
+            return { done: true, value: null } as const;
+        }
+
+        const key = keys[++index];
+        const value = object[key] as unknown;
+        const entry = [key, value] as const;
+
+        return { done: false, value: entry } as const;
+    };
+
+    return {
+        size,
+        next,
+        [Symbol.iterator]: () => ({ next })
+    };
+}
