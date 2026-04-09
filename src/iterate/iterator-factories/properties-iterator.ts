@@ -59,13 +59,23 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
 
             return { done: false, value: entry };
         },
-        peek: (diff = +1) => {
+        peek: (position = +1) => {
             if (iter == null) {
                 return { done: true, value: null };
             }
 
-            const target = index + Number(diff);
-            const done = target >= keys.length;
+            const size = keys.length;
+            let target: number;
+
+            if (position === "first") {
+                target = 0;
+            } else if (position === "last") {
+                target = size <= 0 ? 0 : size - 1;
+            } else {
+                target = index + Number(position);
+            }
+
+            const done = target >= size;
 
             if (done) {
                 return { done: true, value: null };

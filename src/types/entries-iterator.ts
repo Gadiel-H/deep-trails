@@ -64,13 +64,15 @@ export type EntriesIterator<
      * - `undefined` if the iterator cannot provide peeking functionality.
      * - An array as entry otherwise.
      *
-     * @param difference - Integer indicating the target from the current index. By default is +1.
-     * - =0: Current.
-     * - \>0: Future.
-     * - \<0: Past.
+     * @param position - Where to peek from the current position. Default is +1.
+     * - `=0`: Current entry.
+     * - `>0`: Future entry.
+     * - `<0`: Past entry.
+     * - `"first"`: First entry, or `null` if empty.
+     * - `"last"`: Last entry, or `null` if empty.
      */
     peek: (
-        difference?: number
+        position?: number | "first" | "last"
     ) =>
         | { done: false; value: [key: K, value: V, index: number] }
         | { done: boolean; value: null | undefined };
