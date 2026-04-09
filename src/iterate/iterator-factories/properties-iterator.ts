@@ -64,7 +64,7 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
                 return { done: true, value: null };
             }
 
-            const target = index + diff;
+            const target = index + Number(diff);
             const done = target >= keys.length;
 
             if (done) {
