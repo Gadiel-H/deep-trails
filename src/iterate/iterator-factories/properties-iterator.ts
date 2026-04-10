@@ -30,12 +30,13 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
 
     type Entry = [K, V, number];
 
+    // `iter == null` checks whether the iterator has been destroyed
+    // Helps to avoid type errors when using its methods after destruction
     let iter: EntriesIterator<typeof PropertiesIterator, T, K, V> | null = {
         factory: PropertiesIterator,
         object,
         get size() {
-            if (keys == null) return undefined;
-            return keys.length;
+            return keys?.length;
         },
         next: () => {
             if (iter == null) {
@@ -44,11 +45,10 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
 
             const nextIndex = index + 1;
             const size = keys.length;
-            const done = nextIndex >= size;
 
             if (nextIndex === size) index++;
 
-            if (done) {
+            if (nextIndex >= size) {
                 return { done: true, value: null };
             }
 
@@ -67,6 +67,7 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
             const size = keys.length;
             let target: number;
 
+            // Selects the target index based on the position
             if (position === "first") {
                 target = 0;
             } else if (position === "last") {
@@ -75,9 +76,7 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
                 target = index + Number(position);
             }
 
-            const done = target >= size;
-
-            if (done) {
+            if (target >= size) {
                 return { done: true, value: null };
             }
 
@@ -104,6 +103,7 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
 
             destroyIterator(iter);
 
+            // Removes object references
             keys = keysGetter = null as any;
             object = iter = null as any;
             next = null as any;
@@ -119,6 +119,7 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
         }
     };
 
+    // Required by `[Symbol.iterator]()`
     let { next } = iter;
 
     return iter;
