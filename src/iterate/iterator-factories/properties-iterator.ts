@@ -2,6 +2,16 @@
 
 import type { EntriesIterator } from "../../types/index";
 import { destroyIterator, getSymbolIterator } from "./helpers/index.js";
+import { recordSchema, validators, validateObject } from "../../__schemas/index.js";
+import { isObject, toSimpleString } from "../../utils/public/index.js";
+
+const { isArray } = Array;
+const { anyFunction } = validators;
+const emptyObject = {};
+const argumentsSchema = recordSchema({
+    object: { __type: "object", __test: isObject },
+    keysGetter: anyFunction()
+});
 
 /**
  * Creates an iterator for the properties of an object using a function to get its keys.
@@ -19,14 +29,27 @@ import { destroyIterator, getSymbolIterator } from "./helpers/index.js";
  *     console.log({ key, value });
  * }
  *
- * @since 3.0.0-beta.0
+ * @since 3.0.0
  */
 export function PropertiesIterator<T extends object, K extends keyof T = keyof T, V = T[K]>(
     object: T,
     keysGetter: (object: T) => K[] = Reflect.ownKeys as any
 ): EntriesIterator<typeof PropertiesIterator, T, K, V> {
+    validateObject(
+        { object, keysGetter },
+        argumentsSchema,
+        emptyObject,
+        "arguments in PropertiesIterator"
+    );
+
     let keys = keysGetter(object),
         index = -1;
+
+    if (!isArray(keys)) {
+        throw new TypeError(
+            `keysGetter must return an array of keys. Returned: ${toSimpleString(keys)}\n`
+        );
+    }
 
     type Entry = [K, V, number];
 
