@@ -1,3 +1,5 @@
+import type { Options } from "./index";
+
 /**
  * Describes the context of a child node during deep iteration.
  *
@@ -22,9 +24,7 @@ export type ChildContext<P extends object, K = unknown, V = unknown> = {
     /**
      * The path from the root node to this child.
      *
-     * Its type varies depending on the value of
-     * "{@link https://gadiel-h.github.io/deep-trails/types/DeepIterate.Options.html#pathtype pathType}"
-     * in the options.
+     * Its type varies depending on the value of {@linkcode Options.pathType options.pathType}.
      */
     path: string | Readonly<K[]>;
 
