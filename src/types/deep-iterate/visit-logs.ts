@@ -1,11 +1,9 @@
-import { ParentContext } from "./parent-context";
+import type { Options, ParentContext } from "./index";
 
 /**
  * Log of visited parent nodes generated in `deepIterate`.
  *
- * Its type varies depending on the value of
- * "{@link https://gadiel-h.github.io/deep-trails/types/DeepIterate.Options.html#visitlogtype visitLogType}"
- * in the options.
+ * Its type varies depending on the value of `visitLogType` in the {@linkcode Options options} argument.
  *
  * Format in each structure:
  *
