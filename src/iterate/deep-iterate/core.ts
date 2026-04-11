@@ -135,8 +135,10 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         value = entry[1];
         index += 1;
 
-        if (pathType === "array") path = objPath.concat(key as any);
-        else {
+        if (pathType === "array") {
+            path = objPath.slice();
+            (path as any[]).push(key);
+        } else {
             pathStrOptions.extraKey = key;
             path = toPathString(objPath, pathStrOptions);
         }
