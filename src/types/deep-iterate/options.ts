@@ -65,7 +65,7 @@ export type Options<P extends object, K = unknown, V = unknown> = {
     visitLogType: "set" | "map" | "array" | "weakset" | "weakmap" | "null";
 
     /**
-     * Indicates whether `callback` or `options.callbackWrapper` can access the visit log.
+     * Indicates whether the callback can access the visit log.
      */
     exposeVisitLog: boolean;
 };
