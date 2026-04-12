@@ -29,10 +29,8 @@ export type Options<P extends object, K = unknown, V = unknown> = {
     /**
      * The type in which the path is created.
      *
-     * If "string", `utils.toPathString` will be used.
+     * If "string", {@linkcode utils.toPathString} will be used.
      * Otherwise, the path will be an array of the found keys.
-     *
-     * @see {@linkcode utils.toPathString} for more details.
      */
     pathType: "array" | "string";
 
