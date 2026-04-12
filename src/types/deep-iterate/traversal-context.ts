@@ -12,7 +12,12 @@ import type { Callback, Options, VisitLog } from "./index";
  *
  * @since 3.0.0
  */
-export type Snapshot<R extends P, K = unknown, V = unknown, P extends object = object> = Readonly<{
+export type TraversalContext<
+    R extends P,
+    K = unknown,
+    V = unknown,
+    P extends object = object
+> = Readonly<{
     /** The original root object passed to iterate it. */
     root: R;
 

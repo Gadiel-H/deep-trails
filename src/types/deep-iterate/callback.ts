@@ -1,4 +1,4 @@
-import type { ChildContext, ParentContext, Control, Snapshot } from "./index";
+import type { ChildContext, ParentContext, Control, TraversalContext } from "./index";
 
 /**
  * Callback for `deepIterate`.
@@ -9,7 +9,7 @@ import type { ChildContext, ParentContext, Control, Snapshot } from "./index";
  * - The return value is neither saved nor used.
  * - A synchronous callback is expected.
  *
- * @this {Snapshot} Includes the received arguments, and opcionally, a visit log.
+ * @this {TraversalContext} Includes the received arguments, and opcionally, a visit log.
  * @param child - Information about the current child.
  * @param parent - Information about the current parent.
  * @param control - Controls iteration behavior for the node and its parent.
@@ -19,7 +19,7 @@ import type { ChildContext, ParentContext, Control, Snapshot } from "./index";
  * @since 3.0.0-beta.3
  */
 export type Callback<P extends object, K = unknown, V = unknown, R extends P = any> = (
-    this: Snapshot<R, K, V, P>,
+    this: TraversalContext<R, K, V, P>,
     child: ChildContext<P, K, V>,
     parent: Readonly<ParentContext<P, K>>,
     control: Control

@@ -1,4 +1,4 @@
-export type { Snapshot } from "./snapshot";
+export type { TraversalContext } from "./traversal-context";
 export type { Callback } from "./callback";
 export type { Options } from "./options";
 export type * from "./visit-logs";

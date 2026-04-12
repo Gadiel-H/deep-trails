@@ -1,7 +1,7 @@
 "use strict";
 
 // ----- Types -----
-import type { Callback, Options, Snapshot } from "../../types/deep-iterate/index";
+import type { Callback, Options, TraversalContext } from "../../types/deep-iterate/index";
 
 // ----- Helpers -----
 import { validateObject } from "../../__schemas/index.js";
@@ -63,7 +63,7 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
     object: R,
     callback: Callback<P, K, V, R> = () => {},
     options: Partial<Options<P, K, V>> = deepIterate.options
-): Snapshot<R, K, V, P> {
+): TraversalContext<R, K, V, P> {
     let optionsCopied = false;
     let optionsCopy: Readonly<Options<P, K, V>> = options as any;
 
@@ -88,7 +88,7 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
     const { exposeVisitLog, visitLogType } = optionsCopy;
     const visitLog = createLog[visitLogType as any]();
 
-    const snapshot: Snapshot<R, K, V, P> = Object.freeze({
+    const snapshot: TraversalContext<R, K, V, P> = Object.freeze({
         root: object,
         options: optionsCopy,
         callback,
