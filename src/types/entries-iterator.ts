@@ -4,7 +4,7 @@
  * The deep-trails factory functions create closures to store the iteration state.
  * Therefore, they do not depend on `this`.
  *
- * @since 3.0.0-beta.0
+ * @since 3.0.0
  */
 export type EntriesIterator<
     F extends <O extends T>(object: O, ...args: any[]) => EntriesIterator<F, T, K, V>,
