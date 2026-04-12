@@ -5,7 +5,7 @@ import type { Callback, Options, VisitLog } from "./index";
  * `deepIterate`, and a visit log if one was generated.
  *
  * @remarks
- * Two objects of this type are created after the traverse:
+ * Two objects of this type are created before the traverse:
  * - One is bound to the callback, and it may or may not include the visit log according to `options.exposeVisitLog`.
  * - The other one is returned at the end of the traverse, and it always includes the visit log if available.
  * - In both objects, the read-only copy of the options is the same.
