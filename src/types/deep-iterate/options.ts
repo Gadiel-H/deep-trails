@@ -1,10 +1,11 @@
 import type { ParentContext } from "./index";
 import { toPathString } from "../../utils/public/index.js";
+import { deepIterate } from "../../iterate/index.js";
 
 /**
  * Options parameter for `deepIterate`.
  *
- * The default options are in `deepIterate.options`.
+ * The default options are in {@linkcode deepIterate.options}.
  *
  * Notes:
  * - This object is cloned before start the deep iteration.
