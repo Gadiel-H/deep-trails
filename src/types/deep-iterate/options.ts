@@ -1,5 +1,5 @@
 import type { ParentContext } from "./index";
-import { utils } from "../../index.js";
+import { toPathString } from "../../utils/public/index.js";
 
 /**
  * Options parameter for `deepIterate`.
@@ -29,7 +29,7 @@ export type Options<P extends object, K = unknown, V = unknown> = {
     /**
      * The type in which the path is created.
      *
-     * If "string", {@linkcode utils.toPathString} will be used.
+     * If "string", {@linkcode toPathString} will be used in mixed notation.
      * Otherwise, the path will be an array of the found keys.
      */
     pathType: "array" | "string";
