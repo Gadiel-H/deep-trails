@@ -2,7 +2,11 @@
 
 /** @internal */
 export const objectCases = {
-    Date: (obj: Date) => obj.toISOString(),
+    Date: (obj: Date) => {
+        const time = obj.getTime();
+
+        return time !== time ? "Invalid Date" : obj.toISOString();
+    },
     RegExp: (obj: RegExp) => String(obj),
 
     WeakMap: () => "WeakMap { <items unknown> }",
