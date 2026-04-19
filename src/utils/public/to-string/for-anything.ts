@@ -20,8 +20,9 @@ const toString = Object.prototype.toString;
  * toSimpleString([ 2, 4 ])  // "Array(2) [ ... ]"
  * toSimpleString(/abc/i)    // "/abc/i"
  * toSimpleString("abc")     // '"abc"'
+ * toSimpleString("Hello\n") // '"Hello\\n"'
  *
- * @since 3.0.0-beta.0
+ * @since 3.0.0
  */
 export function toSimpleString(value: unknown): string {
     if (!(0 in arguments)) return "";
@@ -32,7 +33,7 @@ export function toSimpleString(value: unknown): string {
     const type = typeof value;
 
     if (!isObject(value)) {
-        if (type === "string") string = `"${value}"`;
+        if (type === "string") string = JSON.stringify(value);
         else if (type === "bigint") string = `${value}n`;
         else string = String(value);
 
