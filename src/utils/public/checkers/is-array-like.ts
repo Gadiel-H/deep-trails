@@ -24,7 +24,10 @@ export const isArrayLike = <V = any>(value: any): value is ArrayLike<V> => {
     if (type === "string") return true;
     if (type !== "object") return false;
 
-    const len = value.length;
+    let len: number | null = null;
+    try {
+        len = value.length;
+    } catch {}
 
     if (typeof len !== "number") return false;
 
