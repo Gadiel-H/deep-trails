@@ -21,13 +21,26 @@ const argumentsSchema = recordSchema({
  *
  * @returns The created iterator.
  *
- * @example
- * const object = { a: 1, b: 2, c: 3 };
- * const iterator = PropertiesIterator(object);
+ * @example // For...of loop
+ * const iterator = PropertiesIterator({ a: 1, b: 2, c: 3 });
+ * 
+ * for (const [ key, value ] of iterator) console.log(key, value);
  *
- * for (const [ key, value ] of iterator) {
- *     console.log({ key, value });
- * }
+ * @example // Peek object entries
+ * const iterator = PropertiesIterator({ a: 1, b: 2, c: 3 });
+ * const print = console.log;
+ *
+ * print(iterator.peek("first").value);  // [ "a", 1, 0 ]
+ * print(iterator.peek("last").value);   // [ "c", 3, 2 ]
+ * print(iterator.next().value);         // [ "a", 1, 0 ]
+ * print(iterator.peek(0).value);        // [ "a", 1, 0 ]
+ * 
+ * @example // Destroy the iterator
+ * const iterator = PropertiesIterator({ a: 1, b: 2, c: 3 });
+ * const entries = [ ...iterator ];
+ * 
+ * iterator.destroy();
+ * console.log(iterator);  // {} (empty object)
  *
  * @since 3.0.0
  */
