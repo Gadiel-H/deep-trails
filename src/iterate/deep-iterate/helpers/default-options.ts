@@ -20,7 +20,6 @@ export const defaultOptions = new Proxy<Options<any, any, any>>(
     {
         set: (obj, key: string | symbol, val: unknown) => {
             if (!(key in optionsSchema)) {
-                obj[key] = val;
                 throw new TypeError(
                     `Cannot define ${toSimpleString(key)} in deepIterate.options because is not defined in the schema\n` +
                         `    The known options are:\n` +
