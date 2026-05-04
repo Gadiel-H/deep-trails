@@ -162,7 +162,9 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
             throw new Error(
                 `${params.cbAlias} has ${action} whitin an object of type ${typeOf(object)}:\n\n` +
                     `    ${error}\n\n` +
-                    `    At: ${toPathString(path)}\n`
+                    `    At: ${toPathString(path)}\n`,
+                // @ts-ignore
+                { cause: caught }
             );
         }
 
