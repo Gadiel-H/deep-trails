@@ -47,7 +47,7 @@ export function toFunctionString(func: Function): string {
         funcString = Function.prototype.toString.call(func).trim();
     } catch {}
 
-    let nameString = ` ${func.name || "(anonymous)"}`;
+    let nameString = " " + (func.name === "" ? "(anonymous)" : String(func.name));
 
     if (funcString.startsWith("class ")) {
         const string = `[class${nameString}]`;
