@@ -12,6 +12,7 @@ interface FunctionAnalysis {
 
 const functionToString = Function.prototype.toString,
     CLASS_START = /^class[\s{]/,
+    ARROW_FUNCTION = /^(?:async\s*)?(?:[a-zA-Z_$][\w$]*|\((?:[^()]*|\([^()]*\))*\))\s*=>/,
     WHITESPACE = /\s+/g,
     BLOCK_COMMENTS = /\/\*[\s\S]*?\*\//g,
     LINE_COMMENTS = /\/\/.*/g;
@@ -67,11 +68,7 @@ export function analyzeFunctionType(fullString: string, func: AnyFunction): Func
 
     const isArrow =
         !isGenerator &&
-        (withoutSpaces[0] === "(" ||
-            (!hasPrototype &&
-                !("arguments" in func) &&
-                !("callers" in func) &&
-                fullString.includes("=>")));
+        (withoutSpaces[0] === "(" || (!hasPrototype && ARROW_FUNCTION.test(withoutComments)));
 
     return { isAsync, isGenerator, isArrow, isClass: false };
 }
