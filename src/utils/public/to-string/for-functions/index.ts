@@ -32,13 +32,14 @@ const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap()
  * @since 3.0.0
  */
 export function toFunctionString(func: Function): string {
+    if (typeof func !== "function") {
+        throw new TypeError(`Expected a function. Received ${typeOf(func)}.\n`);
+    }
+
     const name = func.name;
     const cached = cache.get(func);
-    if (cached && cached.name === name) return cached.string;
 
-    if (typeof func !== "function") {
-        throw new TypeError(`Expected a function. Received ${typeOf(func)}\n`);
-    }
+    if (cached && cached.name === name) return cached.string;
 
     const isAnonymous = name === "",
         finalName = isAnonymous ? "(anonymous)" : String(name),
