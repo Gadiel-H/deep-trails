@@ -53,22 +53,24 @@ export function analyzeFunctionType(fullString: string, func: AnyFunction): Func
     const withoutSpaces = withoutComments.replace(WHITESPACE, "");
     const type = typeOf(func, false);
 
+    let isArrow = withoutSpaces[0] === "(";
+
     const isAsyncGenerator =
-        isOfType(func, "AsyncGeneratorFunction", type) ||
-        withoutSpaces.startsWith("async*") ||
-        withoutSpaces.startsWith("asyncfunction*");
+        !isArrow &&
+        (isOfType(func, "AsyncGeneratorFunction", type) ||
+            withoutSpaces.startsWith("async*") ||
+            withoutSpaces.startsWith("asyncfunction*"));
 
     const isAsync = isAsyncGenerator || isOfType(func, "AsyncFunction", type);
 
     const isGenerator =
-        isAsyncGenerator ||
-        withoutSpaces[0] === "*" ||
-        isOfType(func, "GeneratorFunction", type) ||
-        withoutSpaces.startsWith("function*");
+        !isArrow &&
+        (isAsyncGenerator ||
+            withoutSpaces[0] === "*" ||
+            isOfType(func, "GeneratorFunction", type) ||
+            withoutSpaces.startsWith("function*"));
 
-    const isArrow =
-        !isGenerator &&
-        (withoutSpaces[0] === "(" || (!hasPrototype && ARROW_FUNCTION.test(withoutComments)));
+    isArrow ||= !isGenerator && !hasPrototype && ARROW_FUNCTION.test(withoutComments);
 
     return { isAsync, isGenerator, isArrow, isClass: false };
 }
