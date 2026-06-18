@@ -12,7 +12,8 @@ interface FunctionAnalysis {
 
 const functionToString = Function.prototype.toString,
     CLASS_START = /^class[\s{]/,
-    ARROW_FUNCTION = /^(?:async\s*)?(?:[a-zA-Z_$][\w$]*|\((?:[^()]*|\([^()]*\))*\))\s*=>/,
+    ARROW_FUNCTION =
+        /^(?:async\s*)?(?:[a-zA-Z_$][\w$]*|\((?:[^()]*|\((?:[^()]*|\((?:[^()]*|\([^()]*\))*\))*\))*\))\s*=>/,
     WHITESPACE = /\s+/g,
     BLOCK_COMMENTS = /\/\*[\s\S]*?\*\//g,
     LINE_COMMENTS = /\/\/.*/g;
