@@ -11,6 +11,7 @@ interface FunctionAnalysis {
 }
 
 const functionToString = Function.prototype.toString,
+    objectCtorString = functionToString.call(Object),
     CLASS_START = /^class[\s{]/,
     ARROW_FUNCTION =
         /^(?:async\s*)?(?:[a-zA-Z_$][\w$]*|\((?:[^()]*|\((?:[^()]*|\((?:[^()]*|\([^()]*\))*\))*\))*\))\s*=>/,
@@ -19,7 +20,9 @@ const functionToString = Function.prototype.toString,
     LINE_COMMENTS = /\/\/.*/g;
 
 /** @internal */
-export const NATIVE_CODE = /\{\s*\[native code\]\s*\}/;
+export const NATIVE_CODE = new RegExp(
+    `^${objectCtorString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/Object/g, "[^\\(\\)]*?")}$`
+);
 
 /** @internal @inline */
 export type AnyFunction = (...args: any[]) => any;
