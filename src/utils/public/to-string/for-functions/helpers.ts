@@ -24,10 +24,7 @@ export const NATIVE_CODE = new RegExp(
     `^${objectCtorString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/Object/g, "[^\\(\\)]*?")}$`
 );
 
-/** @internal @inline */
-export type AnyFunction = (...args: any[]) => any;
-
-function isOfType(func: AnyFunction, expected: string, stringTag: string): boolean {
+function isOfType(func: Function, expected: string, stringTag: string): boolean {
     try {
         return func.constructor.name === expected && stringTag === expected;
     } catch {
@@ -36,7 +33,7 @@ function isOfType(func: AnyFunction, expected: string, stringTag: string): boole
 }
 
 /** @internal */
-export function safeStringify(func: AnyFunction): string {
+export function safeStringify(func: Function): string {
     try {
         return functionToString.call(func).trim();
     } catch {
@@ -45,7 +42,7 @@ export function safeStringify(func: AnyFunction): string {
 }
 
 /** @internal */
-export function analyzeFunctionType(fullString: string, func: AnyFunction): FunctionAnalysis {
+export function analyzeFunctionType(fullString: string, func: Function): FunctionAnalysis {
     // Sanitize the string
     const withoutComments = fullString.replace(BLOCK_COMMENTS, "").replace(LINE_COMMENTS, "");
     const hasPrototype = "prototype" in func;

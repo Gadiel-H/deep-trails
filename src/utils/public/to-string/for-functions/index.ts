@@ -1,7 +1,7 @@
 "use strict";
 
 import { typeOf } from "../../index.js";
-import { analyzeFunctionType, safeStringify, NATIVE_CODE, type AnyFunction } from "./helpers.js";
+import { analyzeFunctionType, safeStringify, NATIVE_CODE } from "./helpers.js";
 
 /** Cache for function strings. */
 const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap();
@@ -53,9 +53,8 @@ export function toFunctionString(func: Function): string {
 
     const isAnonymous = name === "",
         finalName = isAnonymous ? "(anonymous)" : String(name),
-        realFn = func as AnyFunction,
-        fullString = safeStringify(realFn),
-        analysis = analyzeFunctionType(fullString, realFn);
+        fullString = safeStringify(func),
+        analysis = analyzeFunctionType(fullString, func);
 
     if (analysis.isClass) {
         const string = `[class ${!nameRead ? "[name error]" : finalName}]`;
