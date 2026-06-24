@@ -36,10 +36,20 @@ export function toFunctionString(func: Function): string {
         throw new TypeError(`Expected a function. Received ${typeOf(func)}.\n`);
     }
 
-    const name = func.name;
-    const cached = cache.get(func);
+    let name = "[temporal name]",
+        nameRead = true;
 
-    if (cached && cached.name === name) return cached.string;
+    try {
+        name = func.name;
+    } catch {
+        nameRead = false;
+    }
+
+    if (nameRead) {
+        const cached = cache.get(func);
+
+        if (cached && cached.name === name) return cached.string;
+    }
 
     const isAnonymous = name === "",
         finalName = isAnonymous ? "(anonymous)" : String(name),
@@ -48,12 +58,16 @@ export function toFunctionString(func: Function): string {
         analysis = analyzeFunctionType(fullString, realFn);
 
     if (analysis.isClass) {
-        const string = `[class ${finalName}]`;
+        const string = `[class ${!nameRead ? "[name error]" : finalName}]`;
         cache.set(func, { string, name });
         return string;
     }
 
-    const nameString = isAnonymous ? " (anonymous)" : `: ${finalName}`;
+    const nameString = !nameRead
+        ? " [name error]"
+        : isAnonymous
+          ? " (anonymous)"
+          : `: ${finalName}`;
 
     if (NATIVE_CODE.test(fullString)) {
         const string = `[NativeFunction${nameString}]`;
