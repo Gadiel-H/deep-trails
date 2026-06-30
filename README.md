@@ -215,12 +215,7 @@ The main entry point.
 
 Functions dedicated to iteration.
 
-Includes functions such as:
-
-- `deepIterate`
-- `ArrayIterator`
-- `PropertiesIterator`
-- and `MethodIterator`
+Includes `deepIterate` and `PropertiesIterator`.
 
 ### deep-trails/utils
 

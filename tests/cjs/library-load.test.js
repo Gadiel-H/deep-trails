@@ -10,14 +10,8 @@ test("The library loads without errors", () => {
             typeOf,
             toSimpleString,
             toPathString,
-            toFunctionString,
-            ...checkers
+            toFunctionString
         } = require("deep-trails/utils");
-        const {
-            ArrayIterator,
-            PropertiesIterator,
-            MethodIterator,
-            deepIterate: deepIterate1
-        } = require("deep-trails/iterate");
+        const { PropertiesIterator, deepIterate: deepIterate1 } = require("deep-trails/iterate");
     }, Error);
 });
