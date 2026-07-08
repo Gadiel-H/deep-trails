@@ -9,9 +9,17 @@ const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap()
 /**
  * Creates a simple string describing a function, similar to `console.log`.
  *
+ * Detects async and generator functions by comparing their Object.prototype.toString
+ * tag and constructor name, or using source-based heuristics if that fails.
+ *
+ * For other function types, detection relies only on heuristics.
+ *
+ * Class syntax and native functions are checked first.
+ *
  * @remarks
- * - Distinguishes function types and class syntax.
- * - Includes the name if available.
+ * - The name is represented as anonymous for empty names,
+ * "[name error]" if name access fails, or otherwise the actual name.
+ * - If the type cannot be detected, it falls back to "Function".
  *
  * @param func - Function or class to stringify.
  *
@@ -22,12 +30,13 @@ const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap()
  * @example
  * const fnString = toFunctionString;
  *
- * fnString(async () => {})       // "[AsyncArrowFunction (anonymous)]"
- * fnString(function* () {})      // "[GeneratorFunction (anonymous)]"
- * fnString(function name() {})   // "[Function: name]"
- * fnString(async function() {})  // "[AsyncFunction (anonymous)]"
- * fnString(Proxy)                // "[NativeFunction: Proxy]"
- * fnString(class SomeClass {})   // "[class SomeClass]"
+ * fnString(async () => {})           // "[AsyncArrowFunction (anonymous)]"
+ * fnString(function* () {})          // "[GeneratorFunction (anonymous)]"
+ * fnString(function name() {})       // "[Function: name]"
+ * fnString(async function() {})      // "[AsyncFunction (anonymous)]"
+ * fnString(Proxy)                    // "[NativeFunction: Proxy]"
+ * fnString(class D extends Date {})  // "[class D]"
+ * fnString((async x => x).bind())    // "[NativeFunction: bound ]"
  *
  * @since 3.0.0
  */
