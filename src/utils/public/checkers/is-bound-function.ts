@@ -14,5 +14,13 @@ import { isNativeFunction } from "../index.js";
  *
  * @since 3.0.0
  */
-export const isBoundFunction = (value: unknown): value is Function =>
-    isNativeFunction(value) && value.name.startsWith("bound ");
+export const isBoundFunction = (value: unknown): value is Function => {
+    if (!isNativeFunction(value)) return false;
+
+    try {
+        const name = value.name;
+        return typeof name === "string" && name.startsWith("bound ");
+    } catch {
+        return false;
+    }
+};
