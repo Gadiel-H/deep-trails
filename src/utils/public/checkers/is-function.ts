@@ -10,5 +10,5 @@
  *
  * @since 3.0.0-beta.1
  */
-export const isFunction = <T extends (...args: any[]) => any>(value: unknown): value is T =>
+export const isFunction = <T extends Function>(value: unknown): value is T =>
     typeof value === "function";
