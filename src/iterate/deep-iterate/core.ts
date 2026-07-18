@@ -51,7 +51,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
             );
         }
 
-        const shouldContinue = (options.onCircular as Function)({ ...context });
+        const shouldContinue = (options.onCircular as Function)({ ...context }) === "iterate";
 
         if (!shouldContinue) return;
     }

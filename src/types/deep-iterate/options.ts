@@ -36,17 +36,16 @@ export type Options<P extends object, K = unknown, V = unknown> = {
     pathType: "array" | "string";
 
     /**
-     * Specify what to do when a circular reference to a parent object is found.
+     * Specify what to do when a circular reference is found.
      *
-     * **Cases:**
+     * `Function`: receives the current context of the node.
+     * - It must return `"iterate"` to iterate it.
+     * - Otherwise, it will be skipped.
+     * - It can also throw anything and it won't be caught.
      *
-     * If it's a function, receives the context of the parent.
-     * - Its return will be treated as boolean to check whether should iterate it again or not.
-     * - It can also throw an error and it will not be caught.
+     * `"skip-node"`: the node will be skipped and the iteration will continue.
      *
-     * If it's "skip-node", the circular node will be skipped and the iteration will continue.
-     *
-     * If it's "throw-error", an error will be thrown with the path of the circular node.
+     * `"throw-error"`: an error will be thrown with the path of the node.
      */
     onCircular:
         | "skip-node"
@@ -54,7 +53,7 @@ export type Options<P extends object, K = unknown, V = unknown> = {
         | ((
               this: Readonly<Options<P, K, V>>,
               context: Readonly<ParentContext<P, K>>
-          ) => boolean | void | never);
+          ) => "skip" | "iterate");
 
     /**
      * Type of the visit log for parent nodes.
