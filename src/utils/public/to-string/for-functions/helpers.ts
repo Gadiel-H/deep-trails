@@ -11,7 +11,6 @@ interface FunctionAnalysis {
 }
 
 const functionToString = Function.prototype.toString,
-    objectCtorString = functionToString.call(Object),
     CLASS_START = /^class[\s{]/,
     ARROW_FUNCTION =
         /^(?:async\s*)?(?:[a-zA-Z_$][\w$]*|\((?:[^()]*|\((?:[^()]*|\((?:[^()]*|\([^()]*\))*\))*\))*\))\s*=>/,
@@ -20,9 +19,7 @@ const functionToString = Function.prototype.toString,
     LINE_COMMENTS = /\/\/.*/g;
 
 /** @internal */
-export const NATIVE_CODE = new RegExp(
-    `^${objectCtorString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/Object/g, "[^\\(\\)]*?")}$`
-);
+export const NATIVE_CODE = /^(?:async\s+)?function(?:\s*\*)?\b[\s\S]*?\{\s*\[native code]\s*\}$/;
 
 function isOfType(func: Function, expected: string, stringTag: string): boolean {
     try {
