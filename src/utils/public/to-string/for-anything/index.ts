@@ -1,7 +1,7 @@
 "use strict";
 
-import { typeOf, toFunctionString, isObject } from "../index.js";
-import { objectCases as cases } from "./helpers/object-cases.js";
+import { typeOf, toFunctionString, isObject } from "../../index.js";
+import { objectCases as cases } from "./helpers.js";
 
 /** Cache for primitive data. */
 const cache: Map<unknown, string> = new Map();

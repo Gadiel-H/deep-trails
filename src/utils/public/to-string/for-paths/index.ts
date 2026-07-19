@@ -1,28 +1,13 @@
 "use strict";
 
-import { toSimpleString } from "./for-anything.js";
-
-/** RegExp for check identifiers compatible with dot notation. */
-const dotNotation = /^[a-zA-Z_$][\w$]*$/;
-const strKeyWithBrackets = (key: unknown) => `[${toSimpleString(key)}]`;
-const strKeyWithDots = (key: unknown, index: number) => {
-    if (typeof key === "string" && dotNotation.test(key)) {
-        return index > 0 ? `.${key}` : key;
-    }
-
-    return `[${toSimpleString(key)}]`;
-};
-
-/** @inline */
-type Notation = "mixed" | "bracket";
-
-/** @inline */
-type OptionsArgument = {
-    /** The notation in which the path and/or the extra key string will be created. */
-    notation?: Notation;
-    /** Optional extra key to append to the path string. */
-    extraKey?: unknown;
-};
+import { toSimpleString } from "../index.js";
+import {
+    dotNotation,
+    strKeyWithBrackets,
+    strKeyWithDots,
+    type Notation,
+    type OptionsArgument
+} from "./helpers.js";
 
 /**
  * The notation in which the path and/or the extra key string will be created.
