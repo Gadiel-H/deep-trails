@@ -1,5 +1,7 @@
 "use strict";
 
+const { toString } = Object.prototype;
+
 /** @internal */
 export const objectCases = {
     Date: (obj: Date) => {
@@ -13,6 +15,10 @@ export const objectCases = {
     WeakSet: () => "WeakSet { <items unknown> }",
 
     Map: (obj: Map<any, any>) => {
+        if (!(obj instanceof Map)) {
+            return toString.call(obj);
+        }
+
         const { size } = obj;
 
         if (size === 0) return "Map(0) {}";
@@ -20,6 +26,10 @@ export const objectCases = {
     },
 
     Set: (obj: Set<any>) => {
+        if (!(obj instanceof Set)) {
+            return toString.call(obj);
+        }
+
         const { size } = obj;
 
         if (size === 0) return "Set(0) {}";
