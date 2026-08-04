@@ -1,4 +1,4 @@
-import type { Options } from "./index";
+import type { Options, ChildContext } from "./index";
 
 /**
  * Describes the context of a parent node during deep iteration.
@@ -67,4 +67,13 @@ export type ParentContext<P extends object, K = unknown> = {
      * Mutating it will affect the source structure.
      */
     parentValue: P | null;
+
+    /**
+     * The parent context is only created for objects, and if a getter error occurs, the value is `undefined`, which is not an object.
+     *
+     * This property exists to maintain consistency with the {@linkcode ChildContext child context}.
+     *
+     * @since 3.0.0
+     */
+    getterError: null;
 };

@@ -1,7 +1,13 @@
 "use strict";
 
 // ----- Utils -----
-import { isObject, typeOf, toPathString, toSimpleString } from "../../utils/public/index.js";
+import {
+    isObject,
+    typeOf,
+    toPathString,
+    toSimpleString,
+    isNoFnObject
+} from "../../utils/public/index.js";
 
 // ----- Iterator -----
 import { makeIterator } from "./helpers/iterator-selector.js";
@@ -12,7 +18,8 @@ import type {
     VisitLogMap,
     VisitLogArray,
     VisitLogSet,
-    CoreParams
+    CoreParams,
+    ChildContext
 } from "../../types/deep-iterate/index";
 
 const { isInteger } = Number;
@@ -77,7 +84,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
     // ========== Get context and create state variables ========== //
 
     const { path: objPath, depth: objDepth, value: parentValue } = context;
-    const { pathType, iterateKeys, iterateValues } = options;
+    const { pathType, iterateKeys, iterateValues, onGetter } = options;
     const { callback } = params;
     const depth = objDepth + 1;
 
@@ -143,10 +150,51 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
             path = toPathString(objPath, pathStrOptions);
         }
 
+        const childCtx: ChildContext<T> = {
+            key,
+            value: undefined,
+            index,
+            depth,
+            path,
+            parentValue,
+            getterError: null as any
+        };
+
+        if (3 in entry && options.onGetter === "catch-error") {
+            childCtx.getterError = Object.assign(
+                new Error(
+                    `Error reading "${toPathString(path, { notation: "mixed" })}" due to is getter`
+                ),
+                { cause: entry[3] }
+            );
+        } else if (2 in entry && typeof options.onGetter === "function") {
+            const result = options.onGetter(childCtx, entry[2]);
+
+            if (!isNoFnObject(result)) {
+                throw new TypeError(
+                    `options.onGetter returned ${toSimpleString(result)}\n\n` +
+                        `    Expected an object of type "{ value: V }" or "{ error: unknown }"\n`
+                );
+            }
+
+            if (result && "error" in result) {
+                childCtx.getterError = Object.assign(
+                    new Error(
+                        `Error reading "${toPathString(path, { notation: "mixed" })}" due to is getter`
+                    ),
+                    { cause: result.error }
+                );
+            } else {
+                childCtx.value = result.value;
+            }
+        } else {
+            childCtx.value = value;
+        }
+
         // ----- Callback execution -----
 
         try {
-            (callback as any)({ key, value, index, depth, path, parentValue }, context, control);
+            (callback as any)(childCtx, context, control);
         } catch (caught) {
             let action = "",
                 error = "";
@@ -217,7 +265,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         if (iterateKeys && !control.skipKey && isObject(key)) {
             control.skipKey = false;
             const k = key as T;
-            const iterator = makeIterator(k);
+            const iterator = makeIterator(k, onGetter);
             const size = iterator?.size;
             const hasEmptySize = isInteger(size) ? (size as number) <= 0 : false;
 
@@ -233,7 +281,8 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                     size: undefined,
                     role: "key",
                     parentValue,
-                    visits: 0
+                    visits: 0,
+                    getterError: null
                 };
 
                 deepIterateCore(params);
@@ -245,7 +294,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         if (iterateValues && !control.skipValue && isObject(value)) {
             control.skipValue = false;
             const v = value as T;
-            const iterator = makeIterator(v);
+            const iterator = makeIterator(v, onGetter);
             const size = iterator?.size;
             const hasEmptySize = isInteger(size) ? (size as number) <= 0 : false;
 
@@ -261,7 +310,8 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                     size: undefined,
                     role: "value",
                     parentValue,
-                    visits: 0
+                    visits: 0,
+                    getterError: null
                 };
 
                 deepIterateCore(params);

@@ -14,5 +14,6 @@ export const optionsSchema = recordSchema<Options<object>>({
     exposeVisitLog: checkBoolean,
     onCircular: typeUnion([string(["skip-node", "throw-error"]) as any, anyFunction()]) as any,
     pathType: string(["array", "string"]),
-    visitLogType: string(["set", "map", "array", "weakset", "weakmap", "null"])
+    visitLogType: string(["set", "map", "array", "weakset", "weakmap", "null"]),
+    onGetter: typeUnion([string(["execute", "catch-error"]) as any, anyFunction()]) as any
 });

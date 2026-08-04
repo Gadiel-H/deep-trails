@@ -1,16 +1,13 @@
 import type { Options } from "./index";
 
 /**
- * Describes the context of a child node during deep iteration.
+ * Describes the success read of a child node's value during deep iteration.
  *
- * Provides metadata about the node's position and relationship within its parent.
+ * Read {@linkcode Options.onGetter} for more information.
  *
- * @since 3.0.0-beta.0
+ * @since 3.0.0
  */
-export type ChildContext<P extends object, K = unknown, V = unknown> = {
-    /** The key or identifier of this node within its parent. */
-    key: K;
-
+export type ChildValueRead<V> = {
     /**
      * The value of this child node.
      *
@@ -18,8 +15,49 @@ export type ChildContext<P extends object, K = unknown, V = unknown> = {
      * - For objects and symbols, it is a reference.
      * - For other primitives, it is a copy.
      * - If it is an object, mutating it will affect the source structure.
+     * - If `options.onGetter` is a function, it can intercept this value.
      */
     value: V;
+
+    /**
+     * It is `null` if there is not a synchronous getter error or if `options.onGetter` returns a value.
+     */
+    getterError: null;
+};
+
+/**
+ * Describes the failed read of a child node's value during deep iteration.
+ *
+ * Read {@linkcode Options.onGetter} for more information.
+ *
+ * @since 3.0.0
+ */
+export type ChildValueError = {
+    /**
+     * It is `undefined` if a synchronous getter error is caught.
+     */
+    value: undefined;
+
+    /**
+     * It is an error if the getter throws one or if `options.onGetter` returns one.
+     *
+     * The `cause` property has the obtained error.
+     */
+    getterError: Error & { cause: unknown };
+};
+
+/**
+ * Describes the base context of a child node during deep iteration.
+ *
+ * Provides metadata about the node's position and relationship within its parent.
+ *
+ * Read {@linkcode ChildContext} for the full context type.
+ *
+ * @since 3.0.0
+ */
+export type ChildBaseContext<P extends object, K = unknown> = {
+    /** The key or identifier of this node within its parent. */
+    key: K;
 
     /**
      * The path from the root node to this child.
@@ -45,3 +83,16 @@ export type ChildContext<P extends object, K = unknown, V = unknown> = {
      */
     parentValue: P;
 };
+
+/**
+ * Describes the context of a child node during deep iteration.
+ *
+ * Provides metadata about the node's position and relationship within its parent.
+ *
+ * Read {@linkcode Options.onGetter} to understand how the `getterError` property is set.
+ *
+ * @since 3.0.0
+ */
+export type ChildContext<P extends object, K = unknown, V = unknown> =
+    | (ChildBaseContext<P, K> & ChildValueRead<V>)
+    | (ChildBaseContext<P, K> & ChildValueError);

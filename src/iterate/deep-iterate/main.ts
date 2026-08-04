@@ -107,7 +107,7 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
 
     const { pathType } = optionsCopy,
         finishedSymbol = Symbol("FINISH"),
-        iterator = makeIterator(object),
+        iterator = makeIterator<P>(object, optionsCopy.onGetter),
         size = iterator?.size,
         rootPath = (pathType === "string" ? "" : []) as string | K[];
 
@@ -141,7 +141,8 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
                 index: -1,
                 key: null,
                 parentValue: null,
-                size: iterator.size
+                size: iterator.size,
+                getterError: null
             }
         });
     } catch (value) {

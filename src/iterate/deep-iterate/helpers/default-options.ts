@@ -15,7 +15,8 @@ export const defaultOptions = new Proxy<Options<any, any, any>>(
         exposeVisitLog: true,
         pathType: "array",
         visitLogType: "null",
-        onCircular: "skip-node"
+        onCircular: "skip-node",
+        onGetter: "catch-error"
     },
     {
         set: (obj, key: string | symbol, val: unknown) => {

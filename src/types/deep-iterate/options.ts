@@ -1,4 +1,4 @@
-import type { ParentContext } from "./index";
+import type { ChildContext, ParentContext } from "./index";
 import { toPathString } from "../../utils/public/index.js";
 import { deepIterate } from "../../iterate/index.js";
 
@@ -68,4 +68,46 @@ export type Options<P extends object, K = unknown, V = unknown> = {
      * Indicates whether the callback can access the visit log.
      */
     exposeVisitLog: boolean;
+
+    /**
+     * Specify what to do when a getter is found.
+     *
+     * `Function`: receives the context of the node and its property descriptor.
+     * - If returns an error, it will be stored in `getterError.cause`.
+     * - If returns a value, that will be the value in the context.
+     * - If throws any value, it will not be caught and the traversal will stop.
+     *
+     * `"execute"`: reads the property without any protection.
+     *
+     * `"catch-error"`: catches the error if one is thrown.
+     * - If the getter returns a promise, the `catch` method will be called with an empty callback.
+     * - If the getter throws any value, it will be stored in `getterError.cause`.
+     *
+     * @remarks Getters are only detected when iterating over properties (not in `.entries()` iterators).
+     *
+     * @example
+     * deepIterate(
+     *     ArrayBuffer.prototype,
+     *     ({ path, getterError }) => console.log({ path, getterError }),
+     *     {
+     *         onGetter({ parentValue }, { get }) {
+     *            try {
+     *                return { value: get.call(parentValue) };
+     *            } catch (error) {
+     *                return { error };
+     *            }
+     *         }
+     *     }
+     * );
+     */
+    onGetter:
+        | "execute"
+        | "catch-error"
+        | ((
+              this: Readonly<Options<P, K, V>>,
+              /** The context of the node. */
+              node: Readonly<ChildContext<P, K, V>>,
+              /** The property descriptor with a getter. */
+              descriptor: PropertyDescriptor & { get: Function }
+          ) => { value: V } | { error: unknown });
 };
