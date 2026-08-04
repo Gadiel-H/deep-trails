@@ -141,8 +141,7 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
                 index: -1,
                 key: null,
                 parentValue: null,
-                size: iterator.size,
-                getterError: null
+                size: iterator.size
             }
         });
     } catch (value) {

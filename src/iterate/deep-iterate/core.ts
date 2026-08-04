@@ -281,8 +281,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                     size: undefined,
                     role: "key",
                     parentValue,
-                    visits: 0,
-                    getterError: null
+                    visits: 0
                 };
 
                 deepIterateCore(params);
@@ -310,8 +309,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                     size: undefined,
                     role: "value",
                     parentValue,
-                    visits: 0,
-                    getterError: null
+                    visits: 0
                 };
 
                 deepIterateCore(params);
