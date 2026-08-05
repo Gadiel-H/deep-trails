@@ -57,10 +57,10 @@
         "./dist/"
     ],
     "devDependencies": {
-        "typescript": "5.9.3",
-        "esbuild": "0.27.4",
-        "prettier": "3.8.1",
-        "typedoc": "0.28.17"
+        "typescript": "6.0.3",
+        "esbuild": "0.28.1",
+        "prettier": "3.9.6",
+        "typedoc": "0.28.20"
     },
     "keywords": [
         "deep",
