@@ -20,9 +20,7 @@ import type { Options, ParentContext } from "./index";
  * @since 3.0.0-beta.0
  */
 export type VisitLog<P extends object, K = unknown> =
-    | VisitLogMap<P, K>
-    | VisitLogSet<P>
-    | VisitLogArray<P, K>;
+    VisitLogMap<P, K> | VisitLogSet<P> | VisitLogArray<P, K>;
 
 /**
  * Visit log of as a Map or a WeakMap.
@@ -30,8 +28,7 @@ export type VisitLog<P extends object, K = unknown> =
  * @since 3.0.0-beta.0
  */
 export type VisitLogMap<P extends object, K = unknown> =
-    | Map<P, ParentContext<P, K>[]>
-    | WeakMap<P, ParentContext<P, K>[]>;
+    Map<P, ParentContext<P, K>[]> | WeakMap<P, ParentContext<P, K>[]>;
 
 /**
  * Visit log as a Set or a WeakSet of parent objects.

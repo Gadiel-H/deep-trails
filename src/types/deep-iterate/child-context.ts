@@ -94,5 +94,4 @@ export type ChildBaseContext<P extends object, K = unknown> = {
  * @since 3.0.0
  */
 export type ChildContext<P extends object, K = unknown, V = unknown> =
-    | (ChildBaseContext<P, K> & ChildValueRead<V>)
-    | (ChildBaseContext<P, K> & ChildValueError);
+    (ChildBaseContext<P, K> & ChildValueRead<V>) | (ChildBaseContext<P, K> & ChildValueError);
