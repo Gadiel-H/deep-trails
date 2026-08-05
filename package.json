@@ -85,5 +85,8 @@
     "bugs": {
         "url": "https://github.com/Gadiel-H/deep-trails/issues"
     },
-    "homepage": "https://github.com/Gadiel-H/deep-trails#readme"
+    "homepage": "https://github.com/Gadiel-H/deep-trails#readme",
+    "allowScripts": {
+        "esbuild": true
+    }
 }
