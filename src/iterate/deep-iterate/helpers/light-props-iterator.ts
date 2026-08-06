@@ -16,8 +16,8 @@ export function LightPropsIterator<T extends object>(object: T) {
         }
 
         const key = keys[++index];
-        const value = object[key] as unknown;
-        const entry = [key, value] as const;
+        const value = object[key];
+        const entry = [key, value] as [typeof key, unknown];
 
         return { done: false, value: entry } as const;
     };

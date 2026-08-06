@@ -1,7 +1,7 @@
 "use strict";
 
 import { toPathString } from "../../utils/public/index.js";
-import type { Callback, Options, ParentContext, VisitLog } from "./index";
+import type { Callback, Options, ParentContext, VisitLog, LightEntriesIterator } from "./index";
 
 /** `deepIterateCore` params object. @internal */
 export type CoreParams<P extends object, K = any, V = any> = {
@@ -12,7 +12,7 @@ export type CoreParams<P extends object, K = any, V = any> = {
     context: ParentContext<P, K>;
 
     /** The iterator for the current parent. */
-    iterator: Iterator<any, any, any> & { size: number | undefined };
+    iterator: LightEntriesIterator;
 
     readonly callback: Callback<P, K, V>;
 

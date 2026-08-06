@@ -9,3 +9,6 @@ export type { Control } from "./control";
 
 /** @internal */
 export type { CoreParams } from "./__core-params";
+
+/** @internal */
+export type { LightEntriesIterator } from "./__light-entries-iterator";

@@ -1,6 +1,6 @@
 "use strict";
 
-import { type Options } from "../../../types/deep-iterate/index";
+import type { Options, LightEntriesIterator } from "../../../types/deep-iterate/index";
 import { isArrayLike, typeOf } from "../../../utils/public/index.js";
 import { getterWrapper } from "./getter-wrapper.js";
 import { LightPropsIterator } from "./light-props-iterator.js";
@@ -9,15 +9,10 @@ const arrayKeys = Array.prototype.keys;
 const arrayValues = Array.prototype[Symbol.iterator];
 const arrayEntries = Array.prototype.entries;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hasEntries = (obj: any): obj is { entries: Function } =>
+const hasEntries = (obj: any): obj is { entries: () => LightEntriesIterator } =>
     typeof obj.entries === "function" && !hasOwnProperty.call(obj, "entries");
 
-/** @internal */
-type InternalEntriesIterator = Iterator<
-    any,
-    any,
-    [key: unknown, value: unknown, desc?: PropertyDescriptor, error?: unknown] | null
-> & { size: number | undefined };
+type KeysIterator = Iterator<PropertyKey, null | undefined, never> & { size?: number };
 
 /**
  * Returns an entries iterator for an object of an accepted type, or null otherwise.
@@ -26,7 +21,7 @@ type InternalEntriesIterator = Iterator<
 export function makeIterator<T extends object>(
     object: T,
     onGetter: Options<T, any, any>["onGetter"]
-): InternalEntriesIterator | null {
+): LightEntriesIterator | null {
     if (typeof object === "function") return null;
 
     const type = typeOf(object);
@@ -42,48 +37,52 @@ export function makeIterator<T extends object>(
         return null;
     }
 
-    let iterator: InternalEntriesIterator | null = null;
+    let keysIter: KeysIterator;
 
     if (isArrayLike(object)) {
         if (onGetter === "execute") {
-            return arrayEntries.call(object) as any as InternalEntriesIterator;
+            const iter = arrayEntries.call(object) as LightEntriesIterator;
+            iter.size = object.length;
+            return iter;
         }
 
-        iterator = arrayKeys.call(object) as any as InternalEntriesIterator;
-        iterator.size = object.length;
+        keysIter = arrayKeys.call(object) as KeysIterator;
+        keysIter.size = object.length;
     } else if (hasEntries(object)) {
+        let iter: LightEntriesIterator;
+
         try {
-            iterator = object.entries() as InternalEntriesIterator;
-            iterator.size = undefined;
+            iter = object.entries();
         } catch {
             return null;
         }
 
         if (object instanceof Map || object instanceof Set) {
-            iterator.size = object.size;
+            iter.size = object.size;
         }
 
-        return iterator;
+        return iter;
     } else {
         if (onGetter === "execute") {
-            return LightPropsIterator(object) as any as InternalEntriesIterator;
+            return LightPropsIterator(object);
         }
 
         const keys = Reflect.ownKeys(object);
 
-        iterator = arrayValues.call(keys) as any as InternalEntriesIterator;
-        iterator.size = keys.length;
+        keysIter = arrayValues.call(keys);
+        keysIter.size = keys.length;
     }
 
     // Wrap the iterator to handle getters and errors
-    const getKey = iterator.next.bind(iterator);
+    const getKey = keysIter.next.bind(keysIter);
+    const entriesIter = keysIter as LightEntriesIterator;
 
-    iterator.next = () => {
+    entriesIter.next = () => {
         const keyResult = getKey(),
             done = keyResult.done as boolean,
             key = keyResult.value;
 
-        if (done) return { done: true, value: null };
+        if (done || key == null) return { done: true, value: null };
 
         const desc = Object.getOwnPropertyDescriptor(object, key) as PropertyDescriptor;
         const { get } = desc;
@@ -92,18 +91,20 @@ export function makeIterator<T extends object>(
             return { done, value: [key, object[key]] };
         }
 
+        const descWithGet = desc as PropertyDescriptor & { get: Function };
+
         if (onGetter === "catch-error") {
             const { value, error } = getterWrapper({ parentValue: object }, { get });
 
             if (error) {
-                return { done, value: [key, undefined, desc, error] };
+                return { done, value: [key, undefined, descWithGet, error] };
             }
 
             return { done, value: [key, value] };
         }
 
-        return { done, value: [key, undefined, desc] };
+        return { done, value: [key, undefined, descWithGet] };
     };
 
-    return iterator;
+    return entriesIter;
 }
