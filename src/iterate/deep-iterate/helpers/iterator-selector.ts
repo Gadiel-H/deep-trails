@@ -1,7 +1,7 @@
 "use strict";
 
 import type { Options, LightEntriesIterator } from "../../../types/deep-iterate/index";
-import { isArrayLike, typeOf } from "../../../utils/public/index.js";
+import { isArrayLike } from "../../../utils/public/index.js";
 import { getterWrapper } from "./getter-wrapper.js";
 import { LightPropsIterator } from "./light-props-iterator.js";
 
@@ -24,14 +24,12 @@ export function makeIterator<T extends object>(
 ): LightEntriesIterator | null {
     if (typeof object === "function") return null;
 
-    const type = typeOf(object);
-
     if (
-        type === "WeakSet" ||
-        type === "WeakMap" ||
-        type === "Date" ||
-        type === "RegExp" ||
-        type === "Promise" ||
+        object instanceof WeakSet ||
+        object instanceof WeakMap ||
+        object instanceof Date ||
+        object instanceof RegExp ||
+        object instanceof Promise ||
         object instanceof Error
     ) {
         return null;
