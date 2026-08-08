@@ -152,7 +152,7 @@ export type Control<K = unknown, V = unknown> = {
               ok: false;
               /** It is `"SETTER_ERROR"` if the property's setter threw any value when trying to assign the new one. */
               errorCode: "SETTER_ERROR";
-              /** This property exists if an error thrown by a setter or a inherited `set` method was caught. */
+              /** Exists if the property's setter threw any value. */
               error: unknown;
           }
     >;
