@@ -2,7 +2,7 @@
  * Specifies control flags to alter the behavior of deep iteration traversal.
  *
  * Notes:
- * - The effects of using this object are applied after the callback is called.
+ * - The effects of using this object are applied after the callback is called, except for `setValue()`.
  * - This object should be used only in callbacks for `deepIterate`.
  *
  * Evaluation order:
@@ -15,7 +15,7 @@
  * - skipKey
  * - skipValue
  *
- * @since 3.0.0-beta.0
+ * @since 3.0.0
  */
 export type Control<K = unknown, V = unknown> = {
     /**
@@ -108,4 +108,52 @@ export type Control<K = unknown, V = unknown> = {
      * }
      */
     readonly useEntry: (key?: K, value?: V) => 0 | 1 | 2 | 3;
+
+    /**
+     * Changes the value of the current node in the source structure and in the context.
+     *
+     * @remarks
+     * When the current property is non-writable but configurable, setting `forceDescriptor` allows the property
+     * descriptor to be rewritten so the new value can be assigned.
+     *
+     * @param newValue - The new value to assign. It must be different to the current one.
+     * @param forceDescriptor - Changes the property descriptor if necessary and if possible. Defaults to `false`.
+     * @returns An object with the result status.
+     *
+     * @example
+     * // Stringifying values
+     * deepIterate(obj, ({ value }, _, ctrl) => {
+     *     if (typeof value !== "string") {
+     *         const { ok, errorCode } = ctrl.setValue(String(value));
+     *
+     *         if (!ok) {
+     *             console.error("Could not change the value because:", errorCode);
+     *         }
+     *     }
+     * });
+     */
+    readonly setValue: (
+        newValue: V,
+        forceDescriptor?: boolean
+    ) => Readonly<
+        | { ok: true; errorCode: null }
+        | {
+              /** It is `false` if the value could not be changed. Check the error code to know the cause. */
+              ok: false;
+              /** It is a string that indicates the cause if the value change fails. */
+              errorCode:
+                  | "CANNOT_CHANGE_SET"
+                  | "HAS_OWN_SET_METHOD"
+                  | "READONLY_PROPERTY"
+                  | "MISSING_VALUE"
+                  | "SAME_VALUE";
+          }
+        | {
+              ok: false;
+              /** It is `"SETTER_ERROR"` if the property's setter threw any value when trying to assign the new one. */
+              errorCode: "SETTER_ERROR";
+              /** This property exists if an error thrown by a setter or a inherited `set` method was caught. */
+              error: unknown;
+          }
+    >;
 };

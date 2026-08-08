@@ -22,6 +22,7 @@ import type {
     ChildContext
 } from "../../types/deep-iterate/index";
 
+const { hasOwnProperty } = Object.prototype;
 const { isInteger } = Number;
 const { is } = Object;
 
@@ -112,6 +113,63 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
             newEntryCode = code as any;
 
             return newEntryCode;
+        },
+        setValue(newValue, forceDescriptor = false) {
+            if (!(0 in arguments)) {
+                return { ok: false, errorCode: "MISSING_VALUE" };
+            }
+
+            if (is(value, newValue)) {
+                return { ok: false, errorCode: "SAME_VALUE" };
+            }
+
+            if (parentValue instanceof Set) {
+                return { ok: false, errorCode: "CANNOT_CHANGE_SET" };
+            }
+
+            const propKey = key as PropertyKey;
+            const parentWithSet = parentValue as T & { set?(key: any, value: any): unknown };
+
+            if (iterator.source === "ownProperties") {
+                const desc = Object.getOwnPropertyDescriptor(
+                        parentValue,
+                        propKey
+                    ) as PropertyDescriptor,
+                    configurable = Boolean(desc.configurable),
+                    isReadonly = !Boolean(desc.writable),
+                    canForceConfig = configurable && forceDescriptor;
+
+                if (isReadonly && !canForceConfig) {
+                    return { ok: false, errorCode: "READONLY_PROPERTY" };
+                }
+
+                if (isReadonly) {
+                    const enumerable = Boolean(desc.enumerable);
+                    const newDescriptor = {
+                        value: newValue,
+                        writable: true,
+                        enumerable,
+                        configurable
+                    };
+                    Object.defineProperty(parentValue, propKey, newDescriptor);
+                }
+
+                try {
+                    parentValue[propKey] = newValue;
+                } catch (error) {
+                    return { ok: false, errorCode: "SETTER_ERROR", error };
+                }
+            } else if (
+                !hasOwnProperty.call(parentWithSet, "set") &&
+                typeof parentWithSet.set === "function"
+            ) {
+                parentWithSet.set(key, newValue);
+            } else {
+                return { ok: false, errorCode: "HAS_OWN_SET_METHOD" };
+            }
+
+            value = newValue;
+            return { ok: true };
         }
     };
 

@@ -12,7 +12,10 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
 const hasEntries = (obj: any): obj is { entries: () => LightEntriesIterator } =>
     typeof obj.entries === "function" && !hasOwnProperty.call(obj, "entries");
 
-type KeysIterator = Iterator<PropertyKey, null | undefined, never> & { size?: number };
+type KeysIterator = Iterator<PropertyKey, null | undefined, never> & {
+    size?: number;
+    source?: LightEntriesIterator["source"];
+};
 
 /**
  * Returns an entries iterator for an object of an accepted type, or null otherwise.
@@ -41,6 +44,7 @@ export function makeIterator<T extends object>(
         if (onGetter === "execute") {
             const iter = arrayEntries.call(object) as LightEntriesIterator;
             iter.size = object.length;
+            iter.source = "ownProperties";
             return iter;
         }
 
@@ -59,6 +63,8 @@ export function makeIterator<T extends object>(
             iter.size = object.size;
         }
 
+        iter.source = "entriesMethod";
+
         return iter;
     } else {
         if (onGetter === "execute") {
@@ -69,6 +75,7 @@ export function makeIterator<T extends object>(
 
         keysIter = arrayValues.call(keys);
         keysIter.size = keys.length;
+        keysIter.source = "ownProperties";
     }
 
     // Wrap the iterator to handle getters and errors
