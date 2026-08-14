@@ -100,20 +100,6 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         finishAfterNode: false,
         finishNow: false,
 
-        useEntry(newKey, newValue) {
-            let code = 0;
-
-            if (1 in arguments && !is(newValue, value)) code += 1;
-
-            if (0 in arguments && !is(newKey, key)) code += 2;
-
-            if (code === 0) return 0;
-
-            newEntry = [newKey, newValue];
-            newEntryCode = code as any;
-
-            return newEntryCode;
-        },
         setValue(newValue, forceDescriptor = false) {
             if (!(0 in arguments)) {
                 return { ok: false, errorCode: "MISSING_VALUE" };
@@ -176,12 +162,6 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
     let loopDone = iterator.size != null && iterator.size <= 0;
 
     let finishAfterLoop: boolean = false;
-
-    /** Obtained code on calling `control.useEntry`. */
-    let newEntryCode: 0 | 1 | 2 | 3 = 0;
-
-    /** Entry to use after calling `control.useEntry`. */
-    let newEntry: [unknown, unknown] | null = null;
 
     /** Value of each node. */ let value: unknown;
     /** Key of each node.   */ let key: unknown;
@@ -275,26 +255,6 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         }
 
         // ---- Check control state -----
-
-        if (newEntry) {
-            const newKey = newEntry[0],
-                newValue = newEntry[1],
-                code = newEntryCode;
-
-            newEntry = null;
-            newEntryCode = 0;
-
-            if (code >= 1) value = newValue;
-            if (code >= 2) {
-                key = newKey;
-                if (pathType === "array") {
-                    (path as any[])[path.length - 1] = key;
-                } else {
-                    pathStrOptions.extraKey = key;
-                    path = toPathString(objPath, pathStrOptions);
-                }
-            }
-        }
 
         const { finishNow, finishAfterNode, stopParentNow } = control;
 

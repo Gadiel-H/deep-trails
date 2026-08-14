@@ -57,12 +57,7 @@ deepIterate(
 
             // Mutating the parent object and the child's context
             if (value instanceof Set) {
-                value = Array.from(value);
-
-                parent.value[key] = value;
-
-                // You need to call this function to notify changes like this
-                control.useEntry(key, value);
+                control.setValue(Array(value));
             }
         }
 

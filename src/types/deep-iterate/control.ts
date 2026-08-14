@@ -6,7 +6,6 @@
  * - This object should be used only in callbacks for `deepIterate`.
  *
  * Evaluation order:
- * - useEntry()
  * - finishNow
  * - finishAfterNode
  * - stopParentNow
@@ -17,7 +16,7 @@
  *
  * @since 3.0.0
  */
-export type Control<K = unknown, V = unknown> = {
+export type Control<V = unknown> = {
     /**
      * **Finish the entire traversal** when the current call to the callback ends.
      *
@@ -77,37 +76,6 @@ export type Control<K = unknown, V = unknown> = {
      * control.skipValue = !Array.isArray(child.value)
      */
     skipValue: boolean;
-
-    /**
-     * Assigns the provided key and value to the context of the current child.
-     *
-     * If the path is an array of keys and a new key is received, the last key will be replaced.
-     *
-     * @returns The number of things that will be updated in the context.
-     * - `0` - Nothing.
-     * - `1` - The value.
-     * - `2` - The key and the path.
-     * - `3` - The value, the key, and the path.
-     *
-     * @example
-     * // Stringifying non-string values
-     * if (typeof child.value !== "string") {
-     *     const newValue = String(child.value);
-     *     parent.value[child.key] = newValue;
-     *     control.useEntry(child.key, newValue);  // returns 1
-     * }
-     *
-     * @example
-     * // Changing elements in sets
-     * const object = parent.value;
-     * if (object instanceof Set && typeof child.value !== "string") {
-     *     const newValue = String(child.value);
-     *     object.add(newValue);
-     *     object.delete(child.value);
-     *     control.useEntry(newValue, newValue);   // returns 3
-     * }
-     */
-    readonly useEntry: (key?: K, value?: V) => 0 | 1 | 2 | 3;
 
     /**
      * Changes the value of the current node in the source structure and in the context.
