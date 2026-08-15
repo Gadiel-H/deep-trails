@@ -1,18 +1,34 @@
 "use strict";
 
+import { isArrayLike } from "../../index.js";
+
 const { toString } = Object.prototype;
 
 /** @internal */
 export const objectCases = {
     Date: (obj: Date) => {
+        if (!(obj instanceof Date)) return toString.call(obj);
+
         const time = obj.getTime();
 
         return time !== time ? "Invalid Date" : obj.toISOString();
     },
-    RegExp: (obj: RegExp) => String(obj),
+    RegExp: (obj: RegExp) => {
+        if (obj instanceof RegExp) return String(obj);
 
-    WeakMap: () => "WeakMap { <items unknown> }",
-    WeakSet: () => "WeakSet { <items unknown> }",
+        return toString.call(obj);
+    },
+
+    WeakMap: (obj: WeakMap<any, any>) => {
+        if (!(obj instanceof WeakMap)) return toString.call(obj);
+
+        return "WeakMap { <items unknown> }";
+    },
+    WeakSet: (obj: WeakSet<any>) => {
+        if (!(obj instanceof WeakSet)) return toString.call(obj);
+
+        return "WeakSet { <items unknown> }";
+    },
 
     Map: (obj: Map<any, any>) => {
         if (!(obj instanceof Map)) {
@@ -57,6 +73,8 @@ const arrayLikes = [
 
 arrayLikes.forEach((type: (typeof arrayLikes)[number]) => {
     objectCases[type] = (obj: ArrayLike<any>) => {
+        if (!isArrayLike(obj)) return toString.call(obj);
+
         const length = obj.length;
 
         if (length === 0) return `${type}(0) []`;
