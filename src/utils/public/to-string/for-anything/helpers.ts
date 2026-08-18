@@ -5,7 +5,7 @@ import { isArrayLike } from "../../index.js";
 const { toString } = Object.prototype;
 
 /** @internal */
-export const objectCases = {
+export const objectCases = Object.assign(Object.create(null), {
     Date: (obj: Date) => {
         if (!(obj instanceof Date)) return toString.call(obj);
 
@@ -51,7 +51,7 @@ export const objectCases = {
         if (size === 0) return "Set(0) {}";
         return `Set(${size}) { ... }`;
     }
-};
+});
 
 /** Known ArrayLike object types. */
 const arrayLikes = [
