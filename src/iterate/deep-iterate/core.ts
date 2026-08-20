@@ -19,7 +19,8 @@ import type {
     VisitLogArray,
     VisitLogSet,
     CoreParams,
-    ChildContext
+    ChildContext,
+    ChildBaseContext
 } from "../../types/deep-iterate/index";
 
 const { hasOwnProperty } = Object.prototype;
@@ -188,17 +189,18 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
             path = toPathString(objPath, pathStrOptions);
         }
 
-        const childCtx: ChildContext<T> = {
+        const childBaseCtx: ChildBaseContext<T> = {
             key,
-            value: undefined,
             index,
             depth,
             path,
-            parentValue,
-            getterError: null as any
+            parentValue
         };
 
+        const childCtx = childBaseCtx as ChildContext<T>;
+
         if (3 in entry && options.onGetter === "catch-error") {
+            childCtx.value = undefined;
             childCtx.getterError = Object.assign(
                 new Error(
                     `Error reading "${toPathString(path, { notation: "mixed" })}" due to is getter`
@@ -206,7 +208,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                 { cause: entry[3] }
             );
         } else if (2 in entry && typeof options.onGetter === "function") {
-            const result = options.onGetter(childCtx, entry[2]);
+            const result = options.onGetter(childBaseCtx, entry[2]);
 
             if (!isNoFnObject(result)) {
                 throw new TypeError(
@@ -216,6 +218,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
             }
 
             if (result && "error" in result) {
+                childCtx.value = undefined;
                 childCtx.getterError = Object.assign(
                     new Error(
                         `Error reading "${toPathString(path, { notation: "mixed" })}" due to is getter`
@@ -224,9 +227,11 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                 );
             } else {
                 childCtx.value = result.value;
+                childCtx.getterError = null;
             }
         } else {
             childCtx.value = value;
+            childCtx.getterError = null;
         }
 
         // ----- Callback execution -----

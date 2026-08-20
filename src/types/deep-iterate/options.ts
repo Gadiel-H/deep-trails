@@ -1,4 +1,4 @@
-import type { ChildContext, ParentContext } from "./index";
+import type { ChildBaseContext, ParentContext } from "./index";
 import { toPathString } from "../../utils/public/index.js";
 import { deepIterate } from "../../iterate/index.js";
 
@@ -105,8 +105,8 @@ export type Options<P extends object, K = unknown, V = unknown> = {
         | "catch-error"
         | ((
               this: Readonly<Options<P, K, V>>,
-              /** The context of the node. */
-              node: Readonly<ChildContext<P, K, V>>,
+              /** The base context of the node. */
+              node: Readonly<ChildBaseContext<P, K>>,
               /** The property descriptor with a getter. */
               descriptor: PropertyDescriptor & { get: Function }
           ) => { value: V } | { error: unknown });
