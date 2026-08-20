@@ -88,13 +88,13 @@ export function deepIterate<P extends object = object, K = unknown, V = unknown,
     const { exposeVisitLog, visitLogType } = optionsCopy;
     const visitLog = createLog[visitLogType as any]();
 
-    const snapshot: TraversalContext<P, K, V, R> = Object.freeze({
+    const traversalCtx: TraversalContext<P, K, V, R> = Object.freeze({
         root: object,
         options: optionsCopy,
         callback,
         visitLog
     });
-    const cbThis = { ...snapshot };
+    const cbThis = { ...traversalCtx };
 
     if (exposeVisitLog) {
         (cbThis as any).visitLog = visitLog;
@@ -148,7 +148,7 @@ export function deepIterate<P extends object = object, K = unknown, V = unknown,
         if (value !== finishedSymbol) throw value;
     }
 
-    return snapshot;
+    return traversalCtx;
 }
 
 Object.defineProperty(deepIterate, "options", {
