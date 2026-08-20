@@ -35,10 +35,10 @@ deepIterate.options = defaultOptions;
  * - This function performs a depth-first search (DFS).
  *
  * **Type parameters**:
- * - **R**: Root node.
+ * - **P**: Parent objects.
  * - **K**: Keys.
  * - **V**: Child values.
- * - **P**: Parent values.
+ * - **R**: Root object.
  *
  * @param object - The root node to start the iteration.
  * @param callback - Function to execute by each node before iterating it.
@@ -59,11 +59,11 @@ deepIterate.options = defaultOptions;
  *
  * @since 3.0.0
  */
-export function deepIterate<R extends P, K = unknown, V = unknown, P extends object = object>(
+export function deepIterate<P extends object = object, K = unknown, V = unknown, R extends P = P>(
     object: R,
     callback: Callback<P, K, V, R> = () => {},
     options: Partial<Options<P, K, V>> = deepIterate.options
-): TraversalContext<R, K, V, P> {
+): TraversalContext<P, K, V, R> {
     let optionsCopied = false;
     let optionsCopy: Readonly<Options<P, K, V>> = options as any;
 
@@ -88,7 +88,7 @@ export function deepIterate<R extends P, K = unknown, V = unknown, P extends obj
     const { exposeVisitLog, visitLogType } = optionsCopy;
     const visitLog = createLog[visitLogType as any]();
 
-    const snapshot: TraversalContext<R, K, V, P> = Object.freeze({
+    const snapshot: TraversalContext<P, K, V, R> = Object.freeze({
         root: object,
         options: optionsCopy,
         callback,

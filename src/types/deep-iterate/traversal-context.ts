@@ -13,10 +13,10 @@ import type { Callback, Options, VisitLog } from "./index";
  * @since 3.0.0
  */
 export type TraversalContext<
-    R extends P,
+    P extends object = object,
     K = unknown,
     V = unknown,
-    P extends object = object
+    R extends P = P
 > = Readonly<{
     /** The original root object passed to iterate it. */
     root: R;
