@@ -22,5 +22,5 @@ export type Callback<P extends object, K = unknown, V = unknown, R extends P = a
     this: TraversalContext<P, K, V, R>,
     child: ChildContext<P, K, V>,
     parent: Readonly<ParentContext<P, K>>,
-    control: Control
+    control: Control<V>
 ) => unknown;
