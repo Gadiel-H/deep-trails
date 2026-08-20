@@ -203,7 +203,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
             childCtx.value = undefined;
             childCtx.getterError = Object.assign(
                 new Error(
-                    `Error reading "${toPathString(path, { notation: "mixed" })}" due to is getter`
+                    `Error reading "${toPathString(path, { notation: "mixed" })}" due to its getter`
                 ),
                 { cause: entry[3] }
             );
@@ -221,7 +221,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                 childCtx.value = undefined;
                 childCtx.getterError = Object.assign(
                     new Error(
-                        `Error reading "${toPathString(path, { notation: "mixed" })}" due to is getter`
+                        `Error reading "${toPathString(path, { notation: "mixed" })}" due to its getter`
                     ),
                     { cause: result.error }
                 );
