@@ -1,6 +1,6 @@
 "use strict";
 
-import type { EntriesIterator } from "../../types/index";
+import type { PropertiesIterable } from "../../types/index";
 import { destroyIterator, getSymbolIterator } from "./helpers/index.js";
 import { recordSchema, validators, validateObject } from "../../__schemas/index.js";
 import { isObject, toSimpleString } from "../../utils/public/index.js";
@@ -47,7 +47,7 @@ const argumentsSchema = recordSchema({
 export function PropertiesIterator<T extends object, K extends keyof T = keyof T, V = T[K]>(
     object: T,
     keysGetter: (object: T) => K[] = Reflect.ownKeys as any
-): EntriesIterator<typeof PropertiesIterator, T, K, V> {
+): PropertiesIterable<T, K, V> {
     validateObject(
         { object, keysGetter },
         argumentsSchema,
@@ -68,8 +68,7 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
 
     // `iter == null` checks whether the iterator has been destroyed
     // Helps to avoid type errors when using its methods after destruction
-    let iter: EntriesIterator<typeof PropertiesIterator, T, K, V> | null = {
-        factory: PropertiesIterator,
+    let iter: PropertiesIterable<T, K, V> | null = {
         object,
         get size() {
             return keys?.length;

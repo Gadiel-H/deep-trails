@@ -1,26 +1,21 @@
+import { PropertiesIterator } from "../iterate/index.js";
+
 /**
- * Entries iterable iterator.
+ * Stateful iterable for iterating over object properties.
  *
- * The deep-trails factory functions create closures to store the iteration state.
- * Therefore, they do not depend on `this`.
+ * See {@linkcode PropertiesIterator} to known the factory.
  *
  * @since 3.0.0
  */
-export type EntriesIterator<
-    F extends <O extends T>(object: O, ...args: any[]) => EntriesIterator<F, T, K, V>,
+export interface PropertiesIterable<
     T extends object,
-    K = unknown,
-    V = unknown
-> = {
-    /** The function that created this iterator. */
-    factory: F;
-
+    K extends PropertyKey = keyof T,
+    V = T[K & keyof T]
+> {
     /**
-     * Number of items detected in the object.
-     *
-     * It is undefined if there was no known way to obtain it.
+     * Number of keys returned by the keys getter.
      */
-    readonly size: number | undefined;
+    readonly size: number;
 
     /** The object received to iterate it. */
     readonly object: T;
@@ -32,7 +27,7 @@ export type EntriesIterator<
      * Multiple iterators will interfere with each other.
      */
     [Symbol.iterator]: () => {
-        next: EntriesIterator<F, T, K, V>["next"];
+        next: PropertiesIterable<T, K, V>["next"];
     };
 
     /**
@@ -61,7 +56,6 @@ export type EntriesIterator<
      *
      * The entry will be:
      * - `null` if the zero-based index is out of the valid and known range.
-     * - `undefined` if the iterator cannot provide peeking functionality.
      * - An array as entry otherwise.
      *
      * @param position - Where to peek from the current position. Default is +1.
@@ -73,9 +67,7 @@ export type EntriesIterator<
      */
     peek: (
         position?: number | "first" | "last"
-    ) =>
-        | { done: false; value: [key: K, value: V, index: number] }
-        | { done: boolean; value: null | undefined };
+    ) => { done: false; value: [key: K, value: V, index: number] } | { done: boolean; value: null };
 
     /**
      * Destroys the iterator, and makes it unusable.
@@ -85,4 +77,4 @@ export type EntriesIterator<
      * True if it was destroyed in this call, false if it had already been destroyed.
      */
     destroy: () => boolean;
-};
+}

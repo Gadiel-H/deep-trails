@@ -4,4 +4,4 @@
  * @since 3.0.0
  */
 export type * as DeepIterate from "./deep-iterate/index";
-export type { EntriesIterator } from "./entries-iterator";
+export type { PropertiesIterable } from "./properties-iterable";
