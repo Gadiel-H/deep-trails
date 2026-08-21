@@ -13,9 +13,11 @@ export interface PropertiesIterable<
     V = T[K & keyof T]
 > {
     /**
-     * Number of keys returned by the keys getter.
+     * Returns the length of the keys array (obtained via the keys getter).
+     *
+     * Returns `undefined` if the reference to the keys array has been removed (due to `.destroy()`).
      */
-    readonly size: number;
+    getSize: () => number | undefined;
 
     /** The object received to iterate it. */
     readonly object: T;

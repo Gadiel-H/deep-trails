@@ -76,8 +76,9 @@ export function PropertiesIterator<
     // Helps to avoid type errors when using its methods after destruction
     let iter: PropertiesIterable<T, K, V> | null = {
         object,
-        get size() {
-            return keys?.length;
+        getSize: () => {
+            if (keys == null) return undefined;
+            return Number(keys.length);
         },
         next: () => {
             if (iter == null) {

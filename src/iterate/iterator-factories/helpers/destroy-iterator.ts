@@ -3,7 +3,7 @@
 import type { PropertiesIterable } from "../../../types/index";
 
 const keys: (keyof PropertiesIterable<any, any>)[] = [
-    "size",
+    "getSize",
     "object",
     "next",
     "destroy",
