@@ -17,6 +17,8 @@ export function recordSchema<T extends Dictionary>(schema: InputSchema<T>): Sche
         throw new TypeError(`Expected a plain object as schema. Received ${typeOf(schema)}\n`);
     }
 
+    Object.setPrototypeOf(schema, null);
+
     type SchemaArg = typeof schema;
     type SchemaKeys = (keyof SchemaArg)[];
 
