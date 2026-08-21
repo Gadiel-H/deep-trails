@@ -14,7 +14,11 @@ const argumentsSchema = recordSchema({
 });
 
 /**
- * Creates an iterator for the properties of an object using a function to get its keys.
+ * Creates an stateful iterator for the properties of an object using a function to get its keys.
+ *
+ * @remarks
+ * - Depends on a closure to store the iteration state, not on `this`.
+ * - Multiple `[Symbol.iterator]()` iterators will interfere with each other.
  *
  * @param object - The target object.
  * @param keysGetter - Function to get the object's keys. By default is `Reflect.ownKeys`.
@@ -44,10 +48,11 @@ const argumentsSchema = recordSchema({
  *
  * @since 3.0.0
  */
-export function PropertiesIterator<T extends object, K extends keyof T = keyof T, V = T[K]>(
-    object: T,
-    keysGetter: (object: T) => K[] = Reflect.ownKeys as any
-): PropertiesIterable<T, K, V> {
+export function PropertiesIterator<
+    T extends object,
+    K extends PropertyKey = keyof T,
+    V = T[K & keyof T]
+>(object: T, keysGetter: (object: T) => K[] = Reflect.ownKeys as any): PropertiesIterable<T, K, V> {
     validateObject(
         { object, keysGetter },
         argumentsSchema,
@@ -65,6 +70,7 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
     }
 
     type Entry = [K, V, number];
+    type ObjKey = K & keyof T;
 
     // `iter == null` checks whether the iterator has been destroyed
     // Helps to avoid type errors when using its methods after destruction
@@ -89,7 +95,7 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
 
             index++;
             const key = keys[index];
-            const value = object[key];
+            const value = object[key as ObjKey];
             const entry = [key, value, index] as Entry;
 
             return { done: false, value: entry };
@@ -120,7 +126,7 @@ export function PropertiesIterator<T extends object, K extends keyof T = keyof T
             }
 
             const key = keys[target];
-            const value = object[key];
+            const value = object[key as ObjKey];
             const entry = [key, value, target] as Entry;
 
             return { done: false, value: entry };
