@@ -88,6 +88,9 @@ export function makeIterator<T extends object>(
             key = keyResult.value;
 
         if (done || key == null) return { done: true, value: null };
+        if (!(key in object)) {
+            return { done, value: [key, undefined] };
+        }
 
         const desc = Object.getOwnPropertyDescriptor(object, key) as PropertyDescriptor;
         const { get } = desc;
