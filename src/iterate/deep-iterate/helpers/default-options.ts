@@ -9,7 +9,7 @@ const optionsList = [...optionKeys].map(String).join("\n      ");
 
 /** Default options argument for `deepIterate`. @internal */
 export const defaultOptions = new Proxy<Options<any, any, any>>(
-    {
+    Object.assign(Object.create(null), {
         iterateKeys: false,
         iterateValues: true,
         exposeVisitLog: true,
@@ -17,7 +17,7 @@ export const defaultOptions = new Proxy<Options<any, any, any>>(
         visitLogType: "null",
         onCircular: "skip-node",
         onGetter: "catch-error"
-    },
+    }),
     {
         set: (obj, key: string | symbol, val: unknown) => {
             if (!(key in optionsSchema)) {
