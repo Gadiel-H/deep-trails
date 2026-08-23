@@ -1,6 +1,7 @@
 "use strict";
 
-import { type AnyOptions, validateExistence, setOption, getSafeValue } from "./helpers.js";
+import type { Options } from "../../../../types/deep-iterate/index";
+import { validateExistence, setOption, getSafeValue } from "./helpers.js";
 
 const optionsObject = Object.assign(Object.create(null), {
     iterateKeys: false,
@@ -10,10 +11,10 @@ const optionsObject = Object.assign(Object.create(null), {
     visitLogType: "null",
     onCircular: "skip-node",
     onGetter: "catch-error"
-});
+} as Options<object>);
 
 /** Default options argument for `deepIterate`. @internal */
-export const defaultOptions = new Proxy<AnyOptions>(optionsObject, {
+export const defaultOptions = new Proxy<Options<object>>(optionsObject, {
     set: (obj, key: PropertyKey, value: unknown) => {
         validateExistence(key);
 

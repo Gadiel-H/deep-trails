@@ -5,8 +5,7 @@ import { optionsSchema } from "../../schemas/options-schema.js";
 const optionsList = Reflect.ownKeys(optionsSchema).map(String).join("\n      ");
 type OptionsSchema = typeof optionsSchema;
 type OptionKey = keyof OptionsSchema;
-
-export type AnyOptions = Options<object>;
+type AnyOptions = Options<object>;
 
 export function validateExistence(key: PropertyKey): asserts key is OptionKey {
     if (!(key in optionsSchema)) {
