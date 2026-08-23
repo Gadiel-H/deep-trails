@@ -60,7 +60,8 @@
         "typescript": "6.0.3",
         "esbuild": "0.28.1",
         "prettier": "3.9.6",
-        "typedoc": "0.28.20"
+        "typedoc": "0.28.20",
+        "@types/node": "26.2.0"
     },
     "keywords": [
         "deep",
