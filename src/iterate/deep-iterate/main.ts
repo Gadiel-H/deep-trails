@@ -5,7 +5,7 @@ import type { Callback, Options, TraversalContext } from "../../types/deep-itera
 
 // ----- Helpers -----
 import { validateObject } from "../../__schemas/index.js";
-import { defaultOptions } from "./helpers/default-options.js";
+import { defaultOptions } from "./helpers/default-options/index.js";
 import { paramsSchema } from "./schemas/params-schema.js";
 import { isPlainObject } from "../../utils/public/index.js";
 import { createLog } from "./helpers/log-creators.js";
@@ -62,7 +62,7 @@ deepIterate.options = defaultOptions;
 export function deepIterate<P extends object = object, K = unknown, V = unknown, R extends P = P>(
     object: R,
     callback: Callback<P, K, V, R> = () => {},
-    options: Partial<Options<P, K, V>> = deepIterate.options
+    options: Partial<Options<P, K, V>> = deepIterate.options as Options<P, K, V>
 ): TraversalContext<P, K, V, R> {
     let optionsCopied = false;
     let optionsCopy: Readonly<Options<P, K, V>> = options as any;
