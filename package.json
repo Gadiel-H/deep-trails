@@ -29,6 +29,9 @@
         }
     },
     "scripts": {
+        "package:cjs": "mkdir -p dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
+        "package:esm": "mkdir -p dist/esm && echo '{\"type\":\"module\"}' > dist/esm/package.json",
+
         "test": "node tests/suite.test.js",
         "dev": "bash scripts/dev-session.bash",
         
@@ -40,14 +43,14 @@
         
         "build:docs": "npx typedoc --options config/typedoc.json",
         "build:types": "npx tsc -p config/tsconfig.types.json",
-        "build:cjs": "npx tsc -p config/tsconfig.cjs.json; rm -rf dist/cjs/types",
-        "build:esm": "npx tsc -p config/tsconfig.esm.json; rm -rf dist/esm/types",
+        "build:cjs": "npx tsc -p config/tsconfig.cjs.json; rm -rf dist/cjs/types && npm run package:cjs",
+        "build:esm": "npx tsc -p config/tsconfig.esm.json; rm -rf dist/esm/types && npm run package:esm",
         "build:iife": "bash scripts/build-iife.bash",
         
         "watch:docs": "npx typedoc --watch --options config/typedoc.json",
         "watch:types": "npx tsc -w -p config/tsconfig.types.json",
-        "watch:cjs": "npx tsc -w -p config/tsconfig.cjs.json",
-        "watch:esm": "npx tsc -w -p config/tsconfig.esm.json",
+        "watch:cjs": "npm run package:cjs && npx tsc -w -p config/tsconfig.cjs.json",
+        "watch:esm": "npm run package:esm && npx tsc -w -p config/tsconfig.esm.json",
         "watch:iife": "bash scripts/build-iife.bash --watch"
     },
     "files": [
