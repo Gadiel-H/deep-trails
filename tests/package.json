@@ -1,0 +1,11 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "test": "cd .. && npm run test",
+        "test:check": "cd .. && npm run test:check"
+    },
+    "devDependencies": {
+        "deep-trails": "file:../"
+    }
+}

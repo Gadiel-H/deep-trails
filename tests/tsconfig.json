@@ -11,8 +11,8 @@
         "types": ["node"],
         "module": "NodeNext",
         "moduleResolution": "NodeNext",
-        "allowJs": true,
-        "checkJs": true,
+        "allowJs": false,
+        "allowImportingTsExtensions": true,
 
         // Other Outputs
         "noEmit": true,

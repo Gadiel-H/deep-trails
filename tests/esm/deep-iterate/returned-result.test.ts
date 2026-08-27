@@ -1,8 +1,8 @@
-/// @ts-check
-const test = require("node:test");
-const assert = require("node:assert");
-const { deepIterate } = require("deep-trails");
-const { typeOf } = require("deep-trails/utils");
+import test from "node:test";
+import assert from "node:assert";
+
+import { deepIterate } from "deep-trails";
+import { typeOf } from "deep-trails/utils";
 
 const root = console;
 const callback = () => {};
@@ -27,7 +27,7 @@ test("deepIterate returns the expected result object", () => {
     assert.ok(Object.isFrozen(result.options), "result.options should be frozen");
 
     const missingOptions = Object.keys(options).filter(
-        (key) => !Object.prototype.hasOwnProperty.call(result.options, key)
+        (key) => !Object.hasOwn(result.options, key)
     );
 
     assert.strictEqual(

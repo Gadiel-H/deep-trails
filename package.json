@@ -32,7 +32,8 @@
         "package:cjs": "mkdir -p dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
         "package:esm": "mkdir -p dist/esm && echo '{\"type\":\"module\"}' > dist/esm/package.json",
 
-        "test": "node tests/suite.test.js",
+        "test:check": "npx tsc -p tests/tsconfig.json",
+        "test": "cd tests && npm ci && cd .. && npm run test:check && npx tsx tests/suite.test.ts",
         "dev": "bash scripts/dev-session.bash",
         
         "clean": "rm -rf dist/ docs/",
@@ -64,7 +65,8 @@
         "esbuild": "0.28.1",
         "prettier": "3.9.6",
         "typedoc": "0.28.20",
-        "@types/node": "26.2.0"
+        "@types/node": "26.2.0",
+        "tsx": "4.23.12"
     },
     "keywords": [
         "deep",
