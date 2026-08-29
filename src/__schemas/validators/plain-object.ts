@@ -9,7 +9,7 @@ export const plainObject = <T extends Dictionary = {}>(
     schema: Schema<T>,
     typeAlias: string = "plain object"
 ): Validator<T> => ({
-    __test: isPlainObject,
+    __test: isPlainObject as (val: unknown) => val is T,
     __convert: (val) => val,
     __description: `be of type "${typeAlias}"`,
     __type: typeAlias,
