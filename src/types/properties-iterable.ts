@@ -15,7 +15,7 @@ export interface PropertiesIterable<
     /**
      * Returns the length of the keys array (obtained via the keys getter).
      *
-     * Returns `undefined` if the reference to the keys array has been removed (due to `.destroy()`).
+     * Returns `undefined` if the reference to the keys array has been removed (due to {@link PropertiesIterable.clear | `.clear()`}).
      */
     getSize: () => number | undefined;
 
@@ -72,11 +72,26 @@ export interface PropertiesIterable<
     ) => { done: false; value: [key: K, value: V, index: number] } | { done: boolean; value: null };
 
     /**
-     * Destroys the iterator, and makes it unusable.
-     * This helps to eliminate the closure.
+     * Removes internal references to objects within the closure, without modifying the iterator.
+     *
+     * This helps free up memory without breaking the API contract or throwing an error.
+     *
+     * After calling this method, other methods will behave as if the iteration had finished.
+     *
+     * @example
+     * const iter = PropertiesIterator({ a: 1, b: 2, c: 3 });
+     *
+     * iter.next();     // { done: false, value: [ "a", 1, 0 ] }
+     * iter.getSize();  // 3
+     *
+     * iter.clear();    // true
+     *
+     * [...iter];       // []
+     * iter.getSize();  // undefined
+     * iter.clear();    // false
      *
      * @returns
-     * True if it was destroyed in this call, false if it had already been destroyed.
+     * `true` if called for the first time; `false` otherwise.
      */
-    destroy: () => boolean;
+    clear: () => boolean;
 }

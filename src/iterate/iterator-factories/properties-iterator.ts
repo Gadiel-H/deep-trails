@@ -1,7 +1,6 @@
 "use strict";
 
 import type { PropertiesIterable } from "../../types/index";
-import { destroyIterator, getSymbolIterator } from "./helpers/index.js";
 import { recordSchema, validators, validateObject } from "../../__schemas/index.js";
 import { isObject, toSimpleString } from "../../utils/public/index.js";
 
@@ -140,25 +139,16 @@ export function PropertiesIterator<
 
             return true;
         },
-        destroy: () => {
+        clear: () => {
             if (iter == null) return false;
-
-            destroyIterator(iter);
 
             // Removes object references
             keys = keysGetter = null as any;
             object = iter = null as any;
-            next = null as any;
 
             return true;
         },
-        [Symbol.iterator]: () => {
-            if (iter == null) {
-                return getSymbolIterator();
-            }
-
-            return { next };
-        }
+        [Symbol.iterator]: () => ({ next })
     };
 
     // Required by `[Symbol.iterator]()`
