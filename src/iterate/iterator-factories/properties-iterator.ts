@@ -15,6 +15,8 @@ const argumentsSchema = recordSchema({
 /**
  * Creates an stateful iterator for the properties of an object using a function to get its keys.
  *
+ * See {@linkcode PropertiesIterable} to known the interface.
+ *
  * @remarks
  * - Depends on a closure to store the iteration state, not on `this`.
  * - Multiple `[Symbol.iterator]()` iterators will interfere with each other.
@@ -22,28 +24,12 @@ const argumentsSchema = recordSchema({
  * @param object - The target object.
  * @param keysGetter - Function to get the object's keys. By default is `Reflect.ownKeys`.
  *
- * @returns The created iterator.
- *
- * @example // For...of loop
+ * @example
  * const iterator = PropertiesIterator({ a: 1, b: 2, c: 3 });
  *
  * for (const [ key, value ] of iterator) console.log(key, value);
  *
- * @example // Peek object entries
- * const iterator = PropertiesIterator({ a: 1, b: 2, c: 3 });
- * const print = console.log;
- *
- * print(iterator.peek("first").value);  // [ "a", 1, 0 ]
- * print(iterator.peek("last").value);   // [ "c", 3, 2 ]
- * print(iterator.next().value);         // [ "a", 1, 0 ]
- * print(iterator.peek(0).value);        // [ "a", 1, 0 ]
- *
- * @example // Destroy the iterator
- * const iterator = PropertiesIterator({ a: 1, b: 2, c: 3 });
- * const entries = [ ...iterator ];
- *
- * iterator.destroy();
- * console.log(iterator);  // {} (empty object)
+ * iterator.reset();  // Recommended for another iteration.
  *
  * @since 3.0.0
  */
