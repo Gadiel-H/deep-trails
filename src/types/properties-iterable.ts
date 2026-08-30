@@ -16,6 +16,15 @@ export interface PropertiesIterable<
      * Returns the length of the keys array (obtained via the keys getter).
      *
      * Returns `undefined` if the reference to the keys array has been removed (due to {@link PropertiesIterable.clear | `.clear()`}).
+     *
+     * @example
+     * const iter = PropertiesIterator(
+     *     { a: 1, b: 2, c: 3 }, () => [ "b", "c" ]
+     * );
+     *
+     * iter.getSize();    // 2
+     * iter.clear();      // true
+     * iter.getSize();    // undefined
      */
     getSize: () => number | undefined;
 
@@ -25,8 +34,9 @@ export interface PropertiesIterable<
     /**
      * Returns an iterator over the current instance.
      *
-     * The returned iterator shares the same internal iteration state.
-     * Multiple iterators will interfere with each other.
+     * Multiple iterators will interfere with each other because they share the same internal state.
+     *
+     * Remember to call {@link PropertiesIterable.reset | `.reset()`} if you want to refresh the keys and the iteration state.
      */
     [Symbol.iterator]: () => {
         next: PropertiesIterable<T, K, V>["next"];
@@ -34,6 +44,13 @@ export interface PropertiesIterable<
 
     /**
      * Advances in the iteration, changing its state.
+     *
+     * @example
+     * const iter = PropertiesIterator({ a: 1, b: 2 });
+     *
+     * iter.next();  // { done: false, value: [ "a", 1, 0 ] }
+     * iter.next();  // { done: false, value: [ "b", 2, 1 ] }
+     * iter.next();  // { done: true, value: null }
      *
      * @returns The next state of the iteration.
      */
@@ -47,9 +64,19 @@ export interface PropertiesIterable<
     /**
      * Resets the iteration state.
      *
-     * If reseted, only the iternal data (closure) will change.
+     * When reset, it retrieves the keys again and sets the index to `-1`.
      *
-     * @returns True if reseted, otherwise false.
+     * @example
+     * const iter = PropertiesIterator({ a: 1, b: 2 }, () => ["a"]);
+     *
+     * [...iter];     // [ [ "a", 1, 0 ] ]
+     * iter.reset();  // true
+     * [...iter];     // [ [ "a", 1, 0 ] ]
+     *
+     * iter.clear();  // true
+     * iter.reset();  // false
+     *
+     * @returns `true` if reseted; `false` if object references were removed (due to {@link PropertiesIterable.clear | `.clear()`}).
      */
     reset: () => boolean;
 
@@ -66,6 +93,23 @@ export interface PropertiesIterable<
      * - `<0`: Past entry.
      * - `"first"`: First entry, or `null` if empty.
      * - `"last"`: Last entry, or `null` if empty.
+     *
+     * @example
+     * const iter = PropertiesIterator({ a: 1, b: 2, c: 3 });
+     *
+     * iter.peek("first");   // { done: false, value: [ "a", 1, 0 ] }
+     * iter.peek("last");    // { done: false, value: [ "c", 3, 2 ] }
+     * iter.peek(0);         // { done: false, value: null }
+     *
+     * iter.next();          // { done: false, value: [ "a", 1, 0 ] }
+     * iter.peek();          // { done: false, value: [ "b", 2, 1 ] }
+     *
+     * [...iter];            // [ ... ]
+     * iter.peek(0);         // { done: true, value: null }
+     * iter.peek(-1);        // { done: false, value: [ "c", 3, 2 ] }
+     *
+     * iter.clear();         // true
+     * iter.peek(anyArg);    // { done: true, value: null }
      */
     peek: (
         position?: number | "first" | "last"
@@ -81,14 +125,12 @@ export interface PropertiesIterable<
      * @example
      * const iter = PropertiesIterator({ a: 1, b: 2, c: 3 });
      *
-     * iter.next();     // { done: false, value: [ "a", 1, 0 ] }
-     * iter.getSize();  // 3
+     * iter.next();         // { done: false, value: [ "a", 1, 0 ] }
+     * iter.clear();        // true
      *
-     * iter.clear();    // true
-     *
-     * [...iter];       // []
-     * iter.getSize();  // undefined
-     * iter.clear();    // false
+     * [...iter];           // []
+     * iter.peek(anyArg);   // { done: true, value: null }
+     * iter.clear();        // false
      *
      * @returns
      * `true` if called for the first time; `false` otherwise.
