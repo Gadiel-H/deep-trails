@@ -37,6 +37,8 @@ export function toSimpleString(value: unknown): string {
         else if (type === "bigint") string = `${value}n`;
         else string = String(value);
 
+        if (cache.size === 5_000) cache.clear();
+
         cache.set(value, string);
         return string;
     }
