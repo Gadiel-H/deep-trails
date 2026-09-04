@@ -1,0 +1,48 @@
+{
+    "extends": "./tsconfig.base.json",
+    "include": ["../tests/"],
+    "compilerOptions": {
+        // File Layout
+        "rootDir": "../tests/",
+
+        // Environment Settings
+        "target": "ES2023",
+        "lib": ["ES2023"],
+        "types": ["node"],
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "allowJs": false,
+        "allowImportingTsExtensions": true,
+
+        // Other Outputs
+        "noEmit": true,
+
+        // Recommended Options
+        "verbatimModuleSyntax": true,
+        "isolatedModules": true,
+        "noUncheckedSideEffectImports": true,
+        "skipLibCheck": true,
+
+        /* Type Checking */
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "strictBuiltinIteratorReturn": true,
+        "noImplicitThis": true,
+        "useUnknownInCatchVariables": true,
+        "alwaysStrict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "exactOptionalPropertyTypes": true,
+        "noImplicitReturns": true,
+        "noPropertyAccessFromIndexSignature": true,
+
+        // Stricter Typechecking Options
+        "noUncheckedIndexedAccess": true,
+        "noImplicitOverride": true,
+        "noFallthroughCasesInSwitch": true
+    }
+}
