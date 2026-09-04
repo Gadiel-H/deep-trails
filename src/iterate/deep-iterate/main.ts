@@ -26,13 +26,12 @@ import { deepIterateCore } from "./core.js";
 deepIterate.options = defaultOptions;
 
 /**
- * Iterates deeply through the entries of almost any data structure or object.
+ * Deeply iterates over objects and data structures with high context and control.
  *
  * @remarks
  * - Some types of objects are excluded: Date, Promise, RegExp, Error, WeakMap, WeakSet, and functions.
- * - Circular references are avoided by default, but you can change this behavior.
- * - You can get a visit log by changing the "visitLogType" option.
- * - This function performs a depth-first search (DFS).
+ * - You can handle getters and circular references with the `onGetter` and `onCircular` options.
+ * - You can get a visit log by changing the `visitLogType` option.
  *
  * **Type parameters**:
  * - **P**: Parent objects.
@@ -49,13 +48,33 @@ deepIterate.options = defaultOptions;
  * @throws TypeError if the arguments are invalid.
  *
  * @example
+ * // Print visited nodes
  * deepIterate(
  *     { a: { b: { c: [ "d", "f", "g" ] } } },
- *     (child) => {
- *         console.log(`${child.path} = ${child.value}`)
+ *     ({ path, value }) => {
+ *         console.log(path, "=", toSimpleString(value));
  *     },
  *     { pathType: "string" }
  * );
+ *
+ * @example
+ * // Iterate selectively
+ * deepIterate(obj, ({ value, path }, parent, ctrl) => {
+ *     ctrl.skipNode = !(value instanceof Map);
+ *     ctrl.stopParentNow = parent.visits > 1;
+ *
+ *     console.log({ path, value });
+ * });
+ *
+ * @example
+ * // Normalize values
+ * deepIterate(obj, ({ value }, _, ctrl) => {
+ *     if (typeof value === "string")
+ *         ctrl.setValue(value.trim().toLowerCase());
+ *
+ *     else if (isIntegerLike(value))
+ *         ctrl.setValue(Number(value));
+ * });
  *
  * @since 3.0.0
  */
