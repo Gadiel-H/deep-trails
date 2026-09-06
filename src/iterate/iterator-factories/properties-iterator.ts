@@ -60,7 +60,9 @@ export function PropertiesIterator<
     // `iter == null` checks whether the iterator has been destroyed
     // Helps to avoid type errors when using its methods after destruction
     let iter: PropertiesIterable<T, K, V> | null = {
-        object,
+        get object() {
+            return object;
+        },
         getSize: () => {
             if (keys == null) return undefined;
             return Number(keys.length);

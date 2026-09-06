@@ -28,8 +28,15 @@ export interface PropertiesIterable<
      */
     getSize: () => number | undefined;
 
-    /** The object received to iterate it. */
-    readonly object: T;
+    /**
+     * The object received by the iterator.
+     *
+     * It is `null` after {@link PropertiesIterable.clear | `.clear()`}
+     * releases the iterator's internal references.
+     *
+     * References obtained before clearing are not revoked.
+     */
+    readonly object: T | null;
 
     /**
      * Returns an iterator over the current instance.
@@ -116,18 +123,25 @@ export interface PropertiesIterable<
     ) => { done: false; value: [key: K, value: V, index: number] } | { done: boolean; value: null };
 
     /**
-     * Removes internal references to objects within the closure, without modifying the iterator.
+     * Releases references captured by the iterator's methods.
      *
-     * This helps free up memory without breaking the API contract or throwing an error.
+     * This is useful when detached `next()` or `peek()` methods might otherwise
+     * keep the target object and its keys alive.
      *
-     * After calling this method, other methods will behave as if the iteration had finished.
+     * After clearing, {@link PropertiesIterable.object | `.object`} returns `null`,
+     * the methods behave as finished, and subsequent calls return `false`.
+     *
+     * References obtained before clearing are not revoked.
      *
      * @example
      * const iter = PropertiesIterator({ a: 1, b: 2, c: 3 });
+     * const next = iter.next;
      *
-     * iter.next();         // { done: false, value: [ "a", 1, 0 ] }
+     * next();              // { done: false, value: [ "a", 1, 0 ] }
      * iter.clear();        // true
+     * iter.object;          // null
      *
+     * next();              // { done: true, value: null }
      * [...iter];           // []
      * iter.peek(anyArg);   // { done: true, value: null }
      * iter.clear();        // false
