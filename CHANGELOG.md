@@ -5,29 +5,132 @@
 
 For more details about a release, click on the corresponding version.
 
-## [Unreleased] - 2026-04-02
+## [Unreleased] - 2026-09-27
+
+### Added
+
+- Support for `"first"` and `"last"` as arguments for `PropertiesIterable.peek()`.
+
+- The `PropertiesIterable.getSize()` method, which returns the current number of keys, or `undefined` after `clear()`.
+
+- The `PropertiesIterable.clear()` method, which releases captured references and leaves the iterator methods finished.
+
+- `PropertiesIterable.object` now returns `null` after `clear()` releases the iterator's internal references.
+
+- The `deepIterate()` `onGetter` option, which executes, catches, or delegates property getters encountered during property iteration. It defaults to `"catch-error"`.
+
+- The `Control.setValue()` method for changing the current value in the source object and traversal context.
 
 ### Removed
 
-- The `useBrackets` option in `toPathString`, from the utils.
+- The `useBrackets` option in `toPathString()`. Use `notation` instead.
 
-- The `toPathString.options` object.
+- The `toPathString.options` object. Use `toPathString.notation` to change the default notation.
 
-- The `isInteger` function, from the utils.
+- The `isInteger()` checker. Renamed to `isIntegerLike()`.
 
-- The `checkers` object, from the utils.
+- The `checkers` object. Import the checkers from `"deep-trails/utils"` or the `utils` object.
 
-- The `ArrayIterator` and `MethodIterator` factories, from "deep-trails/iterate".
+- The `ArrayIterator()` and `MethodIterator()` factories. Use native iterators instead.
 
-- The `callbackWrapper` and `maxParentVisits` options in `deepIterate` and the `Options` type.
+- The `callbackWrapper` and `maxParentVisits` options in `deepIterate()`. Use bound callbacks and the `onCircular` option instead.
+
+- The `Control.useEntry()` method. Use `setValue()` instead.
+
+- The `EntriesIterator` type. Replaced by `PropertiesIterable`.
+
+- The `PropertiesIterable.size` property. Replaced by `PropertiesIterable.getSize()`.
+
+- The `PropertiesIterable.destroy()` method. Replaced by `PropertiesIterable.clear()`.
+
+- The `Snapshot` type. Replaced by `TraversalContext`.
+
+### Fixed
+
+- **Breaking:** `Callback` now passes the `V` type argument to `Control`.
+  This makes `control.setValue()` require a value of type `V`.
+
+- **Breaking:** `deepIterate.options` now has a null prototype and rejects defining accessors, unknown properties, and prototype changes.
+
+- **Breaking:** `toSimpleString()` now:
+    - Validates objects using `instanceof` instead of relying only on string tags.
+      If an object fails the `instanceof` check, it is stringified using `Object.prototype.toString.call()`.
+
+    - Uses an object tags table without prototype.
+      This can be a breaking change if the previous behavior was required by your program.
+      This only affects the rare case where the toString tag previously matched an inherited property.
+
+    - Escapes strings instead of returning them between unescaped quotes.
+
+- **Breaking:** `isPlainObject()` now has a safer and more precise TS predicate typing:
+    - Intersections with primitive types or types that extend `Function` result in `never`.
+    - After check, accessing nonexistent properties (outside the checker) on the object results in `unknown` instead of `any`.
+
+- **Breaking:** `toFunctionString()` now uses a different function-string representation:
+    - Detects function types more accurately. See its [documentation](https://gadiel-h.github.io/deep-trails/functions/utils.toFunctionString.html) for details.
+        - Detects generator and async functions using their constructor names and string tags.
+        - Detects classes using a regular expression instead of `string.startsWith()`.
+        - Detects native functions using a regular expression instead of `string.endsWith()`.
+
+    - Stringifies only functions with an empty name (`""`) as anonymous.
+
+    - Detects arrow functions using a regular expression instead of relying on incorrect properties.
+
+    - Detects arrow functions with up to three levels of nested parentheses; source beginning with `"("` is treated as arrow syntax.
+
+- `toSimpleString()` stringifies invalid `Date` instances as `"Invalid Date"` instead of throwing an error.
+
+- Errors thrown by a `deepIterate()` callback are now available as the `cause` of the resulting error.
+
+- `toFunctionString()` now:
+    - Validates that its input is a function before reading the `name` property.
+    - Returns a fallback representation if the function source cannot be inspected.
+    - Stringifies symbol names without throwing an error.
+    - Uses `"[TypeFunction [name error]]"` if reading the name throws an error.
+
+- `isArrayLike()` returns `false` if getting the object length throws an error.
+
+- `isBoundFunction()` returns `false` if getting the function name throws an error.
+
+- `isFunction()` also supports constructor signatures in the type constraint of `T`.
+
+### Changed
+
+- **Breaking:** Adapted `ChildContext` to the effects of `Options.onGetter`.
+  Added the exported `ChildBaseContext`, `ChildValueRead`, and `ChildValueError` types. Getter failures are represented by `value: undefined` and `getterError` with the original error in `cause`.
+
+- **Breaking:** Changed the TS type parameters order for `TraversalContext`, `Callback`, and `deepIterate()` to `<P, K, V, R>`.
+
+- **Breaking:** Changed the signatures of `PropertiesIterator()` and `deepIterate()`.
+
+- **Breaking:** `PropertiesIterator()` validates its arguments and throws an error when an argument is invalid.
+
+- **Breaking:** `Options.onCircular()` must return `"iterate" | "skip"` instead of `boolean | void | never`.
+  At runtime, `deepIterate()` continues only when the callback returns `"iterate"`.
+
+- **Breaking:** `makeIterator()` (internal) now identifies excluded built-in objects with `instanceof`; cross-realm instances or objects with modified prototypes may therefore be handled differently.
+
+- **Breaking:** Calling `PropertiesIterable[Symbol.iterator]()` no longer resets the shared iteration state.
+
+- `PropertiesIterable.peek()` converts its argument to `number` if it is not `"first"` or `"last"`.
+
+- `toSimpleString()` clears the cache every 5000 items.
+
+- `deepIterate()` uses lighter property iterators for supported objects and array-like values.
 
 ### Documentation
 
+- Clarified documentation and added examples for `PropertiesIterable`, `PropertiesIterator()`, and `deepIterate()`.
+
 - Corrected the value description in the `VisitLogMap` type to say it is an array, not a `ParentContext` object.
 
-- Explained correctly the objects as references instead of values in `ChildContext` and `ParentContext`.
+- Explained the objects as references instead of values in `ChildContext` and `ParentContext`.
 
-- Explicitly documented the `useEntry` method in `Control` and added examples.
+- Clarified and detailed documentation in `toFunctionString()` and its dependent checkers (`is*Function()`).
+
+- Specified the path notation in `Options.pathType` when it is a string.
+
+- Minor fixes and clarifications in `VisitLogMap` and `Options.pathType`, `ChildContext` and `ParentContext`.
 
 ## [v3.0.0-beta.3] - 2026-03-03
 
