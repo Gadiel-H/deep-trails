@@ -250,11 +250,12 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                 error = toSimpleString(caught);
             }
 
-            throw new Error(
-                `${params.cbAlias} has ${action} whitin an object of type ${typeOf(object)}:\n\n` +
-                    `    ${error}\n\n` +
-                    `    At: ${toPathString(path)}\n`,
-                // @ts-ignore
+            throw Object.assign(
+                new Error(
+                    `${params.cbAlias} has ${action} whitin an object of type ${typeOf(object)}:\n\n` +
+                        `    ${error}\n\n` +
+                        `    At: ${toPathString(path)}\n`
+                ),
                 { cause: caught }
             );
         }
