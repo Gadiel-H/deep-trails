@@ -104,7 +104,7 @@ export type Control<V = unknown> = {
         newValue: V,
         forceDescriptor?: boolean
     ) => Readonly<
-        | { ok: true; errorCode: null }
+        | { ok: true }
         | {
               /** It is `false` if the value could not be changed. Check the error code to know the cause. */
               ok: false;
