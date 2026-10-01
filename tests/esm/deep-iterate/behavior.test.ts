@@ -3,7 +3,7 @@ import assert from "node:assert";
 
 import { deepIterate } from "deep-trails";
 
-test("onGetter catches, executes, and delegates property getters", () => {
+await test("onGetter catches, executes, and delegates property getters", () => {
     const getterError = new Error("getter failed");
     const source = Object.defineProperty({}, "value", {
         get() {
@@ -46,7 +46,7 @@ test("onGetter catches, executes, and delegates property getters", () => {
     assert.strictEqual(delegatedValue, "handled");
 });
 
-test("onGetter can report an error returned by its handler", () => {
+await test("onGetter can report an error returned by its handler", () => {
     const getterError = new Error("reported getter error");
     const source = Object.defineProperty({}, "value", {
         get() {
@@ -69,7 +69,7 @@ test("onGetter can report an error returned by its handler", () => {
     assert.strictEqual(cause, getterError);
 });
 
-test("onCircular supports skip, throw, and bounded callback decisions", () => {
+await test("onCircular supports skip, throw, and bounded callback decisions", () => {
     const circular: { self?: unknown } = {};
     circular.self = circular;
 
@@ -102,7 +102,7 @@ test("onCircular supports skip, throw, and bounded callback decisions", () => {
     assert.strictEqual(callbackVisits, 2);
 });
 
-test("control flags skip a subtree and finish the traversal", () => {
+await test("control flags skip a subtree and finish the traversal", () => {
     const visited: unknown[] = [];
     deepIterate(
         { branch: { nested: true }, stop: true, never: true },
@@ -116,7 +116,7 @@ test("control flags skip a subtree and finish the traversal", () => {
     assert.deepStrictEqual(visited, ["branch", "stop"]);
 });
 
-test("setValue mutates object and Map entries and reports failure statuses", () => {
+await test("setValue mutates object and Map entries and reports failure statuses", () => {
     const object = { value: 1 };
     let objectResult: unknown;
     deepIterate(object, (child, _parent, control) => {
@@ -160,7 +160,7 @@ test("setValue mutates object and Map entries and reports failure statuses", () 
     assert.deepStrictEqual(setResult, { ok: false, errorCode: "CANNOT_CHANGE_SET" });
 });
 
-test("callback failures retain the original error as cause", () => {
+await test("callback failures retain the original error as cause", () => {
     const callbackError = new Error("callback failed");
 
     assert.throws(
