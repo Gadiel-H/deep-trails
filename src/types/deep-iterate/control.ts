@@ -92,10 +92,10 @@ export type Control<V = unknown> = {
      * // Stringifying values
      * deepIterate(obj, ({ value }, _, ctrl) => {
      *     if (typeof value !== "string") {
-     *         const { ok, errorCode } = ctrl.setValue(String(value));
+     *         const change = ctrl.setValue(String(value));
      *
-     *         if (!ok) {
-     *             console.error("Could not change the value because:", errorCode);
+     *         if (!change.ok) {
+     *             console.error("Could not change the value:", change.errorCode);
      *         }
      *     }
      * });
