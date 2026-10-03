@@ -133,6 +133,20 @@ await test("setValue mutates object and Map entries and reports failure statuses
     assert.strictEqual(map.get("value"), 3);
     assert.deepStrictEqual(mapResult, { ok: true });
 
+    const entriesOnly = Object.setPrototypeOf(
+        {},
+        {
+            entries() {
+                return [["value", 1]].values();
+            }
+        }
+    );
+    let withoutSetResult: unknown;
+    deepIterate(entriesOnly, (child, _parent, control) => {
+        if (child.key === "value") withoutSetResult = control.setValue(2);
+    });
+    assert.deepStrictEqual(withoutSetResult, { ok: false, errorCode: "WITHOUT_SET_METHOD" });
+
     const unchanged = { value: 1 };
     const failures: unknown[] = [];
     deepIterate(unchanged, (child, _parent, control) => {

@@ -111,6 +111,7 @@ export type Control<V = unknown> = {
               /** It is a string that indicates the cause if the value change fails. */
               errorCode:
                   | "CANNOT_CHANGE_SET"
+                  | "WITHOUT_SET_METHOD"
                   | "HAS_OWN_SET_METHOD"
                   | "READONLY_PROPERTY"
                   | "MISSING_VALUE"

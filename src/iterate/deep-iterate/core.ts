@@ -115,7 +115,6 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
             }
 
             const propKey = key as PropertyKey;
-            const parentWithSet = parentValue as T & { set?(key: any, value: any): unknown };
 
             if (iterator.source === "ownProperties") {
                 const desc = Object.getOwnPropertyDescriptor(
@@ -146,11 +145,10 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                 } catch (error) {
                     return { ok: false, errorCode: "SETTER_ERROR", error };
                 }
-            } else if (
-                !hasOwnProperty.call(parentWithSet, "set") &&
-                typeof parentWithSet.set === "function"
-            ) {
-                parentWithSet.set(key, newValue);
+            } else if (!("set" in parentValue) || typeof parentValue.set !== "function") {
+                return { ok: false, errorCode: "WITHOUT_SET_METHOD" };
+            } else if (!hasOwnProperty.call(parentValue, "set")) {
+                parentValue.set(key, newValue);
             } else {
                 return { ok: false, errorCode: "HAS_OWN_SET_METHOD" };
             }
