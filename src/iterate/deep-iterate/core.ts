@@ -96,10 +96,10 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         skipKey: false,
 
         stopParentAfterNode: false,
-        stopParentNow: false,
+        stopParent: false,
 
         finishAfterNode: false,
-        finishNow: false,
+        finish: false,
 
         setValue(newValue, forceDescriptor = false) {
             if (!(0 in arguments)) {
@@ -260,16 +260,16 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
 
         // ---- Check control state -----
 
-        const { finishNow, finishAfterNode, stopParentNow } = control;
+        const { finish, finishAfterNode, stopParent } = control;
 
-        if (finishNow) {
+        if (finish) {
             finishAfterLoop = true;
             break;
         }
         if (finishAfterNode) {
             finishAfterLoop = loopDone = true;
         }
-        if (stopParentNow) break;
+        if (stopParent) break;
 
         const { stopParentAfterNode, skipNode } = control;
 

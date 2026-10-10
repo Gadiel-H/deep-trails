@@ -21,9 +21,9 @@ export type Control<V = unknown> = {
      * **Finish the entire traversal** when the current call to the callback ends.
      *
      * @example
-     * control.finishNow = child.key === "finish"
+     * control.finish = child.key === "finish"
      */
-    finishNow: boolean;
+    finish: boolean;
 
     /**
      * **Finish the entire traversal** after iterating over the current child.
@@ -39,9 +39,9 @@ export type Control<V = unknown> = {
      * **Stops iterating over the current parent** when this call to the **callback ends**.
      *
      * @example
-     * control.stopParentNow = child.index > 20
+     * control.stopParent = child.index > 20
      */
-    stopParentNow: boolean;
+    stopParent: boolean;
 
     /**
      * **Stops iterating over the current parent** after deeply iterating over the **current child**.
