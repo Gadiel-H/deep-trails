@@ -12,9 +12,7 @@ const { getPrototypeOf, prototype: objPrototype } = Object;
  *
  * @since 3.0.0
  */
-export const isPlainObject = <T>(
-    value: T
-): value is Exclude<T, Function> & object & Record<PropertyKey, unknown> => {
+export const isPlainObject = <T>(value: T): value is Exclude<T, Function> & object => {
     if (value == null || typeof value !== "object") return false;
 
     const proto = getPrototypeOf(value);
