@@ -109,7 +109,7 @@ await test("control flags skip a subtree and finish the traversal", () => {
         (child, _parent, control) => {
             visited.push(child.key);
             if (child.key === "branch") control.skipNode = true;
-            if (child.key === "stop") control.finishNow = true;
+            if (child.key === "stop") control.finish = true;
         }
     );
 
