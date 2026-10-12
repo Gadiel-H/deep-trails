@@ -271,21 +271,25 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
         }
         if (stopParent) break;
 
-        const { stopParentAfterNode, skipNode } = control;
+        const { stopParentAfterNode, skipNode, skipKey, skipValue } = control;
 
-        if (stopParentAfterNode) loopDone = true;
+        if (stopParentAfterNode) {
+            loopDone = true;
+        } else {
+            control.skipKey = false;
+            control.skipValue = false;
 
-        if (skipNode) {
-            control.skipNode = false;
-            continue;
+            if (skipNode) {
+                control.skipNode = false;
+                continue;
+            }
         }
 
         // ----- Check if should iterate -----
 
         // --- Key ---
 
-        if (iterateKeys && !control.skipKey && isObject(key)) {
-            control.skipKey = false;
+        if (iterateKeys && !skipKey && isObject(key)) {
             const k = key as T;
             const iterator = makeIterator(k, onGetter);
             const size = iterator?.size;
@@ -312,8 +316,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
 
         // --- Value ---
 
-        if (iterateValues && !control.skipValue && isObject(value)) {
-            control.skipValue = false;
+        if (iterateValues && !skipValue && isObject(value)) {
             const v = value as T;
             const iterator = makeIterator(v, onGetter);
             const size = iterator?.size;
