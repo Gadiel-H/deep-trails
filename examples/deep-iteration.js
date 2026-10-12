@@ -50,10 +50,10 @@ deepIterate(
             control.skipNode = depth >= 5;
 
             // Stop iterating about the parent in the tenth child.
-            control.stopParentNow = index === 10;
+            control.stopParent = index === 10;
 
             // Finishing the traverse if a lot of nodes were found
-            control.finishNow = calls > 10_000;
+            control.finish = calls > 10_000;
 
             // Mutating the parent object and the child's context
             if (value instanceof Set) {

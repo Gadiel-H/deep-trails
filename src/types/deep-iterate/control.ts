@@ -6,9 +6,9 @@
  * - This object should be used only in callbacks for `deepIterate`.
  *
  * Evaluation order:
- * - finishNow
+ * - finish
  * - finishAfterNode
- * - stopParentNow
+ * - stopParent
  * - stopParentAfterNode
  * - skipNode
  * - skipKey

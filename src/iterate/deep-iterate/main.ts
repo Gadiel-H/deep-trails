@@ -61,7 +61,7 @@ deepIterate.options = defaultOptions;
  * // Iterate selectively
  * deepIterate(obj, ({ value, path }, parent, ctrl) => {
  *     ctrl.skipNode = !(value instanceof Map);
- *     ctrl.stopParentNow = parent.visits > 1;
+ *     ctrl.stopParent = parent.visits > 1;
  *
  *     console.log({ path, value });
  * });
