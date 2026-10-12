@@ -116,6 +116,45 @@ await test("control flags skip a subtree and finish the traversal", () => {
     assert.deepStrictEqual(visited, ["branch", "stop"]);
 });
 
+await test("skipNode resets skipKey and skipValue before the next child", () => {
+    const object = { first: 0, second: { nested: true } };
+    const visitedValues: string[] = [];
+
+    deepIterate(object, (child, _parent, control) => {
+        const path = typeof child.path === "string" ? child.path : child.path.map(String).join(".");
+        visitedValues.push(path);
+
+        if (child.key === "first") {
+            control.skipValue = true;
+            control.skipNode = true;
+        }
+    });
+
+    assert.deepStrictEqual(visitedValues, ["first", "second", "second.nested"]);
+
+    const objectKey = { nested: true };
+    const map = new Map<unknown, unknown>([
+        ["first", 0],
+        [objectKey, "value"]
+    ]);
+
+    let visitedObjectKey = false;
+
+    deepIterate(
+        map,
+        (child, _parent, control) => {
+            if (child.key === "nested") visitedObjectKey = true;
+            if (child.key === "first") {
+                control.skipKey = true;
+                control.skipNode = true;
+            }
+        },
+        { iterateKeys: true }
+    );
+
+    assert.strictEqual(visitedObjectKey, true);
+});
+
 await test("setValue mutates object and Map entries and reports failure statuses", () => {
     const object = { value: 1 };
     let objectResult: unknown;
