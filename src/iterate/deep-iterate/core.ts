@@ -31,7 +31,7 @@ const { is } = Object;
  * Recursively iterates over the nodes of a nested object, calling a callback at each one.
  * @internal
  */
-export const deepIterateCore = <T extends object>(params: CoreParams<T>): void => {
+export const deepIterateCore = <T extends object>(params: CoreParams<T, any, any, any>): void => {
     // ========== Check if should continue ========== //
 
     const { object, visitLog, options, utils } = params;
@@ -299,7 +299,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T>): void =
                 params.iterator = iterator;
                 params.object = k;
                 params.context = {
-                    key,
+                    key: k,
                     value: k,
                     index,
                     depth,

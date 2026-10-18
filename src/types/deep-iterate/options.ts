@@ -1,4 +1,4 @@
-import type { ChildBaseContext, ParentContext } from "./index";
+import type { ChildBaseContext, SubParentContext } from "./index";
 import { toPathString } from "../../utils/public/index.js";
 import { deepIterate } from "../../iterate/index.js";
 
@@ -52,7 +52,7 @@ export type Options<P extends object, K = unknown, V = unknown> = {
         | "throw-error"
         | ((
               this: Readonly<Options<P, K, V>>,
-              context: Readonly<ParentContext<P, K>>
+              context: Readonly<SubParentContext<P, K>>
           ) => "skip" | "iterate");
 
     /**

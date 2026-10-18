@@ -128,7 +128,7 @@ export function deepIterate<P extends object = object, K = unknown, V = unknown,
         finishedSymbol = Symbol("FINISH"),
         iterator = makeIterator<P>(object, optionsCopy.onGetter),
         size = iterator?.size,
-        rootPath = (pathType === "string" ? "" : []) as string | K[];
+        rootPath = (pathType === "string" ? "" : []) as "" | readonly [];
 
     try {
         const hasEmptySize = Number.isInteger(size) ? (size as any) <= 0 : false;
@@ -156,7 +156,7 @@ export function deepIterate<P extends object = object, K = unknown, V = unknown,
                 depth: 0,
                 path: rootPath,
                 role: "root",
-                visits: 0,
+                visits: 0 as 1, // deepIterateCore reasigns it
                 index: -1,
                 key: null,
                 parentValue: null,

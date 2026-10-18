@@ -36,5 +36,5 @@ export type TraversalContext<
      * - Is null if `options.visitLogType` is `"null"`.
      * - It can always be accessed after finishing the traverse.
      */
-    visitLog?: VisitLog<P, K> | null;
+    visitLog?: VisitLog<P, K, R> | null;
 }>;

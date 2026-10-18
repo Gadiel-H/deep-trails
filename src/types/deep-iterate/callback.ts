@@ -21,6 +21,6 @@ import type { ChildContext, ParentContext, Control, TraversalContext } from "./i
 export type Callback<P extends object, K = unknown, V = unknown, R extends P = any> = (
     this: TraversalContext<P, K, V, R>,
     child: ChildContext<P, K, V>,
-    parent: Readonly<ParentContext<P, K>>,
+    parent: Readonly<ParentContext<P, K, R>>,
     control: Control<V>
 ) => unknown;
