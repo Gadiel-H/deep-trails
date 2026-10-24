@@ -11,6 +11,7 @@ interface FunctionAnalysis {
 }
 
 const functionToString = Function.prototype.toString,
+    objHasOwnProperty = Object.prototype.hasOwnProperty,
     CLASS_START = /^class[\s{]/,
     ARROW_FUNCTION =
         /^(?:async\s*)?(?:[a-zA-Z_$][\w$]*|\((?:[^()]*|\((?:[^()]*|\((?:[^()]*|\([^()]*\))*\))*\))*\))\s*=>/,
@@ -42,16 +43,16 @@ export function safeStringify(func: Function): string {
 export function analyzeFunctionType(fullString: string, func: Function): FunctionAnalysis {
     // Sanitize the string
     const withoutComments = fullString.replace(BLOCK_COMMENTS, "").replace(LINE_COMMENTS, "");
-    const hasPrototype = "prototype" in func;
+    const hasOwnPrototype = objHasOwnProperty.call(func, "prototype");
 
-    if (hasPrototype && CLASS_START.test(withoutComments)) {
+    if (hasOwnPrototype && CLASS_START.test(withoutComments)) {
         return { isAsync: false, isGenerator: false, isArrow: false, isClass: true };
     }
 
     const withoutSpaces = withoutComments.replace(WHITESPACE, "");
     const type = typeOf(func, false);
 
-    let isArrow = withoutSpaces[0] === "(";
+    let isArrow = !hasOwnPrototype && withoutSpaces[0] === "(";
 
     const isAsyncGenerator =
         !isArrow &&
@@ -68,7 +69,7 @@ export function analyzeFunctionType(fullString: string, func: Function): Functio
             isOfType(func, "GeneratorFunction", type) ||
             withoutSpaces.startsWith("function*"));
 
-    isArrow ||= !isGenerator && !hasPrototype && ARROW_FUNCTION.test(withoutComments);
+    isArrow ||= !isGenerator && !hasOwnPrototype && ARROW_FUNCTION.test(withoutComments);
 
     return { isAsync, isGenerator, isArrow, isClass: false };
 }
