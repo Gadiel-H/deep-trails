@@ -224,6 +224,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T, any, any
                     { cause: result.error }
                 );
             } else {
+                value = result.value;
                 childCtx.value = result.value;
                 childCtx.getterError = null;
             }
