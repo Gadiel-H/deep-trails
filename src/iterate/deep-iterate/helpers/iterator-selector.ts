@@ -102,13 +102,13 @@ export function makeIterator<T extends object>(
         const descWithGet = desc as PropertyDescriptor & { get: Function };
 
         if (onGetter === "catch-error") {
-            const { value, error } = getterWrapper({ parentValue: object }, { get });
+            const result = getterWrapper<T>(object, get);
 
-            if (error) {
-                return { done, value: [key, undefined, descWithGet, error] };
+            if ("error" in result) {
+                return { done, value: [key, undefined, descWithGet, result.error] };
             }
 
-            return { done, value: [key, value] };
+            return { done, value: [key, result.value] };
         }
 
         return { done, value: [key, undefined, descWithGet] };

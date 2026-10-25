@@ -4,10 +4,10 @@
 const doNothing = () => {};
 
 /** @internal */
-export function getterWrapper(
-    { parentValue }: { parentValue: object },
-    { get }: { get: Function }
-) {
+export function getterWrapper<T extends object, V = unknown>(
+    parentValue: T,
+    get: Function
+): { value: V } | { error: unknown } {
     try {
         const value = get.call(parentValue);
 
