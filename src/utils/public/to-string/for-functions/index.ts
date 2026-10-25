@@ -9,7 +9,7 @@ const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap()
 /**
  * Creates a simple string describing a function, similar to `console.log`.
  *
- * Detects async and generator functions by comparing their Object.prototype.toString
+ * Detects async and generator functions by comparing their `Object.prototype.toString`
  * tag and constructor name, or using source-based heuristics if that fails.
  *
  * For other function types, detection relies only on heuristics.
@@ -17,9 +17,11 @@ const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap()
  * Class syntax and native functions are checked first.
  *
  * @remarks
+ * - If the type cannot be detected, it falls back to "Function".
  * - The name is represented as anonymous for empty names,
  * "[name error]" if name access fails, or otherwise the actual name.
- * - If the type cannot be detected, it falls back to "Function".
+ * - For async arrow functions, the current heuristic accepts nested parentheses up to 3 levels;
+ * deeper nesting falls back to the generic async-function classification.
  *
  * @param func - Function or class to stringify.
  *
@@ -37,6 +39,9 @@ const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap()
  * fnString(Proxy)                    // "[NativeFunction: Proxy]"
  * fnString(class D extends Date {})  // "[class D]"
  * fnString((async x => x).bind())    // "[NativeFunction: bound ]"
+ *
+ * // When the limit of nested parentheses is exceeded
+ * fnString(async(a=(1+(2+(3+(4)))))=>{})  // "[AsyncFunction (anonymous)]"
  *
  * @since 3.0.0
  */
