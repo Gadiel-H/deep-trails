@@ -1,14 +1,11 @@
 /**
  * Checks whether a value is any function.
  *
- * You can force the TS predicate with a type argument.
- *
  * @example
  * isFunction(class Trail {})  // true
  * isFunction(async () => {})  // true
  * isFunction(function () {})  // true
  *
- * @since 3.0.0-beta.1
+ * @since 3.0.0
  */
-export const isFunction = <T extends Function>(value: unknown): value is T =>
-    typeof value === "function";
+export const isFunction = <T>(value: T) => typeof value === "function";

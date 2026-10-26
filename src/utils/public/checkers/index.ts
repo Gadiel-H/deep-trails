@@ -11,3 +11,4 @@ export { isNativeFunction } from "./is-native-function.js";
 export { isBoundFunction } from "./is-bound-function.js";
 export { isAsyncFunction } from "./is-async-function.js";
 export { isGeneratorFunction } from "./is-generator-function.js";
+export { isAsyncGeneratorFunction } from "./is-async-generator-function.js";

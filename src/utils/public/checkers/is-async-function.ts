@@ -1,24 +1,28 @@
 import { toFunctionString } from "../index.js";
 
 /**
- * Checks whether a value is an asynchronous function.
+ * Checks whether a value is an async function, excluding async generator functions.
  *
- * Detection compares the constructor name and Object.prototype.toString tag,
- * falling back to source-based heuristics (presence of the "async" keyword).
+ * Detection relies on the string created by `toFunctionString`.
  *
  * @requires {@linkcode toFunctionString}
  *
  * @example
  * isAsyncFunction(async () => {})         // true
  * isAsyncFunction(async function () {})   // true
- * isAsyncFunction(cb => new Promise(cb))  // false (missing keyword)
- * isAsyncFunction({ async() {} }.async)   // false (its name is "async")
+ * isAsyncFunction({ async do() {} }.do)   // true
+ * isAsyncFunction(async function* () {})  // false (it's generator)
+ * isAsyncFunction(n => new Promise(n))    // false (missing keyword)
  * isAsyncFunction((async x => x).bind())  // false (detected as native)
  *
  * @since 3.0.0
  */
-export const isAsyncFunction = (value: unknown): value is (...args: any[]) => Promise<any> => {
+export const isAsyncFunction = <T>(
+    value: T
+): value is T & ((...args: unknown[]) => Promise<unknown>) => {
     if (typeof value !== "function") return false;
 
-    return toFunctionString(value).startsWith("[Async");
+    const string = toFunctionString(value);
+
+    return string.startsWith("[Async") && !string.startsWith("[AsyncGenerator");
 };

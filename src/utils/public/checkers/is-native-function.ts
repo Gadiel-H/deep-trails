@@ -3,7 +3,7 @@ import { toFunctionString } from "../index.js";
 /**
  * Checks whether a value is a native function.
  *
- * Detection relies on source-based heuristics (native-code marker).
+ * Detection relies on the string created by `toFunctionString`.
  *
  * @requires {@linkcode toFunctionString}
  *
@@ -14,7 +14,7 @@ import { toFunctionString } from "../index.js";
  *
  * @since 3.0.0
  */
-export const isNativeFunction = (value: unknown): value is Function => {
+export const isNativeFunction = <T>(value: T): value is T & Function => {
     if (typeof value !== "function") return false;
 
     return toFunctionString(value).startsWith("[Native");
