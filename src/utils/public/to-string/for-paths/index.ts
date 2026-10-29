@@ -10,7 +10,10 @@ import {
 } from "./helpers.js";
 
 /**
- * The notation in which the path and/or the extra key string will be created.
+ * The default notation in which the path and/or the extra key string will be created.
+ *
+ * It must be "mixed" or "bracket". Initially it is "mixed".
+ *
  * @since 3.0.0-beta.3
  */
 toPathString.notation = "mixed" as Notation;
@@ -24,6 +27,7 @@ toPathString.notation = "mixed" as Notation;
  *
  * @param path - Path as array or string.
  * @param options - Options for more precision.
+ * By default only includes {@linkcode toPathString.notation} as notation.
  *
  * @returns String representation of the path.
  *
