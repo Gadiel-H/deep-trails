@@ -42,10 +42,7 @@ toPathString.notation = "mixed" as Notation;
  *
  * @since 3.0.0
  */
-export function toPathString<T = unknown>(
-    path: Readonly<T[]> | string,
-    options?: OptionsArgument
-): string {
+export function toPathString(path: readonly unknown[] | string, options?: OptionsArgument): string {
     if (options == null) {
         options = { notation: toPathString.notation };
     } else if (typeof options !== "object") {
