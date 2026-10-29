@@ -12,7 +12,7 @@ const { isInteger: isNumInteger } = Number;
  * isIntegerLike("0x34")   // true
  * isIntegerLike("20e5")   // false (BigInt fails, parseInt returns 20)
  *
- * @since 3.0.0-beta.3
+ * @since 3.0.0
  */
 export const isIntegerLike = <T>(
     value: T
