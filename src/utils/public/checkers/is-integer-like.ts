@@ -14,7 +14,9 @@ const { isInteger: isNumInteger } = Number;
  *
  * @since 3.0.0-beta.3
  */
-export const isIntegerLike = (value: unknown): value is bigint | number | string => {
+export const isIntegerLike = <T>(
+    value: T
+): value is Exclude<T, object> & (bigint | number | `${number}`) => {
     const type = typeof value;
 
     if (type === "bigint") return true;
