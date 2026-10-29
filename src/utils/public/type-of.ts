@@ -3,16 +3,20 @@
 const toString = Object.prototype.toString;
 const objCache: WeakMap<object, string> = new WeakMap();
 
-/** Default value for the second parameter of `typeOf`. */
+/**
+ * Default value for the second parameter of `typeOf`.
+ * Initially it is `true`.
+ */
 typeOf.useCache = true;
 
 /**
- * Detects the exact type of a value very quickly.
+ * Detects the exact type of a value.
  *
  * If it is an object, `Object.prototype.toString` is used.
  *
  * @param value - Some value.
  * @param useCache - If it's truthy and `value` is an object, returns the previous cache result.
+ * By default is {@linkcode typeOf.useCache}.
  *
  * @returns The string tag if `value` is an object; otherwise, `"null"` or `typeof value`.
  *
