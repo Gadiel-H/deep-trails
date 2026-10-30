@@ -101,7 +101,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T, any, any
         finishAfterNode: false,
         finish: false,
 
-        setValue(newValue, forceDescriptor = false) {
+        setValue(newValue, forceValue = false) {
             if (!(0 in arguments)) {
                 return { ok: false, errorCode: "MISSING_VALUE" };
             }
@@ -122,28 +122,42 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T, any, any
                         propKey
                     ) as PropertyDescriptor,
                     configurable = Boolean(desc.configurable),
-                    isReadonly = !Boolean(desc.writable),
-                    canForceConfig = configurable && forceDescriptor;
+                    writable = Boolean(desc.writable),
+                    hasSetter =
+                        !writable &&
+                        hasOwnProperty.call(desc, "set") &&
+                        typeof desc.set === "function",
+                    hasGetter =
+                        !writable &&
+                        hasOwnProperty.call(desc, "get") &&
+                        typeof desc.get === "function";
 
-                if (isReadonly && !canForceConfig) {
+                if (hasGetter && !hasSetter) {
+                    return { ok: false, errorCode: "GETTER_ONLY_PROPERTY" };
+                }
+
+                const canForceValue = configurable && forceValue;
+                const canWrite = writable || hasSetter;
+
+                if (!canWrite && !canForceValue) {
                     return { ok: false, errorCode: "READONLY_PROPERTY" };
                 }
 
-                if (isReadonly) {
+                if (canWrite) {
+                    try {
+                        parentValue[propKey] = newValue;
+                    } catch (error) {
+                        return { ok: false, errorCode: "SETTER_ERROR", error };
+                    }
+                } else {
                     const enumerable = Boolean(desc.enumerable);
                     const newDescriptor = {
                         value: newValue,
-                        writable: true,
+                        writable,
                         enumerable,
                         configurable
                     };
                     Object.defineProperty(parentValue, propKey, newDescriptor);
-                }
-
-                try {
-                    parentValue[propKey] = newValue;
-                } catch (error) {
-                    return { ok: false, errorCode: "SETTER_ERROR", error };
                 }
             } else if (!("set" in parentValue) || typeof parentValue.set !== "function") {
                 return { ok: false, errorCode: "WITHOUT_SET_METHOD" };

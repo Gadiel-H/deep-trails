@@ -80,12 +80,10 @@ export type Control<V = unknown> = {
     /**
      * Changes the value of the current node in the source structure and in the context.
      *
-     * @remarks
-     * When the current property is non-writable but configurable, setting `forceDescriptor` allows the property
-     * descriptor to be rewritten so the new value can be assigned.
-     *
      * @param newValue - The new value to assign. It must be different to the current one.
-     * @param forceDescriptor - Changes the property descriptor if necessary and if possible. Defaults to `false`.
+     * @param forceValue - If truthy and the node is a property,
+     * the "value" attribute is changed in its descriptor if necessary and possible. Defaults to `false`.
+     *
      * @returns An object with the result status.
      *
      * @example
@@ -102,7 +100,7 @@ export type Control<V = unknown> = {
      */
     readonly setValue: (
         newValue: V,
-        forceDescriptor?: boolean
+        forceValue?: boolean
     ) => Readonly<
         | { ok: true }
         | {
@@ -114,6 +112,7 @@ export type Control<V = unknown> = {
                   | "WITHOUT_SET_METHOD"
                   | "HAS_OWN_SET_METHOD"
                   | "READONLY_PROPERTY"
+                  | "GETTER_ONLY_PROPERTY"
                   | "MISSING_VALUE"
                   | "SAME_VALUE";
           }
