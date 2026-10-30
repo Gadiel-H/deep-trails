@@ -5,14 +5,16 @@ import type { ChildContext, ParentContext, Control, TraversalContext } from "./i
  *
  * This is executed on each node before iterating over it.
  *
- * Notes:
+ * See {@linkcode TraversalContext} for the type of `this`.
+ *
+ * @remarks
  * - The return value is neither saved nor used.
  * - A synchronous callback is expected.
  *
  * @this {TraversalContext} Includes the received arguments, and opcionally, a visit log.
- * @param child - Information about the current child.
- * @param parent - Information about the current parent.
- * @param control - Controls iteration behavior for the node and its parent.
+ * @param child - Context for the current child.
+ * @param parent - Context for the current parent.
+ * @param control - Includes flags and methods to control flow and structures.
  *
  * @returns Any value.
  *
