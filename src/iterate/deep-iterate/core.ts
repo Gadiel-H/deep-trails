@@ -25,7 +25,6 @@ import type {
 
 const { hasOwnProperty } = Object.prototype;
 const { isInteger } = Number;
-const { is } = Object;
 
 /**
  * Recursively iterates over the nodes of a nested object, calling a callback at each one.
@@ -104,10 +103,6 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T, any, any
         setValue(newValue, forceValue = false) {
             if (!(0 in arguments)) {
                 return { ok: false, errorCode: "MISSING_VALUE" };
-            }
-
-            if (is(value, newValue)) {
-                return { ok: false, errorCode: "SAME_VALUE" };
             }
 
             if (parentValue instanceof Set) {

@@ -80,7 +80,7 @@ export type Control<V = unknown> = {
     /**
      * Changes the value of the current node in the source structure and in the context.
      *
-     * @param newValue - The new value to assign. It must be different to the current one.
+     * @param value - The value to assign.
      * @param forceValue - If truthy and the node is a property,
      * the "value" attribute is changed in its descriptor if necessary and possible. Defaults to `false`.
      *
@@ -99,7 +99,7 @@ export type Control<V = unknown> = {
      * });
      */
     readonly setValue: (
-        newValue: V,
+        value: V,
         forceValue?: boolean
     ) => Readonly<
         | { ok: true }
@@ -113,8 +113,7 @@ export type Control<V = unknown> = {
                   | "HAS_OWN_SET_METHOD"
                   | "READONLY_PROPERTY"
                   | "GETTER_ONLY_PROPERTY"
-                  | "MISSING_VALUE"
-                  | "SAME_VALUE";
+                  | "MISSING_VALUE";
           }
         | {
               ok: false;
