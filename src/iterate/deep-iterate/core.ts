@@ -112,11 +112,19 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T, any, any
             const propKey = key as PropertyKey;
 
             if (iterator.source === "ownProperties") {
-                const desc = Object.getOwnPropertyDescriptor(
-                        parentValue,
-                        propKey
-                    ) as PropertyDescriptor,
-                    configurable = Boolean(desc.configurable),
+                const desc = Object.getOwnPropertyDescriptor(parentValue, propKey);
+
+                if (!desc) {
+                    try {
+                        parentValue[propKey] = newValue;
+                        value = newValue;
+                        return { ok: true };
+                    } catch (error) {
+                        return { ok: false, errorCode: "SETTER_ERROR", error };
+                    }
+                }
+
+                const configurable = Boolean(desc.configurable),
                     writable = Boolean(desc.writable),
                     hasSetter =
                         !writable &&
