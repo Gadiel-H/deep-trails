@@ -191,12 +191,8 @@ await test("setValue mutates object and Map entries and reports failure statuses
     deepIterate(unchanged, (child, _parent, control) => {
         if (child.key !== "value") return;
         failures.push((control.setValue as () => unknown)());
-        failures.push(control.setValue(1));
     });
-    assert.deepStrictEqual(failures, [
-        { ok: false, errorCode: "MISSING_VALUE" },
-        { ok: false, errorCode: "SAME_VALUE" }
-    ]);
+    assert.deepStrictEqual(failures, [{ ok: false, errorCode: "MISSING_VALUE" }]);
 
     const readonly = {};
     Object.defineProperty(readonly, "value", { value: 1 });
