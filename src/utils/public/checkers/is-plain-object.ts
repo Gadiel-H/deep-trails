@@ -10,7 +10,8 @@ const { getPrototypeOf, prototype: objPrototype } = Object;
  * isPlainObject(Object.create(null))  // true
  * isPlainObject(new Object())         // true
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export const isPlainObject = <T>(value: T): value is Exclude<T, Function> & object => {
     if (value == null || typeof value !== "object") return false;

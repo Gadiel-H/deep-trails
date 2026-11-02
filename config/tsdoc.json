@@ -1,0 +1,16 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
+    "extends": ["typedoc/tsdoc.json"],
+    "tagDefinitions": [
+        {
+            "tagName": "@compatibleSince",
+            "syntaxKind": "block",
+            "allowMultiple": false
+        },
+        {
+            "tagName": "@requires",
+            "syntaxKind": "block",
+            "allowMultiple": true
+        }
+    ]
+}

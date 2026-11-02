@@ -6,6 +6,8 @@ const objCache: WeakMap<object, string> = new WeakMap();
 /**
  * Default value for the second parameter of `typeOf`.
  * Initially it is `true`.
+ *
+ * @since 3.0.0-beta.0
  */
 typeOf.useCache = true;
 
@@ -28,7 +30,8 @@ typeOf.useCache = true;
  * typeOf(Number())      // "number"
  * typeOf(new Number())  // "Number"
  *
- * @since 3.0.0-beta.0
+ * @since 1.0.0
+ * @compatibleSince 3.0.0-beta.0
  */
 export function typeOf(value: unknown, useCache = typeOf.useCache): string {
     if (value === null) return "null";

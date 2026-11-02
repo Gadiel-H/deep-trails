@@ -40,7 +40,8 @@ toPathString.notation = "mixed" as Notation;
  * toPathString(path, { extraKey: "d" })         // "a.b.c[0].d"
  * toPathString("a.b", { notation: "bracket" })  // "a.b"
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export function toPathString(path: readonly unknown[] | string, options?: OptionsArgument): string {
     if (options == null) {

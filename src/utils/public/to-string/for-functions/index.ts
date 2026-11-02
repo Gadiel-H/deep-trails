@@ -43,7 +43,8 @@ const cache: WeakMap<Function, { string: string; name: string }> = new WeakMap()
  * // When the limit of nested parentheses is exceeded
  * fnString(async(a=(1+(2+(3+(4)))))=>{})  // "[AsyncFunction (anonymous)]"
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export function toFunctionString(func: Function): string {
     if (typeof func !== "function") {

@@ -14,7 +14,8 @@
  * - skipKey
  * - skipValue
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export type Control<V = unknown> = {
     /**
@@ -22,6 +23,8 @@ export type Control<V = unknown> = {
      *
      * @example
      * control.finish = child.key === "finish"
+     *
+     * @since 3.0.0
      */
     finish: boolean;
 
@@ -40,6 +43,8 @@ export type Control<V = unknown> = {
      *
      * @example
      * control.stopParent = child.index > 20
+     *
+     * @since 3.0.0
      */
     stopParent: boolean;
 
@@ -97,6 +102,8 @@ export type Control<V = unknown> = {
      *         }
      *     }
      * });
+     *
+     * @since 3.0.0
      */
     readonly setValue: (
         value: V,

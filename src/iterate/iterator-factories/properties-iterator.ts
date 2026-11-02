@@ -31,7 +31,8 @@ const argumentsSchema = recordSchema({
  *
  * iterator.reset();  // Recommended for another iteration.
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export function PropertiesIterator<
     T extends object,

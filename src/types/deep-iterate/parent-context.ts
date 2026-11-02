@@ -5,7 +5,8 @@ import type { Options } from "./index";
  *
  * See {@linkcode SubParentContext} for the description of the properties.
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export type ParentContext<P extends object, K = unknown, R extends P = P> =
     SubParentContext<P, K> | RootContext<R>;

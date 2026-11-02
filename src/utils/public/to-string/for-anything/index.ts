@@ -22,7 +22,8 @@ const toString = Object.prototype.toString;
  * toSimpleString("abc")     // '"abc"'
  * toSimpleString("Hello\n") // '"Hello\\n"'
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export function toSimpleString(value: unknown): string {
     if (!(0 in arguments)) return "";

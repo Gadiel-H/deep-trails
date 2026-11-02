@@ -15,7 +15,8 @@ import { toFunctionString, isAsyncGeneratorFunction } from "../index.js";
  * isGeneratorFunction(async function* () {})     // false (it's async)
  * isGeneratorFunction((function* () {}).bind())  // false (detected as native)
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export const isGeneratorFunction = <T>(value: T): value is T & GeneratorFunction => {
     if (typeof value !== "function") return false;

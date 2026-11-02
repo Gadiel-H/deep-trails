@@ -91,7 +91,8 @@ export type ChildBaseContext<P extends object, K = unknown> = {
  *
  * Read {@linkcode Options.onGetter} to understand how the `getterError` property is set.
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export type ChildContext<P extends object, K = unknown, V = unknown> =
     (ChildBaseContext<P, K> & ChildValueRead<V>) | (ChildBaseContext<P, K> & ChildValueError);

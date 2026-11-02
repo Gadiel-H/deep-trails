@@ -27,6 +27,7 @@ import type { Options, ParentContext } from "./index";
  * - Value: the parent object.
  *
  * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export type VisitLog<P extends object, K = unknown, R extends P = P> =
     VisitLogMap<P, K, R> | VisitLogSet<P> | VisitLogArray<P, K, R>;
@@ -39,6 +40,7 @@ export type VisitLog<P extends object, K = unknown, R extends P = P> =
  * This is best when you need the ordered history of all the contexts associated with each parent.
  *
  * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export type VisitLogMap<P extends object, K = unknown, R extends P = P> =
     Map<P, ParentContext<P, K, R>[]> | WeakMap<P, ParentContext<P, K, R>[]>;
@@ -60,6 +62,7 @@ export type VisitLogSet<P extends object> = Set<P> | WeakSet<P>;
  * This is best for getting the complete ordered history of the traversal.
  *
  * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export type VisitLogArray<P extends object, K = unknown, R extends P = P> = ParentContext<
     P,

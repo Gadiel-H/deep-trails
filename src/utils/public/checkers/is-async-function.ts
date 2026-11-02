@@ -15,7 +15,8 @@ import { toFunctionString } from "../index.js";
  * isAsyncFunction(n => new Promise(n))    // false (missing keyword)
  * isAsyncFunction((async x => x).bind())  // false (detected as native)
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export const isAsyncFunction = <T>(
     value: T

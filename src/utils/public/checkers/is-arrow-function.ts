@@ -21,7 +21,8 @@ import { toFunctionString } from "../index.js";
  * isArrowFunction(async(a=(1+(2+(3))))=>{})      // true
  * isArrowFunction(async(a=(1+(2+(3+(4)))))=>{})  // false (due to nested parentheses limit)
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export const isArrowFunction = <T>(
     value: T

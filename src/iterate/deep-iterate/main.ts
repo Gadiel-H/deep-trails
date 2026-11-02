@@ -21,7 +21,8 @@ import { deepIterateCore } from "./core.js";
  *
  * @throws TypeError if some option is of invalid type.
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 deepIterate.options = defaultOptions;
 
@@ -76,7 +77,8 @@ deepIterate.options = defaultOptions;
  *         ctrl.setValue(Number(value));
  * });
  *
- * @since 3.0.0
+ * @since 1.0.0
+ * @compatibleSince 3.0.0
  */
 export function deepIterate<P extends object = object, K = unknown, V = unknown, R extends P = P>(
     object: R,

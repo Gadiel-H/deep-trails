@@ -10,7 +10,8 @@ import { deepIterate } from "../../iterate/index.js";
  * Notes:
  * - This object is cloned before start the deep iteration.
  *
- * @since 3.0.0
+ * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export type Options<P extends object, K = unknown, V = unknown> = {
     /**
@@ -46,6 +47,9 @@ export type Options<P extends object, K = unknown, V = unknown> = {
      * `"skip-node"`: the node will be skipped and the iteration will continue.
      *
      * `"throw-error"`: an error will be thrown with the path of the node.
+     *
+     * @since 3.0.0-beta.3
+     * @compatibleSince 3.0.0
      */
     onCircular:
         | "skip-node"
@@ -99,6 +103,8 @@ export type Options<P extends object, K = unknown, V = unknown> = {
      *         }
      *     }
      * );
+     *
+     * @since 3.0.0
      */
     onGetter:
         | "execute"
