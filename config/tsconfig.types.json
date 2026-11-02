@@ -4,6 +4,7 @@
         "declaration": true,
         "emitDeclarationOnly": true,
         "declarationDir": "../dist/types",
-        "removeComments": false
+        "removeComments": false,
+        "noEmit": false
     }
 }

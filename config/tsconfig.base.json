@@ -12,6 +12,7 @@
         "checkJs": false,
 
         /* Emit */
+        "noEmit": true,
         "stripInternal": true,
         "newLine": "lf",
 
