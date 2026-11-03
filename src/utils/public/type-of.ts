@@ -5,19 +5,24 @@ const objCache: WeakMap<object, string> = new WeakMap();
 
 /**
  * Default value for the second parameter of `typeOf`.
- * Initially it is `true`.
+ * Initially it is `false`.
+ *
+ * @remarks Changed initial value from `true` to `false` in 3.0.0.
  *
  * @since 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
-typeOf.useCache = true;
+typeOf.useCache = false;
 
 /**
  * Detects the exact type of a value.
  *
- * If it is an object, `Object.prototype.toString` is used.
+ * @remarks
+ * - Uses `Object.prototype.toString` for objects.
+ * - Always updates the cache, except when it is requested and a string tag is available.
  *
  * @param value - Some value.
- * @param useCache - If it's truthy and `value` is an object, returns the previous cache result.
+ * @param useCache - If it is truthy and `value` is an object, returns the cached result (if any).
  * By default is {@linkcode typeOf.useCache}.
  *
  * @returns The string tag if `value` is an object; otherwise, `"null"` or `typeof value`.
@@ -31,7 +36,7 @@ typeOf.useCache = true;
  * typeOf(new Number())  // "Number"
  *
  * @since 1.0.0
- * @compatibleSince 3.0.0-beta.0
+ * @compatibleSince 3.0.0
  */
 export function typeOf(value: unknown, useCache = typeOf.useCache): string {
     if (value === null) return "null";
