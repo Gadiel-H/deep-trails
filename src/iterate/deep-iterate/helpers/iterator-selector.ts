@@ -49,6 +49,7 @@ export function makeIterator<T extends object>(
         }
 
         keysIter = arrayKeys.call(object) as KeysIterator;
+        keysIter.source = "ownProperties";
         keysIter.size = object.length;
     } else if (hasEntries(object)) {
         let iter: LightEntriesIterator;
