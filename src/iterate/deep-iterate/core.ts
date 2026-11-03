@@ -165,7 +165,11 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T, any, any
             } else if (!("set" in parentValue) || typeof parentValue.set !== "function") {
                 return { ok: false, errorCode: "WITHOUT_SET_METHOD" };
             } else if (!hasOwnProperty.call(parentValue, "set")) {
-                parentValue.set(key, newValue);
+                try {
+                    parentValue.set(key, newValue);
+                } catch (error) {
+                    return { ok: false, errorCode: "SET_METHOD_ERROR", error };
+                }
             } else {
                 return { ok: false, errorCode: "HAS_OWN_SET_METHOD" };
             }

@@ -124,9 +124,13 @@ export type Control<V = unknown> = {
           }
         | {
               ok: false;
-              /** It is `"SETTER_ERROR"` if the property's setter threw any value when trying to assign the new one. */
-              errorCode: "SETTER_ERROR";
-              /** Exists if the property's setter threw any value. */
+              /**
+               *
+               * It is `"SETTER_ERROR"` or `"SET_METHOD_ERROR"` if the property's setter
+               * or the `set()` method threw any value when trying to assign the new one.
+               */
+              errorCode: "SETTER_ERROR" | "SET_METHOD_ERROR";
+              /** Exists if the property's setter or the `set()` method threw any value. */
               error: unknown;
           }
     >;
