@@ -7,7 +7,7 @@
  * isObject(/^abc$/i)  // true
  * isObject(null)      // false
  *
- * @since 3.0.0-beta.1
+ * @since 3.0.0-beta.0
  */
 export const isObject = (value: unknown): value is object => {
     if (value == null) return false;
