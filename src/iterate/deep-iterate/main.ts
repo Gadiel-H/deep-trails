@@ -130,7 +130,7 @@ export function deepIterate<P extends object = object, K = unknown, V = unknown,
         finishedSymbol = Symbol("FINISH"),
         iterator = makeIterator<P>(object, optionsCopy.onGetter),
         size = iterator?.size,
-        rootPath = (pathType === "string" ? "" : []) as "" | readonly [];
+        rootPath = (pathType === "string" ? "" : Object.freeze([])) as "" | readonly [];
 
     try {
         const hasEmptySize = Number.isInteger(size) ? (size as any) <= 0 : false;

@@ -68,6 +68,8 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T, any, any
     visitsCounter.set(object, visits);
     context.visits = visits;
 
+    Object.freeze(context);
+
     if (visitLog) {
         if (visitLogType === "array") {
             (visitLog as VisitLogArray<T>).push(context);
@@ -203,6 +205,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T, any, any
         if (pathType === "array") {
             path = objPath.slice();
             (path as any[]).push(key);
+            Object.freeze(path);
         } else {
             pathStrOptions.extraKey = key;
             path = toPathString(objPath, pathStrOptions);
