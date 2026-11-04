@@ -43,7 +43,7 @@ export type VisitLog<P extends object, K = unknown, R extends P = P> =
  * @compatibleSince 3.0.0
  */
 export type VisitLogMap<P extends object, K = unknown, R extends P = P> =
-    Map<P, ParentContext<P, K, R>[]> | WeakMap<P, ParentContext<P, K, R>[]>;
+    Map<P, Readonly<ParentContext<P, K, R>>[]> | WeakMap<P, Readonly<ParentContext<P, K, R>>[]>;
 
 /**
  * Visit log as a Set or a WeakSet of parent objects.
@@ -64,8 +64,6 @@ export type VisitLogSet<P extends object> = Set<P> | WeakSet<P>;
  * @since 3.0.0-beta.0
  * @compatibleSince 3.0.0
  */
-export type VisitLogArray<P extends object, K = unknown, R extends P = P> = ParentContext<
-    P,
-    K,
-    R
+export type VisitLogArray<P extends object, K = unknown, R extends P = P> = Readonly<
+    ParentContext<P, K, R>
 >[];
