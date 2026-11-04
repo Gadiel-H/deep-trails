@@ -275,7 +275,7 @@ export const deepIterateCore = <T extends object>(params: CoreParams<T, any, any
 
             throw Object.assign(
                 new Error(
-                    `${params.cbAlias} has ${action} whitin an object of type ${typeOf(object)}:\n\n` +
+                    `${params.cbAlias} has ${action} within an object of type ${typeOf(object)}:\n\n` +
                         `    ${error}\n\n` +
                         `    At: ${toPathString(path)}\n`
                 ),

@@ -41,7 +41,7 @@ deepIterate.options = defaultOptions;
  * - **R**: Root object.
  *
  * @param object - The root node to start the iteration.
- * @param callback - Function to execute by each node before iterating it.
+ * @param callback - Function to execute on each node before iterating it.
  * @param options - Options to customize traversal behavior. Defaults to `deepIterate.options`.
  *
  * @returns The arguments and visit log in a plain object.

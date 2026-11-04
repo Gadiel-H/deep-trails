@@ -4,8 +4,8 @@ import type { Validator } from "../types/index";
  * Returns a validator for string matches, or simply for any string.
  *
  * @param matches - The optional matches.
- * @param exactMatch - If there are matches:
- * if truthy, the comparison is exact; otherwise, is case-insensitive and trims whitespace.
+ * @param exactMatch - If truthy and there are matches, the comparison is exact;
+ * otherwise, it is case-insensitive and trims whitespace.
  *
  * @internal
  */

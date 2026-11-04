@@ -13,9 +13,9 @@ const argumentsSchema = recordSchema({
 });
 
 /**
- * Creates an stateful iterator for the properties of an object using a function to get its keys.
+ * Creates a stateful iterator for the properties of an object using a function to get its keys.
  *
- * See {@linkcode PropertiesIterable} to known the interface.
+ * See {@linkcode PropertiesIterable} to know the interface.
  *
  * @remarks
  * - Depends on a closure to store the iteration state, not on `this`.

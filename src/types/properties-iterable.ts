@@ -3,7 +3,7 @@ import { PropertiesIterator } from "../iterate/index.js";
 /**
  * Stateful iterable for iterating over object properties.
  *
- * See {@linkcode PropertiesIterator} to known the factory.
+ * See {@linkcode PropertiesIterator} to know the factory.
  *
  * @since 3.0.0
  */
@@ -83,7 +83,7 @@ export interface PropertiesIterable<
      * iter.clear();  // true
      * iter.reset();  // false
      *
-     * @returns `true` if reseted; `false` if object references were removed (due to {@link PropertiesIterable.clear | `.clear()`}).
+     * @returns `true` if reset; `false` if object references were removed (due to {@link PropertiesIterable.clear | `.clear()`}).
      */
     reset: () => boolean;
 

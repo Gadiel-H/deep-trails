@@ -11,7 +11,7 @@ import type { ChildContext, ParentContext, Control, TraversalContext } from "./i
  * - The return value is neither saved nor used.
  * - A synchronous callback is expected.
  *
- * @this {TraversalContext} Includes the received arguments, and opcionally, a visit log.
+ * @this {TraversalContext} Includes the received arguments, and optionally, a visit log.
  * @param child - Context for the current child.
  * @param parent - Context for the current parent.
  * @param control - Includes flags and methods to control flow and structures.

@@ -20,7 +20,7 @@ export type ChildValueRead<V> = {
     value: V;
 
     /**
-     * It is `null` if there is not a synchronous getter error or if `options.onGetter` returns a value.
+     * It is `null` if there is no synchronous getter error or if `options.onGetter` returns a value.
      */
     getterError: null;
 };
