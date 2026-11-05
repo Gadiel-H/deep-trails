@@ -9,6 +9,10 @@ For more details about a release, click on the corresponding version.
 
 ### Added
 
+- The `isAsyncGeneratorFunction()` util.
+
+- The `PropertiesIterable` interface as a replacement of `EntriesIterator` and type of `PropertiesIterator()` instances.
+
 - Support for `"first"` and `"last"` as arguments for `PropertiesIterable.peek()`.
 
 - The `PropertiesIterable.getSize()` method, which returns the current number of keys, or `undefined` after `clear()`.
@@ -37,6 +41,8 @@ For more details about a release, click on the corresponding version.
 
 - The `Control.useEntry()` method. Use `setValue()` instead.
 
+- The type param `T` in `toPathString()` because it has no benefit.
+
 - The `EntriesIterator` type. Replaced by `PropertiesIterable`.
 
 - The `PropertiesIterable.size` property. Replaced by `PropertiesIterable.getSize()`.
@@ -62,13 +68,13 @@ For more details about a release, click on the corresponding version.
 
     - Escapes strings instead of returning them between unescaped quotes.
 
-- **Breaking:** `isPlainObject()` now has a safer and more precise TS predicate typing:
-    - Intersections with primitive types or types that extend `Function` result in `never`.
-    - After check, accessing nonexistent properties (outside the checker) on the object results in `unknown` instead of `any`.
+- **Breaking (TS only):** `isPlainObject()` now excludes extensions of `Function` and intersects with `object` instead of `Record<PropertyKey, any>`.
+
+- **Breaking (TS only):** `isArrayLike()` now excludes extensions of `Function` and intersects with `string` or an array-like object.
 
 - **Breaking:** `toFunctionString()` now uses a different function-string representation:
     - Detects function types more accurately. See its [documentation](https://gadiel-h.github.io/deep-trails/functions/utils.toFunctionString.html) for details.
-        - Detects generator and async functions using their constructor names and string tags.
+        - Detects generator, async, and async generator functions using their constructor names and string tags.
         - Detects classes using a regular expression instead of `string.startsWith()`.
         - Detects native functions using a regular expression instead of `string.endsWith()`.
 
@@ -77,6 +83,11 @@ For more details about a release, click on the corresponding version.
     - Detects arrow functions using a regular expression instead of relying on incorrect properties.
 
     - Detects arrow functions with up to three levels of nested parentheses; source beginning with `"("` is treated as arrow syntax.
+
+- Changed default type `R` (root) from `any` to `P` (parent) in `Callback`.
+
+- `deepIterate()` core now resets `skipKey` and `skipValue` when necessary.
+  Previously they were only reset when what each one omitted was going to be iterated.
 
 - `toSimpleString()` stringifies invalid `Date` instances as `"Invalid Date"` instead of throwing an error.
 
@@ -87,6 +98,8 @@ For more details about a release, click on the corresponding version.
     - Returns a fallback representation if the function source cannot be inspected.
     - Stringifies symbol names without throwing an error.
     - Uses `"[TypeFunction [name error]]"` if reading the name throws an error.
+    - Checks the existence of `prototype` only as own property.
+    - Always checks the nonexistence of `prototype` as own property in arrow functions.
 
 - `isArrayLike()` returns `false` if getting the object length throws an error.
 
@@ -96,12 +109,31 @@ For more details about a release, click on the corresponding version.
 
 ### Changed
 
+- **Breaking:** Changed default value of `typeOf.useCache` to `false`, thus affecting `typeOf()` when the second argument is not passed.
+
+- **Breaking:** `ParentContext` objects and array paths are now readonly at runtime.
+
+- **Breaking (TS only):** `ChildContext` is now readonly in `DeepIterate.Callback`.
+
+- **Breaking:** `VisitLogMap` and `VisitLogArray` now have readonly `ParentContext` objects.
+
+- **Breaking:** Renamed `stopParentNow` and `finishNow` `Control` flags to `stopParent` and `finish`.
+
+- **Breaking (TS only):** `isIntegerLike()` excludes objects and intersects with \``${number}`\` instead of just `string`.
+
+- **Breaking:** `isAsyncFunction()` and `isGeneratorFunction()` exclude async generator functions.
+
+- **Breaking:** `isBoundFunction()` excludes functions with `prototype` as own property.
+
 - **Breaking:** Adapted `ChildContext` to the effects of `Options.onGetter`.
   Added the exported `ChildBaseContext`, `ChildValueRead`, and `ChildValueError` types. Getter failures are represented by `value: undefined` and `getterError` with the original error in `cause`.
 
+- **Breaking (TS only):** `ParentContext` was split into `SubParentContext` and `RootContext` to better detect each case.
+  The type of the `key` property is incompatible with previous versions.
+
 - **Breaking:** Changed the TS type parameters order for `TraversalContext`, `Callback`, and `deepIterate()` to `<P, K, V, R>`.
 
-- **Breaking:** Changed the signatures of `PropertiesIterator()` and `deepIterate()`.
+- **Breaking:** Changed the signatures of `PropertiesIterator()`, `deepIterate()`, and all function checkers (`is*Function()`).
 
 - **Breaking:** `PropertiesIterator()` validates its arguments and throws an error when an argument is invalid.
 
@@ -120,13 +152,16 @@ For more details about a release, click on the corresponding version.
 
 ### Documentation
 
+- The "@since" tag is now used to indicate the version in which something was introduced to the public API.
+  The custom tag "@compatibleSince" was added to indicate the first version in which something is compatible (also considering its members if it has them) with the used version of the library.
+
 - Clarified documentation and added examples for `PropertiesIterable`, `PropertiesIterator()`, and `deepIterate()`.
+
+- Clarified and detailed documentation for `VisitLog`, `Callback`, `typeOf()`, `toPathString()`, and `toFunctionString()` and its dependent checkers (`is*Function()`).
 
 - Corrected the value description in the `VisitLogMap` type to say it is an array, not a `ParentContext` object.
 
 - Explained the objects as references instead of values in `ChildContext` and `ParentContext`.
-
-- Clarified and detailed documentation in `toFunctionString()` and its dependent checkers (`is*Function()`).
 
 - Specified the path notation in `Options.pathType` when it is a string.
 
