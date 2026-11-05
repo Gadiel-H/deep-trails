@@ -5,7 +5,7 @@
 
 For more details about a release, click on the corresponding version.
 
-## [Unreleased] - 2026-09-27
+## [Unreleased] - 2026-11-04
 
 ### Added
 
