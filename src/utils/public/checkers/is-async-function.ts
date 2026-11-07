@@ -20,7 +20,7 @@ import { toFunctionString } from "../index.js";
  */
 export const isAsyncFunction = <T>(
     value: T
-): value is T & ((...args: unknown[]) => Promise<unknown>) => {
+): value is T & ((...args: unknown[]) => Promise<unknown>) & object => {
     if (typeof value !== "function") return false;
 
     const string = toFunctionString(value);

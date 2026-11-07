@@ -16,7 +16,9 @@ import { toFunctionString } from "../index.js";
  */
 export const isAsyncGeneratorFunction = <T>(
     value: T
-): value is T & ((...args: unknown[]) => AsyncIterableIterator<unknown, unknown, unknown>) => {
+): value is T &
+    ((...args: unknown[]) => AsyncIterableIterator<unknown, unknown, unknown>) &
+    object => {
     if (typeof value !== "function") return false;
 
     return toFunctionString(value).startsWith("[AsyncGenerator");

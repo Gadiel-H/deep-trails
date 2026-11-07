@@ -23,7 +23,7 @@ const objHasOwnProperty = Object.prototype.hasOwnProperty;
  */
 export const isBoundFunction = <T>(
     value: T
-): value is T & Function & { readonly name: `bound ${string}`; prototype: never } => {
+): value is T & Function & { readonly name: `bound ${string}`; prototype: never } & object => {
     if (!isNativeFunction(value)) return false;
 
     try {

@@ -15,7 +15,7 @@ import { toFunctionString } from "../index.js";
  * @since 3.0.0-beta.0
  * @compatibleSince 3.0.0
  */
-export const isNativeFunction = <T>(value: T): value is T & Function => {
+export const isNativeFunction = <T>(value: T): value is T & Function & object => {
     if (typeof value !== "function") return false;
 
     return toFunctionString(value).startsWith("[Native");

@@ -9,4 +9,5 @@
  * @since 3.0.0-beta.0
  * @compatibleSince 3.0.0
  */
-export const isFunction = <T>(value: T) => typeof value === "function";
+export const isFunction = <T>(value: T): value is T & Function & object =>
+    typeof value === "function";

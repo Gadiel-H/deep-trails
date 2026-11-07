@@ -18,7 +18,7 @@ import { toFunctionString, isAsyncGeneratorFunction } from "../index.js";
  * @since 3.0.0-beta.0
  * @compatibleSince 3.0.0
  */
-export const isGeneratorFunction = <T>(value: T): value is T & GeneratorFunction => {
+export const isGeneratorFunction = <T>(value: T): value is T & GeneratorFunction & object => {
     if (typeof value !== "function") return false;
 
     return toFunctionString(value).startsWith("[Generator");

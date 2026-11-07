@@ -26,7 +26,7 @@ import { toFunctionString } from "../index.js";
  */
 export const isArrowFunction = <T>(
     value: T
-): value is T & ((...args: unknown[]) => unknown) & { prototype: never } => {
+): value is T & ((...args: unknown[]) => unknown) & { prototype: never } & object => {
     if (typeof value !== "function") return false;
 
     const string = toFunctionString(value);
